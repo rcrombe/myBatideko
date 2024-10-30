@@ -1,5 +1,0 @@
-Listening on 127.0.0.1:32795
-[2024-10-30 10:46:46] info Disposed of connection to running server.
-looking for token a27df676-1add-41c9-8085-3513fbdedc6b, got Some("a27df676-1add-41c9-8085-3513fbdedc6b")
-[2024-10-30 10:46:46] info Checking /home/rcrombe/.vscode-server/cli/servers/Stable-384ff7382de624fb94dbaf6da11977bba1ecd427/log.txt and /home/rcrombe/.vscode-server/cli/servers/Stable-384ff7382de624fb94dbaf6da11977bba1ecd427/pid.txt for a running server...
-[2024-10-30 10:46:46] info Found running server (pid=25756)
