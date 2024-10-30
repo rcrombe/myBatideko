@@ -45,3 +45,61 @@ npm -v
 npm install npm -g
 sudo npm install npm -g
 npm -v
+ls
+cd /home
+ls
+cd rcrombe
+ls
+cd /home/rcrombe/
+la
+ls
+cd /home/production/
+sudo cd /home/production/
+cd /home/production/
+sudo cd home/production
+sudo su
+ls
+nano index.html
+ls -al
+ls
+npm uninstall -g @angular/cli
+mkdir intra_front
+cd intra_front/
+npm install -g @angular/cli
+sudo npm install -g @angular/cli
+npm fund
+npm install @npmcli/package-json
+ng version
+source <(ng completion script)
+ls
+cd
+ls
+ng new intra_front
+git config --global user.email rcrombe@efranque.com
+git config --global user.name rcrombe
+git branch -m development
+ls
+git init
+rm intra_front
+sudo rm intra_fro,nt
+sudo rm intra_front
+sudo rm -r intra_front/
+ls
+ng new angular-starter --defaults
+sudo rm -r angular-starter/
+ng new intra_front --defaults
+git --version
+cd intra_front/
+ng serve
+cd..
+cd ..
+ls
+git init
+git add .
+git commit -m "Initial commit"
+git add all
+git add .
+git commit -m "Initial commit"
+git checkout -b Development
+git remote add origin https://github.com/rcrombe/myBatideko.git
+git push -u origin Development

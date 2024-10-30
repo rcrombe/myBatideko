@@ -49,3 +49,4 @@
     at process.<anonymous> (file:///home/rcrombe/.vscode-server/cli/servers/Stable-384ff7382de624fb94dbaf6da11977bba1ecd427/server/out/vs/server/node/server.main.js:189:5899)
     at process.emit (node:events:531:35)
 2024-10-30 11:30:23.274 [warning] [File Watcher (node.js)] Watcher shutdown because watched path got deleted
+2024-10-30 12:37:05.074 [info] [<unknown>][20e77d6a][ExtensionHostConnection] The client has reconnected.
