@@ -1,0 +1,51 @@
+2024-10-30 10:46:24.505 [info] 
+
+
+
+
+2024-10-30 10:46:24.517 [info] Extension host agent started.
+2024-10-30 10:46:24.566 [info] Started initializing default profile extensions in extensions installation folder. file:///home/rcrombe/.vscode-server/extensions
+2024-10-30 10:46:24.571 [info] [<unknown>][47ddd669][ExtensionHostConnection] New connection established.
+2024-10-30 10:46:24.583 [info] [<unknown>][c744557e][ManagementConnection] New connection established.
+2024-10-30 10:46:24.589 [info] Completed initializing default profile extensions in extensions installation folder. file:///home/rcrombe/.vscode-server/extensions
+2024-10-30 10:46:24.750 [info] [<unknown>][47ddd669][ExtensionHostConnection] <25804> Launched Extension Host Process.
+2024-10-30 10:46:27.540 [error] CodeExpectedError: Could not find pty 4 on pty host
+    at M.U (file:///home/rcrombe/.vscode-server/cli/servers/Stable-384ff7382de624fb94dbaf6da11977bba1ecd427/server/out/vs/platform/terminal/node/ptyHostMain.js:48:11102)
+    at M.updateIcon (file:///home/rcrombe/.vscode-server/cli/servers/Stable-384ff7382de624fb94dbaf6da11977bba1ecd427/server/out/vs/platform/terminal/node/ptyHostMain.js:48:6462)
+    at s.<computed> (file:///home/rcrombe/.vscode-server/cli/servers/Stable-384ff7382de624fb94dbaf6da11977bba1ecd427/server/out/vs/platform/terminal/node/ptyHostMain.js:48:1843)
+    at Object.call (file:///home/rcrombe/.vscode-server/cli/servers/Stable-384ff7382de624fb94dbaf6da11977bba1ecd427/server/out/vs/platform/terminal/node/ptyHostMain.js:31:4127)
+    at Fc.s (file:///home/rcrombe/.vscode-server/cli/servers/Stable-384ff7382de624fb94dbaf6da11977bba1ecd427/server/out/vs/platform/terminal/node/ptyHostMain.js:29:78860)
+    at Fc.q (file:///home/rcrombe/.vscode-server/cli/servers/Stable-384ff7382de624fb94dbaf6da11977bba1ecd427/server/out/vs/platform/terminal/node/ptyHostMain.js:29:78383)
+    at os.value (file:///home/rcrombe/.vscode-server/cli/servers/Stable-384ff7382de624fb94dbaf6da11977bba1ecd427/server/out/vs/platform/terminal/node/ptyHostMain.js:29:77785)
+    at y.B (file:///home/rcrombe/.vscode-server/cli/servers/Stable-384ff7382de624fb94dbaf6da11977bba1ecd427/server/out/vs/platform/terminal/node/ptyHostMain.js:29:732)
+    at y.fire (file:///home/rcrombe/.vscode-server/cli/servers/Stable-384ff7382de624fb94dbaf6da11977bba1ecd427/server/out/vs/platform/terminal/node/ptyHostMain.js:29:950)
+    at process.v (file:///home/rcrombe/.vscode-server/cli/servers/Stable-384ff7382de624fb94dbaf6da11977bba1ecd427/server/out/vs/platform/terminal/node/ptyHostMain.js:24:29096)
+    at process.emit (node:events:519:28)
+    at emit (node:internal/child_process:951:14)
+    at process.processTicksAndRejections (node:internal/process/task_queues:83:21)
+2024-10-30 10:46:27.545 [error] CodeExpectedError: Could not find pty 4 on pty host
+    at M.U (file:///home/rcrombe/.vscode-server/cli/servers/Stable-384ff7382de624fb94dbaf6da11977bba1ecd427/server/out/vs/platform/terminal/node/ptyHostMain.js:48:11102)
+    at M.updateTitle (file:///home/rcrombe/.vscode-server/cli/servers/Stable-384ff7382de624fb94dbaf6da11977bba1ecd427/server/out/vs/platform/terminal/node/ptyHostMain.js:48:6412)
+    at s.<computed> (file:///home/rcrombe/.vscode-server/cli/servers/Stable-384ff7382de624fb94dbaf6da11977bba1ecd427/server/out/vs/platform/terminal/node/ptyHostMain.js:48:1843)
+    at Object.call (file:///home/rcrombe/.vscode-server/cli/servers/Stable-384ff7382de624fb94dbaf6da11977bba1ecd427/server/out/vs/platform/terminal/node/ptyHostMain.js:31:4127)
+    at Fc.s (file:///home/rcrombe/.vscode-server/cli/servers/Stable-384ff7382de624fb94dbaf6da11977bba1ecd427/server/out/vs/platform/terminal/node/ptyHostMain.js:29:78860)
+    at Fc.q (file:///home/rcrombe/.vscode-server/cli/servers/Stable-384ff7382de624fb94dbaf6da11977bba1ecd427/server/out/vs/platform/terminal/node/ptyHostMain.js:29:78383)
+    at os.value (file:///home/rcrombe/.vscode-server/cli/servers/Stable-384ff7382de624fb94dbaf6da11977bba1ecd427/server/out/vs/platform/terminal/node/ptyHostMain.js:29:77785)
+    at y.B (file:///home/rcrombe/.vscode-server/cli/servers/Stable-384ff7382de624fb94dbaf6da11977bba1ecd427/server/out/vs/platform/terminal/node/ptyHostMain.js:29:732)
+    at y.fire (file:///home/rcrombe/.vscode-server/cli/servers/Stable-384ff7382de624fb94dbaf6da11977bba1ecd427/server/out/vs/platform/terminal/node/ptyHostMain.js:29:950)
+    at process.v (file:///home/rcrombe/.vscode-server/cli/servers/Stable-384ff7382de624fb94dbaf6da11977bba1ecd427/server/out/vs/platform/terminal/node/ptyHostMain.js:24:29096)
+    at process.emit (node:events:519:28)
+    at emit (node:internal/child_process:951:14)
+    at process.processTicksAndRejections (node:internal/process/task_queues:83:21)
+2024-10-30 10:46:39.127 [info] [<unknown>][c744557e][ManagementConnection] The client has disconnected gracefully, so the connection will be disposed.
+2024-10-30 10:46:39.168 [info] [<unknown>][47ddd669][ExtensionHostConnection] <25804> Extension Host Process exited with code: 0, signal: null.
+2024-10-30 10:46:39.170 [info] Cancelling previous shutdown timeout
+2024-10-30 10:46:39.170 [info] Last EH closed, waiting before shutting down
+2024-10-30 10:46:46.452 [info] [<unknown>][803919a8][ManagementConnection] New connection established.
+2024-10-30 10:46:46.460 [info] [<unknown>][20e77d6a][ExtensionHostConnection] New connection established.
+2024-10-30 10:46:46.472 [info] [<unknown>][20e77d6a][ExtensionHostConnection] <26048> Launched Extension Host Process.
+2024-10-30 10:51:39.174 [info] New EH opened, aborting shutdown
+2024-10-30 10:51:39.178 [error] Error: Unexpected SIGPIPE
+    at process.<anonymous> (file:///home/rcrombe/.vscode-server/cli/servers/Stable-384ff7382de624fb94dbaf6da11977bba1ecd427/server/out/vs/server/node/server.main.js:189:5899)
+    at process.emit (node:events:531:35)
+2024-10-30 11:30:23.274 [warning] [File Watcher (node.js)] Watcher shutdown because watched path got deleted

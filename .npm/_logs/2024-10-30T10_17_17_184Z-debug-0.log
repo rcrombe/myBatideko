@@ -1,0 +1,19 @@
+0 verbose cli /usr/bin/node /usr/local/bin/npm
+1 info using npm@10.9.0
+2 info using node@v18.19.0
+3 silly config load:file:/usr/local/lib/node_modules/npm/npmrc
+4 silly config load:file:/home/rcrombe/intra_front/.npmrc
+5 silly config load:file:/home/rcrombe/.npmrc
+6 silly config load:file:/etc/npmrc
+7 verbose title npm fund
+8 verbose argv "fund"
+9 verbose logfile logs-max:10 dir:/home/rcrombe/.npm/_logs/2024-10-30T10_17_17_184Z-
+10 verbose logfile /home/rcrombe/.npm/_logs/2024-10-30T10_17_17_184Z-debug-0.log
+11 silly logfile done cleaning log files
+12 silly packumentCache heap:987758592 maxSize:246939648 maxEntrySize:123469824
+13 verbose cwd /home/rcrombe/intra_front
+14 verbose os Linux 6.1.0-25-amd64
+15 verbose node v18.19.0
+16 verbose npm  v10.9.0
+17 verbose exit 0
+18 info ok

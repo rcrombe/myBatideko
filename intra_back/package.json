@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@npmcli/package-json": "^6.0.1"
+  }
+}
