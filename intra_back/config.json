@@ -1,0 +1,13 @@
+{
+  "db_username": "root",
+  "db_password": "Peinture@2021",
+  "db_database": "mybatideko_dev",
+  "db_host": "192.168.2.190",
+  "webTokenKey": "rQbS02og69wtSVxf",
+  "port": 42780,
+  "mail_user": "admin@cuppens.fr",
+  "mail_password": "cloison@2014",
+  "nav_key": "703273357638792F423F4528472B4B6250655368566D597133743677397A2443",
+  "mytime_user": "alenoire@cuppens.fr",
+  "mytime_password": "RDA2R3w5triQzjB"
+}

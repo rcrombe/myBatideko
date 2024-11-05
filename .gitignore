@@ -19,3 +19,7 @@ intra_front/.vscode/
 intra_front/node_modules/
 
 intra_back/node_modules/
+
+package-lock.json
+package.json
+

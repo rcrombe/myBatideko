@@ -1,5 +1,20 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { NgProgressbar } from 'ngx-progressbar';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastrModule } from 'ngx-toastr';
+import { NgxFileDropModule } from 'ngx-file-drop';
+import { JwtModule } from '@auth0/angular-jwt';
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
+import { LOCALE_ID } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { BaseChartDirective } from 'ng2-charts';
+
+import { Constants } from "./constants";
+import { AuthGuard } from "./guards/auth.guard";
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -29,7 +44,7 @@ import { HistoriqueComponent } from './dashboard/historique/historique.component
 import { HistoriqueChantiersComponent } from './dashboard/historique-chantiers/historique-chantiers.component';
 import { HomeAnneeComponent } from './dashboard/home-annee/home-annee.component';
 import { HomeMoisComponent } from './dashboard/home-mois/home-mois.component';
-import { NotificationComponent } from './dashboard/notification/notification.component';
+import { NotificationsComponent } from './dashboard/notifications/notifications.component';
 import { PermissionsComponent } from './dashboard/permissions/permissions.component';
 import { PlanningComponent } from './dashboard/planning/planning.component';
 import { PlanningAbsencesViewerComponent } from './dashboard/planning-absences-viewer/planning-absences-viewer.component';
@@ -49,6 +64,12 @@ import { RendezvousChantierComponent } from './dashboard/rendezvous-chantier/ren
 import { VehiculesComponent } from './dashboard/vehicules/vehicules.component';
 import { ZonesComponent } from './dashboard/zones/zones.component';
 import { LoginComponent } from './login/login.component';
+import { GestionAtelierComponent } from "./dashboard/gestion-atelier/gestion-atelier.component";
+registerLocaleData(localeFr, 'fr');
+
+export function tokenGetter() {
+  return localStorage.getItem('token');
+}
 
 @NgModule({
   declarations: [
@@ -79,7 +100,7 @@ import { LoginComponent } from './login/login.component';
     HistoriqueChantiersComponent,
     HomeAnneeComponent,
     HomeMoisComponent,
-    NotificationComponent,
+    NotificationsComponent,
     PermissionsComponent,
     PlanningComponent,
     PlanningAbsencesViewerComponent,
@@ -99,12 +120,34 @@ import { LoginComponent } from './login/login.component';
     VehiculesComponent,
     ZonesComponent,
     LoginComponent,
+    GestionAtelierComponent,
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    FormsModule,
+    BaseChartDirective ,
+    ReactiveFormsModule,
+    HttpClientModule,
+    NgProgressbar,
+    BrowserAnimationsModule,
+    NgxFileDropModule,
+    ToastrModule.forRoot(),
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter,
+        allowedDomains: ['api-my.batideko.fr', 'api.batideko.fr'],
+        disallowedRoutes: ['api.batideko.fr/api/login', 'api-my.batideko.fr/api/login']
+      }
+    })
   ],
-  providers: [],
+
+  providers: [
+    { provide: LOCALE_ID, useValue: "fr-FR" },
+    Constants,
+    AuthGuard,
+    DatePipe,
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

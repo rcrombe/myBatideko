@@ -1,1 +1,268 @@
-<p>dashboard works!</p>
+<div id="page-top">
+
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordio sidenav" id="accordionSidebar">
+
+      <!-- Sidebar - Brand -->
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" [routerLink]="['/dashboard']">
+        <div class="sidebar-brand-icon">
+          <i class="fas {{siteIcon}}" ></i>
+        </div>
+        <div class="sidebar-brand-text mx-3" id="myCuppens">myBatideko</div>
+      </a>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider my-0">
+
+      <!-- Nav Item - Dashboard -->
+      <li class="nav-item">
+
+        <a class="nav-link collapsed" href="#" data-toggle="collapse"
+           data-target="#tableauBord" aria-expanded="false" aria-controls="collapseUtilities">
+          <i class="fas fa-fw fa-tachometer-alt"></i>
+          <span>Tableau de bord</span>
+        </a>
+        <div id="tableauBord" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <a class="collapse-item" [routerLink]="['/home']">Semaine</a>
+            <a class="collapse-item" [routerLink]="['/home-mois']">Mois </a>
+            <a class="collapse-item" [routerLink]="['/home-annee']">Année</a>
+          </div>
+        </div>
+
+        <hr class="sidebar-divider">
+        <div class="sidebar-heading">
+          Travaux
+        </div>
+
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#planning" aria-expanded="false" aria-controls="collapseUtilities">
+          <i class="fas fa-fw fa-tools"></i>
+          <span>Chantiers</span>
+        </a>
+        <div id="planning" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+          <!-- <div class="bg-white py-2 collapse-inner rounded">
+            <a class="collapse-item" *ngIf="canRead('M_CHANTIERS_PLANNING_G')" [routerLink]="['/planning']" (click)="accessTo('Planning')">Planning</a>
+            <a class="collapse-item" *ngIf="canRead('M_CHANTIERS_PLANNING_ST')" [routerLink]="['/planning-sous-traitant']"(click)="accessTo('Planning sous-traitant')">Planning Sous-traitant </a>
+            <a class="collapse-item" *ngIf="canRead('M_CHANTIERS_PLANNING_RDV')" [routerLink]="['/rendezvous-chantier']"(click)="accessTo('Rendez-vous chantier')">Rendez-vous chantier</a>
+            <hr>
+            <a class="collapse-item" *ngIf="canRead('M_CHANTIERS_VUE')" [routerLink]="['/planning-par-chantier']"(click)="accessTo('Planning vu par chantier')">Vue par chantier</a>
+            <a class="collapse-item" *ngIf="canRead('M_CHANTIERS_HISTORIQUE')" [routerLink]="['/historique-chantiers']"(click)="accessTo('Historique chantiers')">Historique des chantiers</a>
+            <a class="collapse-item" *ngIf="canRead('M_CHANTIERS_INFOS')" [routerLink]="['/zones']"(click)="accessTo('Zones')">Informations chantiers</a>
+          </div> -->
+        </div>
+
+
+        <!-- <a class="nav-link" *ngIf="canRead('M_CHANTIERS_PLANNING_A')" [routerLink]="['/planning-atelier']" (click)="accessTo('Planning Atelier')">
+          <i class="fas fa-fw  fa-industry"></i>
+          <span>Planning Atelier</span>
+        </a>
+
+        <a class="nav-link" *ngIf="canRead('M_VEHICULES')" [routerLink]="['/vehicules']" (click)="accessTo('Planning véhicules')">
+          <i class="fas fa-fw fa-car"></i>
+          <span>Véhicules</span></a> -->
+
+        <hr class="sidebar-divider">
+        <div class="sidebar-heading">
+          Resources Humaines
+        </div>
+
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#absences" aria-expanded="false" aria-controls="collapseUtilities">
+          <i class="fas fa-fw fa-clock"></i>
+          <span>Absences</span>
+        </a>
+        <div id="absences" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+          <!-- <div class="bg-white py-2 collapse-inner rounded">
+            <a class="collapse-item" *ngIf="canRead('M_ABSENCE')" [routerLink]="['/absences']"(click)="accessTo('Planning des absences')">Planning des absences</a>
+            <a class="collapse-item" *ngIf="canRead('M_ABSENCE_VIEWER')" [routerLink]="['/absences-viewer']"(click)="accessTo('Planning des absences - viewer')">Absences par période</a>
+          </div> -->
+        </div>
+
+        <!-- <ng-container *ngIf="canRead('M_POINTAGES_SAISIE') || canRead('M_POINTAGES_CTRL') || canRead('M_POINTAGES_SYNC') || canRead('M_POINTAGES_ARCHIVES') || canRead('M_POINTAGES_SYNTHESE') || canRead('M_POINTAGES_SYNC_QUEUE')  || canRead('M_POINTAGES_ATELIER')">
+          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#pointages" aria-expanded="false"
+             aria-controls="collapseUtilities">
+            <i class="fas fa-fw fa-user-clock"></i>
+            <span>Pointages</span>
+          </a>
+          <div id="pointages" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+              <h6 class="collapse-header" *ngIf="canRead('M_POINTAGES_SAISIE') ">Chantiers</h6>
+              <a class="collapse-item" *ngIf="canRead('M_POINTAGES_SAISIE') " [routerLink]="['/pointages']"(click)="accessTo('Pointages validation 1')">Pointages - Saisie </a>
+              <a class="collapse-item" *ngIf="canRead('M_POINTAGES_CTRL')" [routerLink]="['/pointages2']"(click)="accessTo('Pointages validation 2')">Pointages - Contrôle</a>
+              <a class="collapse-item" *ngIf="canRead('M_POINTAGES_SYNTHESE') " [routerLink]="['/pointages-synthese']"(click)="accessTo('Pointages Synthese')">Pointages - Synthèse</a>
+              <a class="collapse-item" *ngIf="canRead('M_POINTAGES_SYNTHESE') " [routerLink]="['/pointages-synthese-chantiers']"(click)="accessTo('Pointages Synthese Chantiers')">Pointages - S Chantiers</a>
+              <hr *ngIf="canRead('M_POINTAGES_SYNC')">
+              <a class="collapse-item" *ngIf="canRead('M_POINTAGES_SYNC_QUEUE')" [routerLink]="['/pointages3']"(click)="accessTo('File dattente NaviBat')">File d'attente</a>
+              <a class="collapse-item" *ngIf="canRead('M_POINTAGES_SYNC')" [routerLink]="['/gestion-pointages']"(click)="accessTo('Envoi des pointages dans NaviBat')">Synchronisation</a>
+              <hr *ngIf="canRead('M_POINTAGES_ATELIER') && ( canRead('M_POINTAGES_SAISIE') || canRead('M_POINTAGES_SYNC') )">
+              <h6 *ngIf="canRead('M_POINTAGES_ATELIER')" class="collapse-header">Atelier</h6>
+              <a class="collapse-item" *ngIf="canRead('M_POINTAGES_ATELIER')" [routerLink]="['/pointages-atelier']"(click)="accessTo('Pointages atelier')">Pointages - Saisie</a>
+              <a class="collapse-item" *ngIf="canRead('M_POINTAGES_ATELIER2')" [routerLink]="['/pointages-atelier2']"(click)="accessTo('Pointages atelier contrôle')">Pointages - Contrôle</a>
+              <a class="collapse-item" *ngIf="canRead('M_POINTAGES_ATELIER_SYNC')" [routerLink]="['/gestion-pointages-atelier']"(click)="accessTo('Pointages atelier')">Synchronisation</a>
+              <a class="collapse-item" *ngIf="canRead('M_POINTAGES_ATELIER_SYNC_QUEUE')" [routerLink]="['/pointages-atelier3']"(click)="accessTo('File d\'attente pointages atelier')">File d'attente</a>
+
+              <hr *ngIf="canRead('M_POINTAGES_ARCHIVES')">
+              <a class="collapse-item" *ngIf="canRead('M_POINTAGES_ARCHIVES')" [routerLink]="['/archives-pointages']"(click)="accessTo('Archives des pointages')">Archives</a>
+
+            </div>
+          </div>
+        </ng-container> -->
+      </li>
+
+
+
+
+      <!-- Divider -->
+      <!-- <hr class="sidebar-divider" *ngIf="canRead('A_ADMINISTRATION')"> -->
+
+      <!-- <div class="sidebar-heading" *ngIf="canRead('A_ADMINISTRATION')">
+        Administratif
+      </div> -->
+
+      <!-- Nav Item - administration -->
+      <!-- <li class="nav-item" *ngIf="canRead('A_ADMINISTRATION')">
+        <a class="nav-link" [routerLink]="['/administration']" (click)="accessTo('Administration')">
+          <i class="fas fa-fw fa-user"></i>
+          <span>Administration</span></a>
+      </li> -->
+
+      <!-- Divider -->
+      <hr class="sidebar-divider d-none d-md-block">
+
+      <!-- Sidebar Toggler (Sidebar) -->
+      <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+      </div>
+
+    </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div id="content">
+
+        <!-- Topbar -->
+        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+          <!-- Sidebar Toggle (Topbar) -->
+          <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+            <i class="fa fa-bars"></i>
+          </button>
+
+          <span class="ml-2 font-weight-bold d-none d-md-block">{{ pageTitle }}</span>
+          <!-- <span class="ml-2 font-weight-bold d-none d-md-block" style="color: red;" *ngIf="cst.isDev"><b>| {{ cst.version }}</b></span> -->
+
+          <!-- Topbar Navbar -->
+          <ul class="navbar-nav ml-auto">
+
+            <!-- Nav Item - Alerts -->
+            <li class="nav-item dropdown no-arrow mx-1">
+              <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-bell fa-fw"></i>
+                <!-- Counter - Alerts -->
+                <span class="badge badge-danger badge-counter">{{notifications_count}}</span>
+              </a>
+              <!-- Dropdown - Alerts -->
+              <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                   aria-labelledby="alertsDropdown">
+                <h6 class="dropdown-header">
+                  Centre des alertes
+                </h6>
+                <ng-container *ngFor="let notification of notifications">
+                  <a class="dropdown-item d-flex align-items-center" (click)="navigateTo(notification.url)">
+                    <div class="mr-3">
+                      <div class="icon-circle bg-{{ notification.type }}">
+                        <i class="fas {{ notification.icon }} text-white"></i>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="small text-gray-500">{{ notification.date | date:'dd/MM/yyyy hh:mm' }}</div>
+                      <span class="font-weight-bold">{{ notification.content }}</span>
+                    </div>
+                  </a>
+                </ng-container>
+                <a class="dropdown-item text-center small text-gray-500" [routerLink]="['/notifications']"(click)="accessTo('Notifications')">Afficher toutes les alertes</a>
+              </div>
+
+            <!-- Nav Item - User Information -->
+            <li class="nav-item dropdown no-arrow">
+              <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ utilisateur.prenom }} {{ utilisateur.nom }}</span>
+              </a>
+              <!-- Dropdown - User Information -->
+              <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                <a class="dropdown-item" [routerLink]="['/profil']">
+                  <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Profil
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                  <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Déconnexion
+                </a>
+              </div>
+            </li>
+
+          </ul>
+
+        </nav>
+        <!-- End of Topbar -->
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+          <router-outlet></router-outlet>
+        </div>
+        <!-- /.container-fluid -->
+
+      </div>
+      <!-- End of Main Content -->
+
+      <!-- Footer -->
+      <footer class="sticky-footer bg-white">
+        <div class="container my-auto">
+          <div class="copyright text-center my-auto">
+            <span>Copyright &copy; myBatideko</span><br />
+            <!-- <span><b>Version {{ cst.version }}</b></span><br /> -->
+            <a href="https://trello.com/b/7QV0ZJ58/mycuppens" target="_blank" style="margin-top:5px;">To do list</a>
+          </div>
+        </div>
+      </footer>
+      <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button-->
+  <button class="scroll-to-top rounded" (click)="scrollToTop()">
+    <i class="fas fa-angle-up"></i>
+  </button>
+
+  <!-- Logout Modal-->
+  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Déconnexion ?</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">Sélectionnez "Déconnexion" ci-dessous pour terminer votre session.</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Annuler</button>
+          <button class="btn btn-primary" type="button" data-dismiss="modal" (click)="logout();">Déconnexion</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
