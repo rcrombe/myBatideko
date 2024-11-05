@@ -3,6 +3,7 @@
 .npm/
 .nvm/
 .vscode-server/
+node_modules/
 
 
 .bash_history
