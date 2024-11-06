@@ -19,6 +19,8 @@ intra_front/.vscode/
 intra_front/node_modules/
 
 intra_back/node_modules/
+intra_back/config.json
+
 
 package-lock.json
 package.json

@@ -1,5 +1,8 @@
 module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey, bcrypt, request, log,printLogLevel,printSemaines,
                            getNBsemaine,getDate) {
+    
+    //Test de connexion à l'API
+    console.log('Test');
 
     //stats par semaine
     app.get('/api/home/vehicules_actifs/:dateFormate', function (req, res) {

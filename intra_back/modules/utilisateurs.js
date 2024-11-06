@@ -6,7 +6,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
         var login = req.body.login;
 
         if(req.body.login.indexOf('@') == -1)
-            login = login + '@cuppens.fr';
+            login = login + '@batideko.fr';
 
         bdd.query('SELECT utilisateurs.id, nom, prenom, email, telephone, password, poste, role, voiture_marque, voiture_modele, ' +
             'voiture_couleur,loglevel,nav_id,electricien,id_resource FROM utilisateurs,parametres WHERE email=?',

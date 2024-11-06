@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 
 @Injectable()
 export class Constants {
-    public readonly apiUrl: string = 'https://api-my.batideko.fr/api/';
+    public readonly apiUrl: string = 'http://dev-api-my.batideko.fr/api/';
     public readonly toastrTitle: string = 'MyBatideko';
     public readonly version: string = "1.6";
     public readonly isDev: boolean = false;
