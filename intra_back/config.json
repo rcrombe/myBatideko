@@ -4,7 +4,7 @@
   "db_database": "mybatideko_dev",
   "db_host": "192.168.2.190",
   "webTokenKey": "rQbS02og69wtSVxf",
-  "port": 42780,
+  "port": 52780,
   "mail_user": "admin@cuppens.fr",
   "mail_password": "cloison@2014",
   "nav_key": "703273357638792F423F4528472B4B6250655368566D597133743677397A2443",
