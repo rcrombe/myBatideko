@@ -21,7 +21,7 @@ intra_front/node_modules/
 intra_back/node_modules/
 intra_back/config.json
 
-
+.dotnet/corefx/cryptography/crls
 
 package-lock.json
 package.json
