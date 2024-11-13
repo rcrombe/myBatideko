@@ -15,6 +15,10 @@ node_modules/
 .mysql_history
 .wget-hsts
 
+package.json
+package-lock.json
+.angular-config.json
+
 intra_front/.vscode/
 intra_front/node_modules/
 
