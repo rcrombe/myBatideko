@@ -1,1 +1,84 @@
-<p>home-annee works!</p>
+<div class="row" style="margin-bottom: 20px">
+    <div class="col-12" style="text-align: center;">
+      <button type="button" class="btn btn-primary" style="margin-right: 40px;" (click)="semainePrecedente()">
+        <i class="fas fa-fw fa-arrow-left"></i>
+      </button>
+      <span class="h3 mb-0 text-gray-800">Année {{ annee }}</span>
+      <button type="button" class="btn btn-primary" style="margin-left: 40px;" (click)="semaineSuivante()">
+        <i class="fas fa-fw fa-arrow-right"></i>
+      </button>
+    </div>
+    <div class="col-12" style="text-align: center; margin-top: 5px;" *ngIf="_nav_id !== null">
+      <ng-container *ngIf="dataType === 'perso'">
+        <button type="button" class="btn btn-danger" (click)="switchDataType()">Tableau de bord personnel</button>
+      </ng-container>
+      <ng-container *ngIf="dataType === 'global'">
+        <button type="button" class="btn btn-success" (click)="switchDataType()">Tableau de bord global</button>
+      </ng-container>
+    </div>
+  </div>
+  
+  <div class="row">
+    <!-- Proportions des poseurs -->
+    <div class="col-lg-6 col-12">
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-primary">Proportions des poseurs par jour en moyenne</h6>
+        </div>
+        <div id="divTypes" class="card-body">
+          <h2 id="poseurs" *ngIf="!poseursChartData?.datasets?.length" style="text-align: center">Aucune donnée</h2>
+          <div id="poseursChart" class="chartContainer_Line" *ngIf="poseursChartData">
+            <canvas baseChart [data]="poseursChartData" [options]="poseursChartOptions" [type]="poseursChartType"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Nombre de poseurs sur chaque activité -->
+    <div class="col-lg-6 col-12">
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-primary">Nombre de poseurs sur chaque activité par jour en moyenne</h6>
+        </div>
+        <div id="divActivites" class="card-body">
+          <h2 id="activites" *ngIf="!activitesChartData?.datasets?.length" style="text-align: center">Aucune donnée</h2>
+          <div id="activitesChart" class="chartContainer_Line" *ngIf="activitesChartData">
+            <canvas baseChart [data]="activitesChartData" [options]="activitesChartOptions" [type]="activitesChartType"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row" style="margin-bottom: 20px">
+    <!-- Chantiers en cours -->
+    <div class="col-lg-6 col-6">
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-primary">Chantiers en cours</h6>
+        </div>
+        <div id="divChantiers" class="card-body">
+          <h2 id="chantiers" *ngIf="!chantiersChartData?.datasets?.length" style="text-align: center">Aucune donnée</h2>
+          <div id="chantiersChart" class="chartContainer_Line" *ngIf="chantiersChartData">
+            <canvas baseChart [data]="chantiersChartData" [options]="chantiersChartOptions" [type]="chantiersChartType"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Véhicules actifs -->
+    <div class="col-lg-6 col-6">
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-primary">Véhicules actifs</h6>
+        </div>
+        <div id="divVehicules" class="card-body">
+          <h2 id="vehicules" *ngIf="!vehiculesChartData?.datasets?.length" style="text-align: center">Aucune donnée</h2>
+          <div id="vehiculesChart" class="chartContainer_Line" *ngIf="vehiculesChartData">
+            <canvas baseChart [data]="vehiculesChartData" [options]="vehiculesChartOptions" [type]="vehiculesChartType"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
