@@ -12,6 +12,7 @@ import localeFr from '@angular/common/locales/fr';
 import { LOCALE_ID } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 
 import { Constants } from "./constants";
 import { AuthGuard } from "./guards/auth.guard";
@@ -65,6 +66,7 @@ import { VehiculesComponent } from './dashboard/vehicules/vehicules.component';
 import { ZonesComponent } from './dashboard/zones/zones.component';
 import { LoginComponent } from './login/login.component';
 import { GestionAtelierComponent } from "./dashboard/gestion-atelier/gestion-atelier.component";
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 registerLocaleData(localeFr, 'fr');
 
 export function tokenGetter() {
@@ -132,12 +134,13 @@ export function tokenGetter() {
     NgProgressbar,
     BrowserAnimationsModule,
     NgxFileDropModule,
+    MatProgressBarModule,
     ToastrModule.forRoot(),
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
-        allowedDomains: ['api-my.batideko.fr', 'api.batideko.fr'],
-        disallowedRoutes: ['api.batideko.fr/api/login', 'api-my.batideko.fr/api/login']
+        allowedDomains: ['dev-api-my.batideko.fr', 'dev-api.batideko.fr'],
+        disallowedRoutes: ['dev-api.batideko.fr/api/login', 'dev-api-my.batideko.fr/api/login']
       }
     })
   ],
@@ -147,6 +150,7 @@ export function tokenGetter() {
     Constants,
     AuthGuard,
     DatePipe,
+    provideAnimationsAsync(),
   ],
   bootstrap: [AppComponent]
 })

@@ -1,11 +1,11 @@
-module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey, bcrypt,log, printLogLevel,printSemaines,
-                           getNBsemaine,getDate) {
+module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey, bcrypt, log, printLogLevel, printSemaines,
+    getNBsemaine, getDate) {
 
     // Connexion
     app.post('/api/login', function (req, res) {
         var login = req.body.login;
 
-        if(req.body.login.indexOf('@') == -1)
+        if (req.body.login.indexOf('@') == -1)
             login = login + '@batideko.fr';
 
         bdd.query('SELECT utilisateurs.id, nom, prenom, email, telephone, password, poste, role, voiture_marque, voiture_modele, ' +
@@ -27,30 +27,30 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                                         res.send(false)
                                     } else {
                                         var token = jsonWebToken.sign({
-                                                id: result[0].id,
-                                                nom: result[0].nom,
-                                                prenom: result[0].prenom,
-                                                email: result[0].email,
-                                                telephone: result[0].telephone,
-                                                poste: result[0].poste,
-                                                role: result[0].role,
-                                                voiture_marque: result[0].voiture_marque,
-                                                voiture_modele: result[0].voiture_modele,
-                                                voiture_couleur: result[0].voiture_couleur,
-                                                loglevel:result[0].loglevel,
-                                                nav_id:result[0].nav_id,
-                                                electricien:result[0].electricien,
-                                                permissions:permissions,
-                                                id_resource: result[0].id_resource
-                                            },
+                                            id: result[0].id,
+                                            nom: result[0].nom,
+                                            prenom: result[0].prenom,
+                                            email: result[0].email,
+                                            telephone: result[0].telephone,
+                                            poste: result[0].poste,
+                                            role: result[0].role,
+                                            voiture_marque: result[0].voiture_marque,
+                                            voiture_modele: result[0].voiture_modele,
+                                            voiture_couleur: result[0].voiture_couleur,
+                                            loglevel: result[0].loglevel,
+                                            nav_id: result[0].nav_id,
+                                            electricien: result[0].electricien,
+                                            permissions: permissions,
+                                            id_resource: result[0].id_resource
+                                        },
                                             webTokenKey,
-                                            {expiresIn: '12h'});
+                                            { expiresIn: '12h' });
 
                                         SECURITY.insertLoggedUser(token);
 
-                                        if(result[0].loglevel>=2)
-                                            log('Connexion','Connexion',result[0].id)
-                                        res.json(token);
+                                        if (result[0].loglevel >= 2)
+                                            log('Connexion', 'Connexion', result[0].id)
+                                        res.json({ token: token });
                                     }
                                 });
 
@@ -68,11 +68,11 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
             if (err) {
                 log("Erreur : " + err, 'Gestion Utilisateurs', null);
                 res.send(false);
-            }else {
+            } else {
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'w', 'A_GESTION_USERS', token)) {
+                if (SECURITY.canAccessRessource(user, 'w', 'A_GESTION_USERS', token)) {
                     var enc_passwd = '';
 
                     bcrypt.genSalt(10, function (err, salt) {
@@ -134,7 +134,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'w', 'A_GESTION_USERS', token)) {
+                if (SECURITY.canAccessRessource(user, 'w', 'A_GESTION_USERS', token)) {
                     console.log()
                     bdd.query('DELETE FROM utilisateurs WHERE id=?', [req.params.id], function (error, results, fields) {
                         if (error) {
@@ -167,7 +167,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'w', 'A_GESTION_USERS', token)) {
+                if (SECURITY.canAccessRessource(user, 'w', 'A_GESTION_USERS', token)) {
                     var re = "UPDATE utilisateurs SET ";
                     var args = [];
 
@@ -193,11 +193,11 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                         re += ", role = ? ";
                         args.push(req.body.role);
                     }
-                    if (req.body.nav_id != '' ) {
+                    if (req.body.nav_id != '') {
                         re += ", nav_id = ? ";
                         args.push(req.body.nav_id);
                     }
-                    if (req.body.id_resource != '' ) {
+                    if (req.body.id_resource != '') {
                         re += ", id_resource = ? ";
                         args.push(req.body.id_resource);
                     }
@@ -251,7 +251,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'r', 'A_GESTION_USERS', token)) {
+                if (SECURITY.canAccessRessource(user, 'r', 'A_GESTION_USERS', token)) {
                     bdd.query('SELECT id, nom, prenom, email, telephone, poste, role, nav_id, id_resource FROM utilisateurs',
                         function (error, users, fields) {
                             if (error) {
@@ -267,7 +267,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                                             log("Erreur : " + error, 'Gestion Utilisateurs', user.id)
                                             res.json(false)
                                         }
-                                        else{
+                                        else {
                                             users.forEach((el) => {
                                                 var e = el;
                                                 e.alertes = [];
@@ -302,7 +302,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'w', 'A_GESTION_USERS', token)) {
+                if (SECURITY.canAccessRessource(user, 'w', 'A_GESTION_USERS', token)) {
                     var alerte_id = req.body.alerte_id;
                     var user_id = req.body.user_id;
                     var val = req.body.val;
@@ -314,7 +314,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                             log("Erreur : " + error, 'Gestion Utilisateurs', user.id)
                             res.json(false)
                         }
-                        else{
+                        else {
                             log("Modification de l'affichage des alertes " + alerte_id + " Valeur : " + val + " Utilisateur : " + user_id, 'Gestion Utilisateurs', user.id);
 
                             res.json(true);
@@ -338,13 +338,13 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'w', 'A_GESTION_USERS', token)) {
+                if (SECURITY.canAccessRessource(user, 'w', 'A_GESTION_USERS', token)) {
 
-                    if(req.body._data_ != ''){
+                    if (req.body._data_ != '') {
 
                         var re = "UPDATE utilisateurs SET password = ? WHERE id = ?";
-                        bcrypt.genSalt(10, function(err, salt) {
-                            bcrypt.hash(req.body._data_, salt, function(err, hash) {
+                        bcrypt.genSalt(10, function (err, salt) {
+                            bcrypt.hash(req.body._data_, salt, function (err, hash) {
                                 enc_passwd = hash;
 
                                 console.log(re);

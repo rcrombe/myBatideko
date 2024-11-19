@@ -67,6 +67,15 @@ const routes: Routes = [
           module_id: 'M_DASHBOARD'
         }
       },
+      {
+        path: 'home-annee',
+        component: HomeAnneeComponent,
+        data: {
+          title : 'Tableau de bord',
+          role: [1, 2, 3, 4, 5],
+          module_id: 'M_DASHBOARD'
+        }
+      }
     ]
   }
 ];

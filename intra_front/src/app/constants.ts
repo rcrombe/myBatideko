@@ -4,7 +4,7 @@ import { Injectable } from "@angular/core";
 export class Constants {
     public readonly apiUrl: string = 'http://dev-api-my.batideko.fr/api/';
     public readonly toastrTitle: string = 'MyBatideko';
-    public readonly version: string = "1.6";
+    public readonly version: string = "WIP - 0.0";
     public readonly isDev: boolean = false;
 
     public canAccess_Read(utilisateur: { permissions: any[]; }, module_id: null){

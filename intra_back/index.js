@@ -6,7 +6,8 @@ const jsonWebToken = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const jsonParser = bodyParser.json();
 const cors = require('cors');
-const request = require('request');
+// const request = require('request');
+const axios = require('axios');
 const sync_request = require('sync-request');
 const fs = require('fs');
 const multer = require('multer');
@@ -24,7 +25,7 @@ var semaines = []
 
 var LOGGED_USERS = [];
 
-//console.log(CONF);
+// console.log(CONF);
 
 console.log("[Authentication] Authentication token retrieved and stored");
 
@@ -48,6 +49,8 @@ const MYTIME_LOGS = {
     "email": CONF.mytime_user,
     "password": CONF.mytime_password
 }
+
+console.log("test");
 
 var SECURITY = {
     loadSecurityCache: function () {
@@ -330,19 +333,19 @@ require('./modules/vehicules.js')(SECURITY, notify, app, bdd, jsonWebToken, webT
     printSemaines, getNBsemaine, getDate);
 require('./modules/gestion-vehicules.js')(SECURITY, notify, app, bdd, jsonWebToken, webTokenKey, bcrypt, sync_request, saveLog,
     printLogLevel, getNBsemaine, getDate);
-require('./modules/absences.js')(SECURITY, notify, app, bdd, jsonWebToken, webTokenKey, bcrypt, request, saveLog, printLogLevel,
+require('./modules/absences.js')(SECURITY, notify, app, bdd, jsonWebToken, webTokenKey, bcrypt, axios, saveLog, printLogLevel,
     printSemaines, getNBsemaine, getDate);
 require('./modules/rendezvous_chantier.js')(SECURITY, notify, app, bdd, jsonWebToken, webTokenKey, bcrypt, sync_request, saveLog,
     printLogLevel, printSemaines, getNBsemaine, getDate);
 require('./modules/home.js')(SECURITY, notify, app, bdd, jsonWebToken, webTokenKey, bcrypt, sync_request, saveLog, printLogLevel,
     printSemaines, getNBsemaine, getDate);
-require('./modules/pointages.js')(SECURITY, notify, app, bdd, jsonWebToken, webTokenKey, bcrypt, request, saveLog, printLogLevel,
+require('./modules/pointages.js')(SECURITY, notify, app, bdd, jsonWebToken, webTokenKey, bcrypt, axios, saveLog, printLogLevel,
     printSemaines, querystring, MYTIME_LOGS, formData);
-require('./modules/gestion-pointages.js')(SECURITY, notify, app, bdd, jsonWebToken, webTokenKey, bcrypt, request, saveLog, printLogLevel,
+require('./modules/gestion-pointages.js')(SECURITY, notify, app, bdd, jsonWebToken, webTokenKey, bcrypt, axios, saveLog, printLogLevel,
     printSemaines, querystring, getNavKey);
-require('./modules/pointages-synthese.js')(SECURITY, notify, app, bdd, jsonWebToken, webTokenKey, bcrypt, request, saveLog, printLogLevel,
+require('./modules/pointages-synthese.js')(SECURITY, notify, app, bdd, jsonWebToken, webTokenKey, bcrypt, axios, saveLog, printLogLevel,
     printSemaines, querystring, getNavKey);
-require('./modules/historique-chantiers.js')(SECURITY, notify, app, bdd, jsonWebToken, webTokenKey, bcrypt, request, saveLog, printLogLevel,
+require('./modules/historique-chantiers.js')(SECURITY, notify, app, bdd, jsonWebToken, webTokenKey, bcrypt, axios, saveLog, printLogLevel,
     printSemaines, querystring, getNavKey);
 require('./modules/historique.js')(SECURITY, notify, app, bdd, jsonWebToken, webTokenKey, bcrypt, sync_request, saveLog, printLogLevel,
     setLogLevel, printSemaines, getNBsemaine, getDate);
@@ -360,13 +363,13 @@ require('./modules/conducteurs.js')(SECURITY, notify, app, bdd, jsonWebToken, we
     getNBsemaine, getDate);
 require('./modules/alerts.js')(SECURITY, notify, app, bdd, jsonWebToken, webTokenKey, bcrypt, saveLog, printLogLevel, printSemaines,
     getNBsemaine, getDate);
-require('./modules/pointages-atelier.js')(SECURITY, notify, app, bdd, jsonWebToken, webTokenKey, bcrypt, request, saveLog, printLogLevel,
+require('./modules/pointages-atelier.js')(SECURITY, notify, app, bdd, jsonWebToken, webTokenKey, bcrypt, axios, saveLog, printLogLevel,
     printSemaines, querystring);
-require('./modules/gestion-pointages-atelier.js')(SECURITY, notify, app, bdd, jsonWebToken, webTokenKey, bcrypt, request, saveLog, printLogLevel,
+require('./modules/gestion-pointages-atelier.js')(SECURITY, notify, app, bdd, jsonWebToken, webTokenKey, bcrypt, axios, saveLog, printLogLevel,
     printSemaines, querystring, getNavKey);
-require('./modules/gestion-atelier.js')(SECURITY, notify, app, bdd, jsonWebToken, webTokenKey, bcrypt, request, saveLog, printLogLevel,
+require('./modules/gestion-atelier.js')(SECURITY, notify, app, bdd, jsonWebToken, webTokenKey, bcrypt, axios, saveLog, printLogLevel,
     printSemaines, querystring, getNavKey);
-require('./modules/gestion-societes.js')(SECURITY, notify, app, bdd, jsonWebToken, webTokenKey, bcrypt, request, saveLog, printLogLevel,
+require('./modules/gestion-societes.js')(SECURITY, notify, app, bdd, jsonWebToken, webTokenKey, bcrypt, axios, saveLog, printLogLevel,
     printSemaines, querystring, getNavKey);
 
 

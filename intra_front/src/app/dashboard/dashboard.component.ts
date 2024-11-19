@@ -3,7 +3,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Constants } from '../constants';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+// import { RouterLink, RouterOutlet } from '@angular/router';
 import * as jQuery from 'jquery';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 declare var $: any;
 
@@ -39,21 +41,21 @@ export class DashboardComponent implements OnInit {
     // Récupération des informations de l'utilisateur
     this.utilisateur = this.jwt.decodeToken(localStorage.getItem('token') ?? '');
 
-    this.loadNotifications();
+    // this.loadNotifications();
   }
 
-  public loadNotifications(): void {
-    this.http.get<Array<any>>(this.cst.apiUrl + 'notifications/navbar').subscribe(
-      (arr: Array<any>) => {
-        this.notifications = arr;
-      },
-    )
-    this.http.get<Array<any>>(this.cst.apiUrl + 'notifications/count').subscribe(
-      (arr: Array<any>) => {
-        this.notifications_count = arr[0].nb_notifications;
-      },
-    )
-  }
+  // public loadNotifications(): void {
+  //   this.http.get<Array<any>>(this.cst.apiUrl + 'notifications/navbar').subscribe(
+  //     (arr: Array<any>) => {
+  //       this.notifications = arr;
+  //     },
+  //   )
+  //   this.http.get<Array<any>>(this.cst.apiUrl + 'notifications/count').subscribe(
+  //     (arr: Array<any>) => {
+  //       this.notifications_count = arr[0].nb_notifications;
+  //     },
+  //   )
+  // }
 
   public canRead(module: null) {
     return this.cst.canAccess_Read(this.utilisateur, (module == null ? this.MODULE_ID : module));
@@ -109,17 +111,30 @@ export class DashboardComponent implements OnInit {
     });
 
     // Smooth scrolling using jQuery easing
-    $(document).on('click', 'a', (e: JQuery.ClickEvent) => {
+    $(document).on('click', 'a[href^="#"]:not([routerLink])', (e: { currentTarget: HTMLAnchorElement; preventDefault: () => void; }) => {
       const $anchor = $(e.currentTarget as HTMLAnchorElement);
-      $('html, body').stop().animate(
-        {
-          scrollTop: $($anchor.attr('href')!).offset()!.top,
-        },
-        1000,
-        'easeInOutExpo'
-      );
+      const href = $anchor.attr('href');
+    
+      // Si href est "#", empêcher le comportement par défaut
+      if (href === "#") {
+        e.preventDefault();
+        return;
+      }
+    
+      // Animation pour le défilement fluide
+      $('html, body')
+        .stop()
+        .animate(
+          {
+            scrollTop: $(href).offset()?.top || 0,
+          },
+          1000,
+          'easeInOutExpo'
+        );
+    
       e.preventDefault();
     });
+    
 
   }
 

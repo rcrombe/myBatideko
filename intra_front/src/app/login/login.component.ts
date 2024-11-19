@@ -25,22 +25,24 @@ export class LoginComponent {
     const body = {
       login: this.loginForm.controls['login'].value,
       motdepasse: this.loginForm.controls['motdepasse'].value
-    }
-    this.http.post(this.cst.apiUrl + 'login', body).subscribe(
-      (response: any) => { // Change 'login: string' to 'response: any'
-        const login = response.token; // Access the token within the response object
-        if (login) {
-          localStorage.setItem('token', login);
+    };
+  
+    this.http.post<{ token: string }>(this.cst.apiUrl + 'login', body).subscribe(
+      (response) => {
+        if (response.token) {
+          localStorage.setItem('token', response.token);
           this.toastr.success('Vous êtes connecté !', this.cst.toastrTitle);
-          this.router.navigate(['/']);
+          this.router.navigate(['']);
         } else {
           this.toastr.error('Identifiants incorrects !', this.cst.toastrTitle);
+          console.log(body);
+          console.log(response);
         }
       },
-      err => {
+      (err) => {
         this.toastr.error('Erreur', this.cst.toastrTitle);
       }
     );
-  }
+  }  
 
 }
