@@ -4,7 +4,7 @@ import { Constants } from '../constants';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 // import { RouterLink, RouterOutlet } from '@angular/router';
-import * as jQuery from 'jquery';
+// import * as jQuery from 'jquery';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 declare var $: any;
@@ -30,8 +30,11 @@ export class DashboardComponent implements OnInit {
   public notifications: any[] | undefined;
   public notifications_count: any;
 
+  public isTableauBordCollapsed: boolean = true;
+
   constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private cst: Constants, private jwt: JwtHelperService) {
     this.MODULE_ID = route.snapshot.data['module_id'];
+
     // Récupération du titre de la page
     this.route.url.subscribe(() => {
       this.pageTitle = this.route.snapshot.firstChild?.data['title'];
@@ -57,8 +60,8 @@ export class DashboardComponent implements OnInit {
   //   )
   // }
 
-  public canRead(module: null) {
-    return this.cst.canAccess_Read(this.utilisateur, (module == null ? this.MODULE_ID : module));
+  public canRead(module: string | null): boolean {
+    return this.cst.canAccess_Read(this.utilisateur, module === null ? this.MODULE_ID : module);
   }
   public canWrite(module: null) {
     return this.cst.canAccess_Write(this.utilisateur, (module == null ? this.MODULE_ID : module));
@@ -114,13 +117,13 @@ export class DashboardComponent implements OnInit {
     $(document).on('click', 'a[href^="#"]:not([routerLink])', (e: { currentTarget: HTMLAnchorElement; preventDefault: () => void; }) => {
       const $anchor = $(e.currentTarget as HTMLAnchorElement);
       const href = $anchor.attr('href');
-    
+
       // Si href est "#", empêcher le comportement par défaut
       if (href === "#") {
         e.preventDefault();
         return;
       }
-    
+
       // Animation pour le défilement fluide
       $('html, body')
         .stop()
@@ -131,10 +134,10 @@ export class DashboardComponent implements OnInit {
           1000,
           'easeInOutExpo'
         );
-    
+
       e.preventDefault();
     });
-    
+
 
   }
 

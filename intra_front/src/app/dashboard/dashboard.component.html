@@ -9,7 +9,7 @@
       <!-- Sidebar - Brand -->
       <a class="sidebar-brand d-flex align-items-center justify-content-center" [routerLink]="['']">
         <div class="sidebar-brand-icon">
-          <i class="fas {{siteIcon}}" ></i>
+          <i class="fas {{siteIcon}}"></i>
         </div>
         <div class="sidebar-brand-text mx-3" id="myCuppens">myBatideko</div>
       </a>
@@ -20,16 +20,16 @@
       <!-- Nav Item - Dashboard -->
       <li class="nav-item">
 
-        <a class="nav-link collapsed" href="#" data-toggle="collapse"
-           data-target="#tableauBord" aria-expanded="false" aria-controls="collapseUtilities">
+        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#tableauBord"
+          aria-expanded="false" aria-controls="tableauBord">
           <i class="fas fa-fw fa-tachometer-alt"></i>
           <span>Tableau de bord</span>
         </a>
-        <div id="tableauBord" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+        <div id="tableauBord" class="collapse" aria-labelledby="headingUtilities" data-bs-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item" [routerLink]="['/home']">Semaine</a>
-            <a class="collapse-item" [routerLink]="['/home-mois']">Mois </a>
-            <a class="collapse-item" [routerLink]="['/home-annee']">Année</a>
+            <a class="collapse-item" routerLink="">Semaine</a>
+            <a class="collapse-item" routerLink="/home-mois">Mois</a>
+            <a class="collapse-item" routerLink="/home-annee">Année</a>
           </div>
         </div>
 
@@ -38,11 +38,12 @@
           Travaux
         </div>
 
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#planning" aria-expanded="false" aria-controls="collapseUtilities">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-bs-target="#planning" aria-expanded="false"
+          aria-controls="collapseUtilities">
           <i class="fas fa-fw fa-tools"></i>
           <span>Chantiers</span>
         </a>
-        <div id="planning" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+        <div id="planning" class="collapse" aria-labelledby="headingUtilities" data-bs-parent="#accordionSidebar">
           <!-- <div class="bg-white py-2 collapse-inner rounded">
             <a class="collapse-item" *ngIf="canRead('M_CHANTIERS_PLANNING_G')" [routerLink]="['/planning']" (click)="accessTo('Planning')">Planning</a>
             <a class="collapse-item" *ngIf="canRead('M_CHANTIERS_PLANNING_ST')" [routerLink]="['/planning-sous-traitant']"(click)="accessTo('Planning sous-traitant')">Planning Sous-traitant </a>
@@ -69,11 +70,12 @@
           Resources Humaines
         </div>
 
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#absences" aria-expanded="false" aria-controls="collapseUtilities">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-bs-target="#absences" aria-expanded="false"
+          aria-controls="collapseUtilities">
           <i class="fas fa-fw fa-clock"></i>
           <span>Absences</span>
         </a>
-        <div id="absences" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+        <div id="absences" class="collapse" aria-labelledby="headingUtilities" data-bs-parent="#accordionSidebar">
           <!-- <div class="bg-white py-2 collapse-inner rounded">
             <a class="collapse-item" *ngIf="canRead('M_ABSENCE')" [routerLink]="['/absences']"(click)="accessTo('Planning des absences')">Planning des absences</a>
             <a class="collapse-item" *ngIf="canRead('M_ABSENCE_VIEWER')" [routerLink]="['/absences-viewer']"(click)="accessTo('Planning des absences - viewer')">Absences par période</a>
@@ -81,12 +83,12 @@
         </div>
 
         <!-- <ng-container *ngIf="canRead('M_POINTAGES_SAISIE') || canRead('M_POINTAGES_CTRL') || canRead('M_POINTAGES_SYNC') || canRead('M_POINTAGES_ARCHIVES') || canRead('M_POINTAGES_SYNTHESE') || canRead('M_POINTAGES_SYNC_QUEUE')  || canRead('M_POINTAGES_ATELIER')">
-          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#pointages" aria-expanded="false"
+          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-bs-target="#pointages" aria-expanded="false"
              aria-controls="collapseUtilities">
             <i class="fas fa-fw fa-user-clock"></i>
             <span>Pointages</span>
           </a>
-          <div id="pointages" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+          <div id="pointages" class="collapse" aria-labelledby="headingUtilities" data-bs-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
               <h6 class="collapse-header" *ngIf="canRead('M_POINTAGES_SAISIE') ">Chantiers</h6>
               <a class="collapse-item" *ngIf="canRead('M_POINTAGES_SAISIE') " [routerLink]="['/pointages']"(click)="accessTo('Pointages validation 1')">Pointages - Saisie </a>
@@ -115,18 +117,18 @@
 
 
       <!-- Divider -->
-      <!-- <hr class="sidebar-divider" *ngIf="canRead('A_ADMINISTRATION')"> -->
-
-      <!-- <div class="sidebar-heading" *ngIf="canRead('A_ADMINISTRATION')">
+      <hr class="sidebar-divider" *ngIf="canRead('A_ADMINISTRATION')">
+      
+      <div class="sidebar-heading" *ngIf="canRead('A_ADMINISTRATION')">
         Administratif
-      </div> -->
+      </div>
 
       <!-- Nav Item - administration -->
-      <!-- <li class="nav-item" *ngIf="canRead('A_ADMINISTRATION')">
+      <li class="nav-item" *ngIf="canRead('A_ADMINISTRATION')">
         <a class="nav-link" [routerLink]="['/administration']" (click)="accessTo('Administration')">
           <i class="fas fa-fw fa-user"></i>
           <span>Administration</span></a>
-      </li> -->
+      </li>
 
       <!-- Divider -->
       <hr class="sidebar-divider d-none d-md-block">
@@ -161,15 +163,15 @@
 
             <!-- Nav Item - Alerts -->
             <li class="nav-item dropdown no-arrow mx-1">
-              <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
-                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-bell fa-fw"></i>
                 <!-- Counter - Alerts -->
                 <span class="badge badge-danger badge-counter">{{notifications_count}}</span>
               </a>
               <!-- Dropdown - Alerts -->
               <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                   aria-labelledby="alertsDropdown">
+                aria-labelledby="alertsDropdown">
                 <h6 class="dropdown-header">
                   Centre des alertes
                 </h6>
@@ -186,14 +188,16 @@
                     </div>
                   </a>
                 </ng-container>
-                <a class="dropdown-item text-center small text-gray-500" [routerLink]="['/notifications']"(click)="accessTo('Notifications')">Afficher toutes les alertes</a>
+                <a class="dropdown-item text-center small text-gray-500" [routerLink]="['/notifications']"
+                  (click)="accessTo('Notifications')">Afficher toutes les alertes</a>
               </div>
 
-            <!-- Nav Item - User Information -->
+              <!-- Nav Item - User Information -->
             <li class="nav-item dropdown no-arrow">
-              <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
+              <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
-                <!-- <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ utilisateur.prenom }} {{ utilisateur.nom }}</span> -->
+                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ utilisateur.prenom }} {{ utilisateur.nom
+                  }}</span>
               </a>
               <!-- Dropdown - User Information -->
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
@@ -202,7 +206,7 @@
                   Profil
                 </a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
                   <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                   Déconnexion
                 </a>
@@ -253,14 +257,14 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLabel">Déconnexion ?</h5>
-          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <button class="close" type="button" data-bs-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">×</span>
           </button>
         </div>
         <div class="modal-body">Sélectionnez "Déconnexion" ci-dessous pour terminer votre session.</div>
         <div class="modal-footer">
-          <button class="btn btn-secondary" type="button" data-dismiss="modal">Annuler</button>
-          <button class="btn btn-primary" type="button" data-dismiss="modal" (click)="logout();">Déconnexion</button>
+          <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Annuler</button>
+          <button class="btn btn-primary" type="button" data-bs-dismiss="modal" (click)="logout();">Déconnexion</button>
         </div>
       </div>
     </div>

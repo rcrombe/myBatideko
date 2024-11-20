@@ -7,11 +7,12 @@ export class Constants {
     public readonly version: string = "WIP - 0.0";
     public readonly isDev: boolean = false;
 
-    public canAccess_Read(utilisateur: { permissions: any[]; }, module_id: null){
-        var idx = utilisateur.permissions.findIndex((e: { module_id: any; }) => e.module_id == module_id);
+    public canAccess_Read(utilisateur: { permissions: any[] }, module_id: string | null): boolean {
 
-        if(idx == -1 || utilisateur.permissions[idx].r != 1)
+        var idx = utilisateur.permissions.findIndex((e: { module_id: any }) => e.module_id === module_id);
+        if (idx == -1 || utilisateur.permissions[idx].r != 1) {
             return false;
+        }
         return true;
     }
 

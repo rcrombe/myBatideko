@@ -84,7 +84,17 @@ const routes: Routes = [
           role: [1, 2, 3, 4, 5],
           module_id: 'M_DASHBOARD'
         }
-      }
+      },
+      
+      {
+        path: 'administration',
+        component: AdministrationComponent,
+        data:{
+          title: 'Administration',
+          role: [1,2,3],
+          module_id: 'A_ADMINISTRATION'
+        }
+      },
     ]
   }
 ];
