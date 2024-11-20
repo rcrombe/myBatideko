@@ -24,6 +24,7 @@ intra_front/.vscode/
 intra_front/node_modules/
 intra_front/package-lock.json
 intra_front/package.json
+intra_front/proxy.conf.json
 
 intra_back/node_modules/
 intra_back/config.json
