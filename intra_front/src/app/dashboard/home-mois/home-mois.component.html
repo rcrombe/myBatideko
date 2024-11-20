@@ -1,1 +1,92 @@
-<p>home-mois works!</p>
+<div class="row" style="margin-bottom: 20px">
+    <div class="col-12" style= "text-align: center;">
+        <button type="button" class="btn btn-primary" style="margin-right: 40px;" (click)="semainePrecedente()">
+            <i class="fas fa-fw fa-arrow-left"></i>
+        </button>
+        <span class="h3 mb-0 text-gray-800">{{mois}}</span>
+        <button type="button" class="btn btn-primary" style="margin-left: 40px;" (click)="semaineSuivante()">
+            <i class="fas fa-fw fa-arrow-right"></i>
+        </button>
+    </div>
+    <div class="col-12" style="text-align: center; margin-top: 5px;" *ngIf="_nav_id !== null">
+        <ng-container *ngIf="dataType=='perso'">
+            <button type="button" class="btn btn-danger" (click)="switchDataType()">
+                Tableau de bord personnel
+            </button>
+        </ng-container>
+
+        <ng-container *ngIf="dataType=='global'">
+            <button type="button" class="btn btn-success" (click)="switchDataType()">
+                Tableau de bord global
+            </button>
+        </ng-container>
+    </div>
+</div>
+
+<div class="row">
+
+    <div class="col-lg-6 col-12">
+        <div class="card shadow mb-4 ">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Proportion des poseurs sur le mois</h6>
+            </div>
+            <div id="divTypes" class="card-body">
+                <h2 id="poseurs" style="text-align: center"></h2>
+                <div id="poseursChart" class="chartContainer" *ngIf="poseursChartData">
+                    <canvas baseChart
+                            [data]="poseursChartData"
+                            [options]="poseursChartOptions"
+                            [type]="poseursChartType">
+                    </canvas>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6 col-12">
+        <div class="card shadow mb-4">
+            <div class="card shadow mb-4 ">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Nombre de poseurs sur chaque activité par jour en moyenne sur le mois</h6>
+            </div>
+                <div id="divActivites" class="card-body">
+                    <h2 id='types' style="text-align: center"></h2>
+                    <div id="typesChart" class="chartContainer" *ngIf="activitesChartData">
+                        <canvas baseChart
+                                [data]="activitesChartData"
+                                [options]="activitesChartOptions"
+                                [type]="activitesChartType">
+                        </canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="row">
+
+    <div class="col-lg-12 col-12">
+        <div class="card shadow mb-4 ">
+            <div class="card shadow mb-4 ">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Pourcentage de véhicules actifs sur le mois</h6>
+            </div>
+            <div id="divVehicules" class="card-body">
+                <h2 id='vehicules' style="text-align: center"></h2>
+                <div id="vehiculesChart" class="chartContainer" *ngIf="vehiculesChartData">
+                    <canvas baseChart
+                            [data]="vehiculesChartData"
+                            [options]="vehiculesChartOptions"
+                            [type]="vehiculesChartType">
+                    </canvas>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+</div>

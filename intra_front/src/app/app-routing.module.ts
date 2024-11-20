@@ -75,6 +75,15 @@ const routes: Routes = [
           role: [1, 2, 3, 4, 5],
           module_id: 'M_DASHBOARD'
         }
+      },
+      {
+        path: 'home-mois',
+        component: HomeMoisComponent,
+        data: {
+          title : 'Tableau de bord',
+          role: [1, 2, 3, 4, 5],
+          module_id: 'M_DASHBOARD'
+        }
       }
     ]
   }
