@@ -4,6 +4,7 @@
 .nvm/
 .vscode-server/
 node_modules/
+node_modules/.package-lock.json
 
 
 .bash_history
@@ -21,9 +22,14 @@ package-lock.json
 
 intra_front/.vscode/
 intra_front/node_modules/
+intra_front/package-lock.json
+intra_front/package.json
 
 intra_back/node_modules/
 intra_back/config.json
+intra_back/package-lock.json
+intra_back/package.json
+intra_back/.cache
 
 .dotnet
 
