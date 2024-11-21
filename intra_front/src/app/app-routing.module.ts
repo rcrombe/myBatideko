@@ -85,7 +85,7 @@ const routes: Routes = [
           module_id: 'M_DASHBOARD'
         }
       },
-      
+
       {
         path: 'administration',
         component: AdministrationComponent,
@@ -93,6 +93,15 @@ const routes: Routes = [
           title: 'Administration',
           role: [1,2,3],
           module_id: 'A_ADMINISTRATION'
+        }
+      },
+      {
+        path: 'gestion-modules',
+        component: GestionModulesComponent,
+        data: {
+          title: 'Gestion des Modules',
+          role: [1],
+          module_id: 'A_GESTION_MODULES'
         }
       },
     ]

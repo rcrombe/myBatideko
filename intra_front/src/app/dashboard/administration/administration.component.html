@@ -1,1 +1,187 @@
-<p>administration works!</p>
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Administration</h1>
+</div>
+
+<div class="row">
+    <!-- <a class="col-xl-4 col-md-6 mb-4" [routerLink]="['/gestion-utilisateurs']"
+       *ngIf="canRead('A_GESTION_USERS')"(click)="accessTo('Planning véhicules')" (click)="accessTo('Gestion utilisateurs')">
+      <div class="card border-left-success shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-l font-weight-bold text-success text-uppercase mb-1">Gestion des utilisateurs</div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-address-book fa-2x text-success"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a> -->
+    <!-- <a class="col-xl-4 col-md-6 mb-4" [routerLink]="['/gestion-resources']" (click)="accessTo('Gestion ressources')" *ngIf="canRead('A_GESTION_RESSOURCES')">
+      <div class="card border-left-warning shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-l font-weight-bold text-warning text-uppercase mb-1">Gestion des ressources</div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-users fa-2x text-warning"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a> -->
+    <!-- <a class="col-xl-4 col-md-6 mb-4" [routerLink]="['/gestion-administratif']"  *ngIf="canRead('A_GESTION_ADMINISTRATIF')"
+       (click)="accessTo('Gestion des administratifs')">
+      <div class="card shadow border-left-warning h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-l font-weight-bold text-warning text-uppercase mb-1">Gestion de l'administratif</div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-users fa-2x text-warning"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a> -->
+    <!-- <a class="col-xl-4 col-md-6 mb-4" [routerLink]="['/gestion-vehicules']"(click)="accessTo('Gestion véhicules')" *ngIf="canRead('A_GESTION_VEHICULES')">
+      <div class="card border-left-info shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-l font-weight-bold text-info text-uppercase mb-1">Gestion des vehicules</div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-car fa-2x text-info"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a> -->
+    <!-- <a class="col-xl-4 col-md-6 mb-4" [routerLink]="['/gestion-absences']"
+       *ngIf="canRead('A_GESTION_ABSENCES')" (click)="accessTo('Gestion des absences')">
+      <div class="card border-left-danger shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-l font-weight-bold text-danger text-uppercase mb-1">Gestion des absences</div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-clock fa-2x text-danger"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a> -->
+
+    <!-- <a class="col-xl-4 col-md-6 mb-4" [routerLink]="['/historique']"
+       *ngIf="canRead('A_HISTORIQUE')"(click)="accessTo('Historique')">
+      <div class="card shadow border-left-chocolate h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-l font-weight-bold text-chocolate text-uppercase mb-1">Historique</div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-history fa-2x text-chocolate"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a> -->
+
+    <!-- <a class="col-xl-4 col-md-6 mb-4" [routerLink]="['/gestion-synchronisation']"  *ngIf="canRead('A_GESTION_SYNCHRO')"(click)="accessTo('Gestion de la synchronisation')">
+      <div class="card shadow border-left-danger h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-l font-weight-bold text-danger text-uppercase mb-1">Gestion de la synchronisation</div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-sync fa-2x text-danger"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a> -->
+
+    <!-- <a class="col-xl-4 col-md-6 mb-4" [routerLink]="['/gestion-conducteurs']"(click)="accessTo('Gestion conducteurs')" *ngIf="canRead('A_GESTION_CTX')" >
+      <div class="card border-left-info shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-l font-weight-bold text-info text-uppercase mb-1">Gestion des conducteurs</div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-adjust fa-2x text-info"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a> -->
+
+    <a class="col-xl-4 col-md-6 mb-4" [routerLink]="['/gestion-modules']" *ngIf="canRead('A_GESTION_MODULES')"
+        (click)="accessTo('Gestion des modules')">
+        <div class="card shadow border-left-violet h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-l font-weight-bold text-violet text-uppercase mb-1">Gestion des modules</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-cogs fa-2x text-violet"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </a>
+
+    <!-- <a class="col-xl-4 col-md-6 mb-4" [routerLink]="['/gestion-alertes']"  *ngIf="canRead('A_GESTION_ALERTES')"
+       (click)="accessTo('Gestion des alertes')">
+      <div class="card shadow border-left-warning h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-l font-weight-bold text-warning text-uppercase mb-1">Gestion des alertes</div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-bell fa-2x text-warning"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a> -->
+    <!-- <a class="col-xl-4 col-md-6 mb-4" [routerLink]="['/gestion-codes-atelier']"  *ngIf="canRead('A_GESTION_CODES_ATELIER')"
+       (click)="accessTo('Gestion des codes atelier')">
+      <div class="card shadow border-left-primary h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-l font-weight-bold text-primary text-uppercase mb-1">Gestion des codes atelier</div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-screwdriver-wrench fa-2x text-primary"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a> -->
+    <!-- <a class="col-xl-4 col-md-6 mb-4" [routerLink]="['/gestion-societes']"  *ngIf="canRead('A_GESTION_SOCIETES')"
+       (click)="accessTo('Gestion des codes atelier')">
+      <div class="card shadow border-left-info h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-l font-weight-bold text-primary text-uppercase mb-1">Gestion des sociétés</div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-building fa-2x text-info"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a> -->
+</div>

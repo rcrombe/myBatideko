@@ -1,1 +1,125 @@
-<p>gestion-modules works!</p>
+<div class="card shadow mb-4" xmlns="http://www.w3.org/1999/html">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-12" style="text-align: center;">
+                <span class="h3 mb-0 text-gray-800">Gestion des modules </span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card-body table-responsive">
+        <div class="row" style="margin-bottom: 20px;">
+            <div class="col-3">
+            </div>
+            <div class="col-4">
+            </div>
+            <div class="col-5" style="text-align: right;">
+
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#ajoutModule"
+                    (click)="initAjoutModule()">
+                    Ajouter un module
+                    <i class="fas fa-fw fa-plus"></i>
+                </button>
+            </div>
+        </div>
+
+
+
+
+        <table class="table table-bordered" id="myTable" width="100%" cellspacing="0">
+            <thead>
+                <tr role="row" style="text-align: center">
+                    <th scope="col">id</th>
+                    <th scope="col">Nom</th>
+                    <th scope="col">URL</th>
+                    <th scope="col" style="width: 20%">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let module of modules">
+                    <td style="text-align: center;">{{module.moduleId}}</td>
+                    <td style="text-align: center;">{{module.moduleName}}</td>
+                    <td style="text-align: center;">{{module.moduleUrl}}</td>
+                    <td style="text-align: center;">
+                        <button type="button" style="margin-right: 3px;"
+                            class="btn {{ module.enabled == 1 ? 'btn-success' : 'btn-danger' }}"
+                            (click)="toggleModuleStatus(module)">
+                            {{ module.enabled == 1 ? 'Activé' : 'Désactivé' }}
+                        </button>
+
+                        <button type="button" class="btn btn-danger"
+                            (click)="supprimer(module.moduleId, module.moduleName)">
+                            <i class="fas fa-fw fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade bd-example-modal-lg" id="ajoutModule" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Ajouter un module</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="creationModule">
+                    <div class="form-group">
+                        <label>
+                            Module ID :
+                        </label>
+                        <input id="id" class="form-control" type="text">
+
+                        <label>
+                            Nom :
+                        </label>
+                        <input id="nom" class="form-control" type="text">
+
+                        <label>
+                            URL :
+                        </label>
+                        <input id="url" class="form-control" type="text">
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                <button type="button" class="btn btn-primary" (click)="ajouterModule();">Ajouter le module</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade bd-example-modal-lg" id="supprimeModule" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Supprimer un module</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Souhaitez-vous vraiment surpprimer ce module ?<br>
+                ID : <span id="idASupprimer"></span><br>
+                Nom : <span id="nomASupprimer"></span>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+                <button type="button" class="btn btn-primary" (click)="supprimerModule();">Supprimer le module</button>
+            </div>
+        </div>
+    </div>
+</div>
