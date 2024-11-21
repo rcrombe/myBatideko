@@ -15,11 +15,9 @@
             <div class="col-4">
             </div>
             <div class="col-5" style="text-align: right;">
-
-                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#ajoutModule"
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#ajoutModule"
                     (click)="initAjoutModule()">
-                    Ajouter un module
-                    <i class="fas fa-fw fa-plus"></i>
+                    Ajouter un module <i class="fas fa-fw fa-plus"></i>
                 </button>
             </div>
         </div>
@@ -60,65 +58,56 @@
     </div>
 </div>
 
-<div class="modal fade bd-example-modal-lg" id="ajoutModule" tabindex="-1" role="dialog"
-    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal fade" id="ajoutModule" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Ajouter un module</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="creationModule">
+                <form [formGroup]="moduleForm">
                     <div class="form-group">
-                        <label>
-                            Module ID :
-                        </label>
-                        <input id="id" class="form-control" type="text">
-
-                        <label>
-                            Nom :
-                        </label>
-                        <input id="nom" class="form-control" type="text">
-
-                        <label>
-                            URL :
-                        </label>
-                        <input id="url" class="form-control" type="text">
+                        <label for="id">Module ID :</label>
+                        <input id="id" formControlName="id" class="form-control" type="text" />
+                    </div>
+                    <div class="form-group">
+                        <label for="nom">Nom :</label>
+                        <input id="nom" formControlName="nom" class="form-control" type="text" />
+                    </div>
+                    <div class="form-group">
+                        <label for="url">URL :</label>
+                        <input id="url" formControlName="url" class="form-control" type="text" />
                     </div>
                 </form>
-
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-                <button type="button" class="btn btn-primary" (click)="ajouterModule();">Ajouter le module</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                <button type="button" class="btn btn-primary" [disabled]="!moduleForm.valid" (click)="ajouterModule()">
+                    Ajouter le module
+                </button>
             </div>
         </div>
     </div>
 </div>
 
 
-<div class="modal fade bd-example-modal-lg" id="supprimeModule" tabindex="-1" role="dialog"
-    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+
+<div class="modal fade" id="supprimeModule" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Supprimer un module</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <h5 class="modal-title">Supprimer un module</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                Souhaitez-vous vraiment surpprimer ce module ?<br>
-                ID : <span id="idASupprimer"></span><br>
-                Nom : <span id="nomASupprimer"></span>
+                <p>Voulez-vous vraiment supprimer le module <strong>{{ nomModuleToDelete }}</strong> ?</p>
             </div>
-
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
-                <button type="button" class="btn btn-primary" (click)="supprimerModule();">Supprimer le module</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-danger" (click)="supprimerModule()">Supprimer</button>
             </div>
         </div>
     </div>

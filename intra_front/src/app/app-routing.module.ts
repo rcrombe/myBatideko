@@ -104,6 +104,15 @@ const routes: Routes = [
           module_id: 'A_GESTION_MODULES'
         }
       },
+      {
+        path: 'gestion-utilisateurs',
+        component: GestionUtilisateursComponent,
+        data:{
+          title: 'Gestion Utilisateurs',
+          role: [1],
+          module_id: 'A_GESTION_USERS'
+        }
+      },
     ]
   }
 ];

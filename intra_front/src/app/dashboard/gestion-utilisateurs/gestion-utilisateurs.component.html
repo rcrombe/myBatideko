@@ -1,1 +1,332 @@
-<p>gestion-utilisateurs works!</p>
+<div class="card shadow mb-4" xmlns="http://www.w3.org/1999/html">
+    <div class="card-header">
+      <div class="row">
+        <div class="col-12" style= "text-align: center;">
+          <span class="h3 mb-0 text-gray-800">Gestion utilisateurs </span>
+        </div>
+      </div>
+  
+    </div>
+  
+    <div class="card-body table-responsive">
+      <div class="row" style="margin-bottom: 20px;">
+        <div class="col-3">
+          <input id="filtrer_utilisateurs" class="form-control" type="text"
+                 (keyup)="myFunction('myTable','filtrer_utilisateurs')" placeholder="Filtrer par nom">
+        </div>
+        <div class="col-4">
+        </div>
+        <div class="col-5" style="text-align: right;">
+  
+          <a type="button" class="btn btn-primary" [routerLink]="['/gestion-groupes']" style="margin-right: 5px;">
+            Gestion des groupes
+            <i class="fas fa-fw fa-users"></i>
+          </a>
+  
+          <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modifAlertes" style="margin-right: 5px;">
+            Gestion des alertes
+            <i class="fas fa-fw fa-bell"></i>
+          </button>
+  
+          <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#ajoutUtilisateur" (click)="initAjoutUtilisateur()">
+            Ajouter un utilisateur
+            <i class="fas fa-fw fa-plus"></i>
+          </button>
+        </div>
+      </div>
+  
+  
+  
+  
+      <table class="table table-bordered" id="myTable" width="100%" cellspacing="0">
+        <thead>
+        <tr role="row">
+          <th class="sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Name: activate to sort column descending" style="width: 57px;" aria-sort="ascending">
+            Nom
+          </th>
+          <th scope="col">Prénom</th>
+          <th scope="col">E-mail</th>
+          <th scope="col">Poste</th>
+          <th scope="col">Role</th>
+          <th scope="col">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let utilisateur of utilisateurs">
+          <td style="text-align: center;">{{utilisateur.nom}}</td>
+          <td style="text-align: center;">{{utilisateur.prenom}}</td>
+          <td style="text-align: center;">{{utilisateur.email}}</td>
+          <td style="text-align: center;">{{utilisateur.poste}}</td>
+          <td style="text-align: center;">{{ getGroupById(utilisateur.role) }}</td>
+          <td style="text-align: center;">
+            <button type="button" style="margin-right: 3px;" class="btn btn-warning"
+                    (click)="modifieUtilisateur(utilisateur)">
+              <i class="fas fa-fw fa-pen"></i>
+            </button>
+  
+            <button type="button" style="margin-right: 3px;" class="btn btn-info"
+                    (click)="modifiePassword(utilisateur)">
+              <i class="fas fa-fw fa-key"></i>
+            </button>
+  
+            <button type="button" class="btn btn-danger" (click)="supprimer(utilisateur.id, utilisateur.nom)">
+              <i class="fas fa-fw fa-trash"></i>
+            </button>
+  
+          </td>
+        </tr>
+  
+  
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  
+  <div class="modal fade bd-example-modal-lg" id="ajoutUtilisateur" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Ajouter un utilisateur</h5>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="creationUtilisateur">
+            <div class="form-group">
+              <label>
+                Nom :
+              </label>
+              <input id="nom" class="form-control" type="text">
+            </div>
+            <div class="form-group">
+              <label>
+               Prénom :
+              </label>
+              <input id="prenom" class="form-control" type="text">
+            </div>
+            <div class="form-group">
+              <label>
+                Adresse e-mail :
+              </label>
+              <input id="mail" class="form-control" type="text">
+            </div>
+            <div class="form-group">
+              <label>
+                Mot de passe :
+              </label>
+              <input type="password" id="motdepasse" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>
+               Poste :
+              </label>
+              <input id="poste" class="form-control" type="text">
+            </div>
+            <div class="form-group">
+              <label>
+                Rôle :
+              </label>
+              <select class="form-control" name="jours" id="role-select">
+                <option value="">--Please choose an option--</option>
+                <ng-container *ngFor="let groupe of groupes">
+                  <option value="{{groupe.id}}">{{groupe.name}}</option>
+                </ng-container>
+              </select>
+            </div>
+          </form>
+  
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+          <button type="button" class="btn btn-primary" (click)="ajouterUtilisateur();">Ajouter l'utilisateur</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  <div class="modal fade bd-example-modal-lg" id="supprimeUtilisateur" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Supprimer un utilisateur</h5>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Souhaitez-vous vraiment surpprimer cet utilisateur ?<br>
+          ID : <span id="idASupprimer"></span><br>
+          Nom : <span id="nomASupprimer"></span>
+        </div>
+  
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Non</button>
+          <button type="button" class="btn btn-primary" (click)="supprimerUtilisateur();">Supprimer l'utilisateur</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  <div class="modal fade bd-example-modal-lg" id="modifierUtilisateur" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Modifier un utilisateur</h5>
+          <span id="idModifie" style="display: none"></span>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="modificationUtilisateur">
+            <div class="form-group">
+              <label>
+                Nom :
+              </label>
+              <input id="nomModifie" class="form-control" type="text">
+            </div>
+            <div class="form-group">
+              <label>
+                Prénom :
+              </label>
+              <input id="prenomModifie" class="form-control" type="text">
+            </div>
+            <div class="form-group">
+              <label>
+                Adresse e-mail :
+              </label>
+              <input id="emailModifie" class="form-control" type="text">
+            </div>
+            <div class="form-group">
+              <label>
+                Poste :
+              </label>
+              <input id="posteModifie" class="form-control" type="text">
+            </div>
+            <div class="form-group">
+              <label>
+                Rôle :
+              </label>
+              <select class="form-control" name="jours" id="roleModifie">
+                <option value="">--Choisir une option--</option>
+                <ng-container *ngFor="let groupe of groupes">
+                  <option value="{{groupe.id}}">{{groupe.name}}</option>
+                </ng-container>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>
+                Initiales NAV :
+              </label>
+              <select class="form-control" name="jours" id="navidModifie">
+                <option value="">Aucun</option>
+                <ng-container *ngFor="let conducteur of conducteurs">
+                  <option value="{{ conducteur.initiales }}">{{ conducteur.initiales }}</option>
+                </ng-container>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>
+                Ressource NAV :
+              </label>
+              <select class="form-control" name="jours" id="resourceidModifie">
+                <option value="">Aucun</option>
+                <ng-container *ngFor="let resource of resources">
+                  <option value="{{ resource.matricule_resource }}">{{ resource.Nom }} / {{ resource.matricule_resource }}</option>
+                </ng-container>
+              </select>
+            </div>
+          </form>
+  
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+          <button type="button" class="btn btn-primary" (click)="modifierUtilisateur()">Modifier l'utilisateur</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  <div class="modal fade bd-example-modal-lg" id="modifierPassword" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Modifier un utilisateur</h5>
+          <span id="idModifiePassword" style="display: none"></span>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="modificationPassword">
+            <div class="form-group">
+              <label>
+                Utilisateur :
+              </label>
+              <input id="nomModifiePassword" class="form-control" type="text" disabled>
+            </div>
+  
+            <div class="form-group">
+              <label>
+                Mot de passe :
+              </label>
+              <input id="passwordModifie" class="form-control" type="password" />
+            </div>
+          </form>
+  
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+          <button type="button" class="btn btn-primary" (click)="modifierPassword()">Modifier le mot de passe</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal fade bd-example-modal-lg" id="modifAlertes" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Gestion des alertes</h5>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <table class="table table-bordered" id="myTable" width="100%" cellspacing="0">
+            <thead>
+            <tr role="row">
+              <th scope="col">Utilisateur</th>
+              <ng-container *ngFor="let alert of alerts">
+                <th scope="col">{{ alert.nom }}</th>
+              </ng-container>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let utilisateur of utilisateurs">
+              <td style="text-align: center;">{{utilisateur.nom}} {{utilisateur.prenom}}</td>
+              <ng-container *ngFor="let alerte of utilisateur.alertes">
+                <td style="text-align: center;">
+                  <button class="btn {{ alerte.enabled == 0 ? 'btn-danger' : 'btn-success' }}" (click)="updateAlert(alerte, utilisateur.id, (alerte.enabled == 0 ? 1:0))">
+                    <i class="fas fa-fw {{ alerte.enabled == 0 ? 'fa-times':'fa-check' }}"></i>
+                  </button>
+                </td>
+              </ng-container>
+  
+            </tr>
+  
+  
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+        </div>
+      </div>
+    </div>
+  </div>
