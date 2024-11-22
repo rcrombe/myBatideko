@@ -1,1 +1,213 @@
-<p>gestion-administratif works!</p>
+<div class="card shadow mb-4" xmlns="http://www.w3.org/1999/html">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-12" style="text-align: center;">
+                <span class="h3 mb-0 text-gray-800">Gestion des personnes </span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card-body table-responsive">
+        <div class="row" style="margin-bottom: 20px;">
+            <div class="col-3">
+                <input id="filtrer_personnes" class="form-control" type="text" (keyup)="myFunction()"
+                    placeholder="Filtrer par nom">
+            </div>
+            <div class="col-4">
+            </div>
+            <div class="col-5" style="text-align: right;">
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#ajoutPersonne"
+                    (click)="initAjoutPersonne()">
+                    Ajouter une personne
+                    <i class="fas fa-fw fa-plus"></i>
+                </button>
+            </div>
+        </div>
+
+
+
+
+        <table class="table table-bordered" id="myTable" width="100%" cellspacing="0">
+            <thead>
+                <tr role="row">
+                    <th class="sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1"
+                        aria-label="Name: activate to sort column descending" style="width: 57px;"
+                        aria-sort="ascending">
+                        Matricule
+                    </th>
+                    <th scope="col">Nom</th>
+                    <th scope="col">E-mail</th>
+                    <th scope="col">Société</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let personne of personnes">
+                    <td style="text-align: center;">{{personne.matricule_resource}}</td>
+                    <td style="text-align: center;">{{personne.Nom}}</td>
+                    <td style="text-align: center;">{{personne.email}}</td>
+                    <td style="text-align: center;">{{personne.nom_societe}}</td>
+                    <td style="text-align: center;">
+                        <button type="button" style="margin-right: 3px;" class="btn btn-warning"
+                            (click)="modifiePersonne(personne)">
+                            <i class="fas fa-fw fa-pen"></i>
+                        </button>
+
+                        <button type="button" style="margin-right: 3px;" class="btn btn-danger"
+                            (click)="supprimer(personne.matricule_resource, personne.Nom)">
+                            <i class="fas fa-fw fa-trash"></i>
+                        </button>
+
+                        <button type="button" style="margin-right: 3px;" class="btn btn-info"
+                            (click)="modifieSociete(personne)">
+                            <i class="fas fa-fw fa-building"></i>
+                        </button>
+
+                    </td>
+                </tr>
+
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<div class="modal fade bd-example-modal-lg" id="ajoutPersonne" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Ajouter une personne</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="creationPersonne">
+                    <div class="form-group">
+                        <label>
+                            Matricule :
+                        </label>
+                        <input id="nom" class="form-control" type="text">
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            Nom :
+                        </label>
+                        <input id="prenom" class="form-control" type="text">
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            Adresse e-mail :
+                        </label>
+                        <input id="mail" class="form-control" type="text">
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" (click)="ajouterPersonne();">Ajouter la personne</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade bd-example-modal-lg" id="supprimePersonne" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Supprimer une personne</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Souhaitez-vous vraiment surpprimer cette personne ?<br>
+                ID : <span id="idASupprimer"></span><br>
+                Nom : <span id="nomASupprimer"></span>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Non</button>
+                <button type="button" class="btn btn-primary" (click)="supprimerPersonne();">Supprimer la
+                    personne</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade bd-example-modal-lg" id="modifierPersonne" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modifier une personne</h5>
+                <span id="idModifie" style="display: none"></span>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="modificationPersonne">
+                    <div class="form-group">
+                        <label>
+                            Matricule :
+                        </label>
+                        <input id="matriculeModifie" class="form-control" type="text">
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            Nom :
+                        </label>
+                        <input id="nomModifie" class="form-control" type="text">
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            Adresse e-mail :
+                        </label>
+                        <input id="emailModifie" class="form-control" type="text">
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" (click)="modidiferPersonne()">Modifier la
+                    personne</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bd-example-modal-lg" id="modifierSociete" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modifier Société</h5>
+                <span id="idModifierSociete" style="display: none"></span>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <select id="idSociete" class="form-control">
+                    <option value="0">Aucune</option>
+                    <ng-container *ngFor="let el of societes">
+                        <option value="{{ el.id }}">{{ el.nom }}</option>
+                    </ng-container>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                <button type="button" class="btn btn-primary" (click)="modifierSociete()">Modifier la société</button>
+            </div>
+        </div>
+    </div>
+</div>
