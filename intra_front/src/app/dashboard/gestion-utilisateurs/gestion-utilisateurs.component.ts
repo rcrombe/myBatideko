@@ -105,7 +105,7 @@ export class GestionUtilisateursComponent implements OnInit {
         this.modaleAjoutUtilisateur.hide();
 
         // Recharge les données pour mettre à jour la liste
-        this.loadData();
+        window.location.reload();
       },
       error => {
         // Gère les erreurs et affiche un message d'erreur
