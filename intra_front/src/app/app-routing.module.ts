@@ -11,12 +11,13 @@ import { AdministrationComponent } from './dashboard/administration/administrati
 import { GestionUtilisateursComponent } from './dashboard/gestion-utilisateurs/gestion-utilisateurs.component';
 import { GestionModulesComponent } from './dashboard/gestion-modules/gestion-modules.component';
 import { GestionGroupesComponent } from './dashboard/gestion-groupes/gestion-groupes.component';
+import { GestionResourcesComponent } from './dashboard/gestion-resources/gestion-resources.component';
+import { GestionAdministratifComponent } from './dashboard/gestion-administratif/gestion-administratif.component';
 
 import { PointagesComponent } from './dashboard/pointages/pointages.component';
 import { Pointages2Component } from './dashboard/pointages2/pointages2.component';
 import { CongesComponent } from './dashboard/conges/conges.component';
 import { PlanningComponent } from './dashboard/planning/planning.component';
-import { GestionResourcesComponent } from './dashboard/gestion-resources/gestion-resources.component';
 import { GestionVehiculesComponent } from './dashboard/gestion-vehicules/gestion-vehicules.component';
 import { PlanningParChantierComponent } from './dashboard/planning-par-chantier/planning-par-chantier.component';
 import { PlanningSousTraitantComponent } from './dashboard/planning-sous-traitant/planning-sous-traitant.component';
@@ -28,7 +29,6 @@ import { RendezvousChantierComponent } from './dashboard/rendezvous-chantier/ren
 import { HistoriqueComponent } from './dashboard/historique/historique.component';
 import { FichePaieComponent } from './dashboard/fiche-paie/fiche-paie.component';
 import { GestionSynchronisationComponent } from './dashboard/gestion-synchronisation/gestion-synchronisation.component';
-import { GestionAdministratifComponent } from './dashboard/gestion-administratif/gestion-administratif.component';
 import { GestionConducteursComponent } from './dashboard/gestion-conducteurs/gestion-conducteurs.component';
 import { Pointages3Component } from './dashboard/pointages3/pointages3.component';
 import { ArchivesPointagesComponent } from './dashboard/archives-pointages/archives-pointages.component';
@@ -122,6 +122,24 @@ const routes: Routes = [
           title: 'Gestion des groupes',
           role: [1],
           module_id: 'A_GESTION_GROUPES'
+        }
+      },
+      {
+        path: 'gestion-resources',
+        component: GestionResourcesComponent,
+        data:{
+          title: 'Gestion Resources',
+          role: [1,2,3],
+          module_id: 'A_GESTION_RESSOURCES'
+        }
+      },
+      {
+        path: 'gestion-administratif',
+        component: GestionAdministratifComponent,
+        data: {
+          title: "Gestion de l'administratif",
+          role: [1],
+          module_id: 'A_GESTION_ADMINISTRATIF'
         }
       },
     ]

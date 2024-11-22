@@ -1,1 +1,225 @@
-<p>gestion-resources works!</p>
+<div class="card shadow mb-4" xmlns="http://www.w3.org/1999/html">
+    <div class="card-header">
+      <div class="row">
+        <div class="col-12" style= "text-align: center;">
+          <span class="h3 mb-0 text-gray-800">Gestion ressources </span>
+        </div>
+      </div>
+  
+    </div>
+  
+    <div class="card-body table-responsive">
+      <div class="row">
+        <div class="col-3">
+          <div class="d-flex justify-content-start" style="width: 150px;">
+            <input id="search_resources" class="form-control" type="text" (keyup)="myFunction('myTable','search_resources')" placeholder="Filtrer par nom">
+          </div>
+        </div>
+        <div class="col-6"></div>
+        <div class="col-3">
+          <button style="text-align: center;float:right" type="button" class="btn btn-warning"
+                  data-bs-toggle="modal" data-bs-target="#gestionAttributs" (click)="initGestionAttributs()" >
+            <i class="fas fa-fw fa-pen"></i>
+            Gérer les attributs
+          </button>
+        </div>
+      </div>
+  
+      <table class="table table-bordered" id="myTable" width="100%" cellspacing="0" style="margin-top: 10px">
+        <thead>
+        <tr role="row">
+          <th class="sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" >
+            Nom
+          </th>
+          <th scope="col">Matricule</th>
+          <th scope="col">Activité</th>
+          <th scope="col">Société</th>
+          <th scope="col">Attributs</th>
+          <th scope="col">Type</th>
+          <th scope="col">Actif</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let resource of resources">
+          <td style="text-align: center;">{{resource.Nom}}</td>
+          <td style="text-align: center;">{{resource.matricule_resource}}</td>
+          <td style="text-align: center;">{{resource.Activite}}</td>
+          <td style="text-align: center;">{{resource.nom_societe}}</td>
+          <td style="text-align: center;"><span *ngFor="let attr of resource.attributs">{{attr.code_attribut}}<br></span></td>
+          <td style="text-align: center;">{{resource.Type}}</td>
+          <td>
+            <button  *ngIf="(resource.Actif===1)" style="text-align: center;" type="button" class="btn btn-success" (click)="changeActif(resource.matricule_resource, resource.Actif )">
+              Actif
+            </button>
+            <button *ngIf="(resource.Actif===0)" style="text-align: center;" type="button" class="btn btn-danger" (click)="changeActif(resource.matricule_resource, resource.Actif )">
+              Sorti
+            </button>
+  
+            <button type="button" style="margin-right: 3px;" class="btn btn-info"
+                    (click)="modifieTuteur(resource)">
+              <i class="fas fa-fw fa-graduation-cap"></i>
+            </button>
+  
+            <button type="button" style="margin-right: 3px;" class="btn btn-primary"
+                    (click)="modifieIDPointage(resource)">
+              <i class="fas fa-fw fa-clock"></i>
+            </button>
+  
+            <button type="button" style="margin-right: 3px;" class="btn btn-warning"
+                    (click)="modifieSociete(resource)">
+              <i class="fas fa-fw fa-building"></i>
+            </button>
+  
+  
+          </td>
+        </tr>
+  
+  
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  <div class="modal fade bd-example-modal-lg" id="modifierTuteur" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Assigner un tuteur</h5>
+          <span id="idModifieTuteur" style="display: none"></span>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="modificationTuteur">
+            <div class="form-group">
+              <label>
+                Ressource :
+              </label>
+              <input id="nomModifieTuteur" class="form-control" type="text" disabled>
+            </div>
+  
+            <div class="form-group">
+              <label>
+                Tuteur :
+              </label>
+              <select id="matriculeModifieTuteur" class="form-control">
+                <option value="_NONE">Aucun tuteur</option>
+                <ng-container *ngFor="let resource of resources">
+                  <option *ngIf="resource.Actif == 1" value="{{ resource.matricule_resource }}">{{ resource.Nom }}</option>
+                </ng-container>
+  
+              </select>
+            </div>
+          </form>
+  
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+          <button type="button" class="btn btn-primary" (click)="modifierTuteur()">Modifier le tuteur</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  <div class="modal fade bd-example-modal-xl" id="gestionAttributs" tabindex="-1" role="dialog" aria-labelledby="gestionAttributs" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Gestion des attribtus</h5>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="card-body table-responsive">
+            <div class="d-flex justify-content-start">
+              <input id="search" class="form-control" type="text" (keyup)="myFunction('table_attributs','search')" placeholder="Filtrer par nom">
+            </div>
+            <table class="table table-bordered" id="table_attributs" width="100%" cellspacing="0" style="margin-top: 10px">
+              <thead>
+              <tr role="row">
+                <th class="sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" >
+                  Nom
+                </th>
+                <th scope="col">Matricule</th>
+                <th scope="col">Attributs</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let resource of resources">
+                <td style="text-align: center;">{{resource.Nom}}</td>
+                <td style="text-align: center;">{{resource.matricule_resource}}</td>
+                <td style="text-align: center;">
+                  <div *ngFor="let attr of attributs">
+                    <input type="checkbox" id="{{resource.matricule_resource}}_{{attr.code}}">
+                    <label for="{{resource.matricule_resource}}_{{attr.code}}" style="font-size:1vw;margin-left: 5px">
+                      {{attr.code}} / {{attr.libelle}}
+                    </label>
+                  </div>
+                </td>
+              </tr>
+  
+  
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+          <button type="button" class="btn btn-primary" (click)="modificationAttributs()">Valider</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  <div class="modal fade bd-example-modal-lg" id="modifierIdPointage" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Modifier ID MyTime</h5>
+          <span id="idModifierIdPointage" style="display: none"></span>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <input id="idPointage" class="form-control" type="text" placeholder="Identifiant unique MyTime">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+          <button type="button" class="btn btn-primary" (click)="modifierIDPointage()">Modifier l'ID</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal fade bd-example-modal-lg" id="modifierSociete" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Modifier Société</h5>
+          <span id="idModifierSociete" style="display: none"></span>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <select id="idSociete" class="form-control">
+            <option value="0">Aucune</option>
+            <ng-container *ngFor="let el of societes">
+              <option value="{{ el.id }}">{{ el.nom }}</option>
+            </ng-container>
+          </select>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+          <button type="button" class="btn btn-primary" (click)="modifierSociete()">Modifier la société</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
