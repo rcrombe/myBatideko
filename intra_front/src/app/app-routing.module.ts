@@ -4,14 +4,18 @@ import { Routes, RouterModule } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { HomeComponent } from './dashboard/home/home.component';
+import { HomeMoisComponent } from './dashboard/home-mois/home-mois.component';
+import { HomeAnneeComponent } from './dashboard/home-annee/home-annee.component';
+
+import { AdministrationComponent } from './dashboard/administration/administration.component';
+import { GestionUtilisateursComponent } from './dashboard/gestion-utilisateurs/gestion-utilisateurs.component';
+import { GestionModulesComponent } from './dashboard/gestion-modules/gestion-modules.component';
+import { GestionGroupesComponent } from './dashboard/gestion-groupes/gestion-groupes.component';
+
 import { PointagesComponent } from './dashboard/pointages/pointages.component';
 import { Pointages2Component } from './dashboard/pointages2/pointages2.component';
 import { CongesComponent } from './dashboard/conges/conges.component';
-import { HomeMoisComponent } from './dashboard/home-mois/home-mois.component';
-import { HomeAnneeComponent } from './dashboard/home-annee/home-annee.component';
 import { PlanningComponent } from './dashboard/planning/planning.component';
-import { AdministrationComponent } from './dashboard/administration/administration.component';
-import { GestionUtilisateursComponent } from './dashboard/gestion-utilisateurs/gestion-utilisateurs.component';
 import { GestionResourcesComponent } from './dashboard/gestion-resources/gestion-resources.component';
 import { GestionVehiculesComponent } from './dashboard/gestion-vehicules/gestion-vehicules.component';
 import { PlanningParChantierComponent } from './dashboard/planning-par-chantier/planning-par-chantier.component';
@@ -31,8 +35,6 @@ import { ArchivesPointagesComponent } from './dashboard/archives-pointages/archi
 import { ZonesComponent } from './dashboard/zones/zones.component';
 import { PointagesSyntheseComponent } from './dashboard/pointages-synthese/pointages-synthese.component';
 import { HistoriqueChantiersComponent } from './dashboard/historique-chantiers/historique-chantiers.component';
-import { GestionGroupesComponent } from './dashboard/gestion-groupes/gestion-groupes.component';
-import { GestionModulesComponent } from './dashboard/gestion-modules/gestion-modules.component';
 import { NotificationsComponent } from './dashboard/notifications/notifications.component';
 import { GestionAlertesComponent } from './dashboard/gestion-alertes/gestion-alertes.component';
 import { PlanningAbsencesViewerComponent } from './dashboard/planning-absences-viewer/planning-absences-viewer.component';
@@ -111,6 +113,15 @@ const routes: Routes = [
           title: 'Gestion Utilisateurs',
           role: [1],
           module_id: 'A_GESTION_USERS'
+        }
+      },
+      {
+        path: 'gestion-groupes',
+        component: GestionGroupesComponent,
+        data:{
+          title: 'Gestion des groupes',
+          role: [1],
+          module_id: 'A_GESTION_GROUPES'
         }
       },
     ]

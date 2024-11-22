@@ -110,6 +110,7 @@ export class GestionModulesComponent implements OnInit {
       console.error("Élément de la modale non trouvé");
     }
   }
+  
   public resetModalState() {
     this.moduleForm.reset(); // Réinitialise le formulaire
     const modalElement = document.getElementById('ajoutModule');
