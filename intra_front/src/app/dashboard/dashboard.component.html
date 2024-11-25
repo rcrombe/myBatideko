@@ -20,12 +20,13 @@
       <!-- Nav Item - Dashboard -->
       <li class="nav-item">
 
-        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#tableauBord"
-          aria-expanded="false" aria-controls="tableauBord">
+        <a class="nav-link collapsed" href="#" (click)="toggleMenu('tableauBord')" aria-expanded="false"
+          [attr.aria-controls]="'tableauBord'">
           <i class="fas fa-fw fa-tachometer-alt"></i>
           <span>Tableau de bord</span>
         </a>
-        <div id="tableauBord" class="collapse" aria-labelledby="headingUtilities" data-bs-parent="#accordionSidebar">
+        <div id="tableauBord" class="collapse" [ngClass]="{ 'show': menuStates['tableauBord'] }"
+          aria-labelledby="headingUtilities" data-bs-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <a class="collapse-item" routerLink="">Semaine</a>
             <a class="collapse-item" routerLink="/home-mois">Mois</a>
@@ -38,79 +39,107 @@
           Travaux
         </div>
 
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-bs-target="#planning" aria-expanded="false"
-          aria-controls="collapseUtilities">
+        <a class="nav-link collapsed" href="#" (click)="toggleMenu('travaux')" aria-expanded="false"
+          [attr.aria-controls]="'travaux'">
           <i class="fas fa-fw fa-tools"></i>
-          <span>Chantiers</span>
+          <span>Chantiers <strong> (WIP)</strong></span>
         </a>
-        <div id="planning" class="collapse" aria-labelledby="headingUtilities" data-bs-parent="#accordionSidebar">
-          <!-- <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item" *ngIf="canRead('M_CHANTIERS_PLANNING_G')" [routerLink]="['/planning']" (click)="accessTo('Planning')">Planning</a>
-            <a class="collapse-item" *ngIf="canRead('M_CHANTIERS_PLANNING_ST')" [routerLink]="['/planning-sous-traitant']"(click)="accessTo('Planning sous-traitant')">Planning Sous-traitant </a>
-            <a class="collapse-item" *ngIf="canRead('M_CHANTIERS_PLANNING_RDV')" [routerLink]="['/rendezvous-chantier']"(click)="accessTo('Rendez-vous chantier')">Rendez-vous chantier</a>
+        <div id="travaux" class="collapse" [ngClass]="{ 'show': menuStates['travaux'] }"
+          aria-labelledby="headingUtilities" data-bs-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <a class="collapse-item" *ngIf="canRead('M_CHANTIERS_PLANNING_G')" [routerLink]="['/planning']"
+              (click)="accessTo('Planning')">Planning</a>
+            <a class="collapse-item" *ngIf="canRead('M_CHANTIERS_PLANNING_ST')"
+              [routerLink]="['/planning-sous-traitant']" (click)="accessTo('Planning sous-traitant')">Planning
+              Sous-traitant</a>
+            <a class="collapse-item" *ngIf="canRead('M_CHANTIERS_PLANNING_RDV')" [routerLink]="['/rendezvous-chantier']"
+              (click)="accessTo('Rendez-vous chantier')">Rendez-vous chantier</a>
             <hr>
-            <a class="collapse-item" *ngIf="canRead('M_CHANTIERS_VUE')" [routerLink]="['/planning-par-chantier']"(click)="accessTo('Planning vu par chantier')">Vue par chantier</a>
-            <a class="collapse-item" *ngIf="canRead('M_CHANTIERS_HISTORIQUE')" [routerLink]="['/historique-chantiers']"(click)="accessTo('Historique chantiers')">Historique des chantiers</a>
-            <a class="collapse-item" *ngIf="canRead('M_CHANTIERS_INFOS')" [routerLink]="['/zones']"(click)="accessTo('Zones')">Informations chantiers</a>
-          </div> -->
+            <a class="collapse-item" *ngIf="canRead('M_CHANTIERS_VUE')" [routerLink]="['/planning-par-chantier']"
+              (click)="accessTo('Planning vu par chantier')">Vue par chantier</a>
+            <a class="collapse-item" *ngIf="canRead('M_CHANTIERS_HISTORIQUE')" [routerLink]="['/historique-chantiers']"
+              (click)="accessTo('Historique chantiers')">Historique des chantiers</a>
+            <a class="collapse-item" *ngIf="canRead('M_CHANTIERS_INFOS')" [routerLink]="['/zones']"
+              (click)="accessTo('Zones')">Informations chantiers</a>
+          </div>
         </div>
 
 
-        <!-- <a class="nav-link" *ngIf="canRead('M_CHANTIERS_PLANNING_A')" [routerLink]="['/planning-atelier']" (click)="accessTo('Planning Atelier')">
+        <a class="nav-link" *ngIf="canRead('M_CHANTIERS_PLANNING_A')" [routerLink]="['/planning-atelier']"
+          (click)="accessTo('Planning Atelier')">
           <i class="fas fa-fw  fa-industry"></i>
-          <span>Planning Atelier</span>
+          <span>Planning Atelier<strong> (WIP)</strong></span>
         </a>
 
-        <a class="nav-link" *ngIf="canRead('M_VEHICULES')" [routerLink]="['/vehicules']" (click)="accessTo('Planning véhicules')">
+        <a class="nav-link" *ngIf="canRead('M_VEHICULES')" [routerLink]="['/vehicules']"
+          (click)="accessTo('Planning véhicules')">
           <i class="fas fa-fw fa-car"></i>
-          <span>Véhicules</span></a> -->
+          <span>Véhicules<strong> (WIP)</strong></span></a>
 
         <hr class="sidebar-divider">
         <div class="sidebar-heading">
           Resources Humaines
         </div>
 
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-bs-target="#absences" aria-expanded="false"
-          aria-controls="collapseUtilities">
+        <a class="nav-link collapsed" href="#" (click)="toggleMenu('absences')" aria-expanded="false"
+          [attr.aria-controls]="'absences'">
           <i class="fas fa-fw fa-clock"></i>
-          <span>Absences</span>
+          <span>Absences<strong> (WIP)</strong></span>
         </a>
-        <div id="absences" class="collapse" aria-labelledby="headingUtilities" data-bs-parent="#accordionSidebar">
-          <!-- <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item" *ngIf="canRead('M_ABSENCE')" [routerLink]="['/absences']"(click)="accessTo('Planning des absences')">Planning des absences</a>
-            <a class="collapse-item" *ngIf="canRead('M_ABSENCE_VIEWER')" [routerLink]="['/absences-viewer']"(click)="accessTo('Planning des absences - viewer')">Absences par période</a>
-          </div> -->
+        <div id="absences" class="collapse" [ngClass]="{ 'show': menuStates['absences'] }"
+          aria-labelledby="headingUtilities" data-bs-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <a class="collapse-item" *ngIf="canRead('M_ABSENCE')" [routerLink]="['/absences']"
+              (click)="accessTo('Planning des absences')">Planning des absences</a>
+            <a class="collapse-item" *ngIf="canRead('M_ABSENCE_VIEWER')" [routerLink]="['/absences-viewer']"
+              (click)="accessTo('Planning des absences - viewer')">Absences par période</a>
+          </div>
         </div>
 
-        <!-- <ng-container *ngIf="canRead('M_POINTAGES_SAISIE') || canRead('M_POINTAGES_CTRL') || canRead('M_POINTAGES_SYNC') || canRead('M_POINTAGES_ARCHIVES') || canRead('M_POINTAGES_SYNTHESE') || canRead('M_POINTAGES_SYNC_QUEUE')  || canRead('M_POINTAGES_ATELIER')">
-          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-bs-target="#pointages" aria-expanded="false"
-             aria-controls="collapseUtilities">
+        <ng-container
+          *ngIf="canRead('M_POINTAGES_SAISIE') || canRead('M_POINTAGES_CTRL') || canRead('M_POINTAGES_SYNC') || canRead('M_POINTAGES_ARCHIVES') || canRead('M_POINTAGES_SYNTHESE') || canRead('M_POINTAGES_SYNC_QUEUE')  || canRead('M_POINTAGES_ATELIER')">
+          <a class="nav-link collapsed" href="#" (click)="toggleMenu('pointages')" aria-expanded="false"
+            [attr.aria-controls]="'pointages'">
             <i class="fas fa-fw fa-user-clock"></i>
-            <span>Pointages</span>
+            <span>Pointages<strong> (WIP)</strong></span>
           </a>
-          <div id="pointages" class="collapse" aria-labelledby="headingUtilities" data-bs-parent="#accordionSidebar">
+          <div id="pointages" class="collapse" [ngClass]="{ 'show': menuStates['pointages'] }"
+            aria-labelledby="headingUtilities" data-bs-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-              <h6 class="collapse-header" *ngIf="canRead('M_POINTAGES_SAISIE') ">Chantiers</h6>
-              <a class="collapse-item" *ngIf="canRead('M_POINTAGES_SAISIE') " [routerLink]="['/pointages']"(click)="accessTo('Pointages validation 1')">Pointages - Saisie </a>
-              <a class="collapse-item" *ngIf="canRead('M_POINTAGES_CTRL')" [routerLink]="['/pointages2']"(click)="accessTo('Pointages validation 2')">Pointages - Contrôle</a>
-              <a class="collapse-item" *ngIf="canRead('M_POINTAGES_SYNTHESE') " [routerLink]="['/pointages-synthese']"(click)="accessTo('Pointages Synthese')">Pointages - Synthèse</a>
-              <a class="collapse-item" *ngIf="canRead('M_POINTAGES_SYNTHESE') " [routerLink]="['/pointages-synthese-chantiers']"(click)="accessTo('Pointages Synthese Chantiers')">Pointages - S Chantiers</a>
+              <h6 class="collapse-header" *ngIf="canRead('M_POINTAGES_SAISIE')">Chantiers</h6>
+              <a class="collapse-item" *ngIf="canRead('M_POINTAGES_SAISIE')" [routerLink]="['/pointages']"
+                (click)="accessTo('Pointages validation 1')">Pointages - Saisie</a>
+              <a class="collapse-item" *ngIf="canRead('M_POINTAGES_CTRL')" [routerLink]="['/pointages2']"
+                (click)="accessTo('Pointages validation 2')">Pointages - Contrôle</a>
+              <a class="collapse-item" *ngIf="canRead('M_POINTAGES_SYNTHESE')" [routerLink]="['/pointages-synthese']"
+                (click)="accessTo('Pointages Synthèse')">Pointages - Synthèse</a>
+              <a class="collapse-item" *ngIf="canRead('M_POINTAGES_SYNTHESE')"
+                [routerLink]="['/pointages-synthese-chantiers']"
+                (click)="accessTo('Pointages Synthèse Chantiers')">Pointages - S Chantiers</a>
               <hr *ngIf="canRead('M_POINTAGES_SYNC')">
-              <a class="collapse-item" *ngIf="canRead('M_POINTAGES_SYNC_QUEUE')" [routerLink]="['/pointages3']"(click)="accessTo('File dattente NaviBat')">File d'attente</a>
-              <a class="collapse-item" *ngIf="canRead('M_POINTAGES_SYNC')" [routerLink]="['/gestion-pointages']"(click)="accessTo('Envoi des pointages dans NaviBat')">Synchronisation</a>
-              <hr *ngIf="canRead('M_POINTAGES_ATELIER') && ( canRead('M_POINTAGES_SAISIE') || canRead('M_POINTAGES_SYNC') )">
+              <a class="collapse-item" *ngIf="canRead('M_POINTAGES_SYNC_QUEUE')" [routerLink]="['/pointages3']"
+                (click)="accessTo('File d’attente NaviBat')">File d'attente</a>
+              <a class="collapse-item" *ngIf="canRead('M_POINTAGES_SYNC')" [routerLink]="['/gestion-pointages']"
+                (click)="accessTo('Envoi des pointages dans NaviBat')">Synchronisation</a>
+              <hr
+                *ngIf="canRead('M_POINTAGES_ATELIER') && ( canRead('M_POINTAGES_SAISIE') || canRead('M_POINTAGES_SYNC') )">
               <h6 *ngIf="canRead('M_POINTAGES_ATELIER')" class="collapse-header">Atelier</h6>
-              <a class="collapse-item" *ngIf="canRead('M_POINTAGES_ATELIER')" [routerLink]="['/pointages-atelier']"(click)="accessTo('Pointages atelier')">Pointages - Saisie</a>
-              <a class="collapse-item" *ngIf="canRead('M_POINTAGES_ATELIER2')" [routerLink]="['/pointages-atelier2']"(click)="accessTo('Pointages atelier contrôle')">Pointages - Contrôle</a>
-              <a class="collapse-item" *ngIf="canRead('M_POINTAGES_ATELIER_SYNC')" [routerLink]="['/gestion-pointages-atelier']"(click)="accessTo('Pointages atelier')">Synchronisation</a>
-              <a class="collapse-item" *ngIf="canRead('M_POINTAGES_ATELIER_SYNC_QUEUE')" [routerLink]="['/pointages-atelier3']"(click)="accessTo('File d\'attente pointages atelier')">File d'attente</a>
-
+              <a class="collapse-item" *ngIf="canRead('M_POINTAGES_ATELIER')" [routerLink]="['/pointages-atelier']"
+                (click)="accessTo('Pointages atelier')">Pointages - Saisie</a>
+              <a class="collapse-item" *ngIf="canRead('M_POINTAGES_ATELIER2')" [routerLink]="['/pointages-atelier2']"
+                (click)="accessTo('Pointages atelier contrôle')">Pointages - Contrôle</a>
+              <a class="collapse-item" *ngIf="canRead('M_POINTAGES_ATELIER_SYNC')"
+                [routerLink]="['/gestion-pointages-atelier']"
+                (click)="accessTo('Pointages atelier')">Synchronisation</a>
+              <a class="collapse-item" *ngIf="canRead('M_POINTAGES_ATELIER_SYNC_QUEUE')"
+                [routerLink]="['/pointages-atelier3']" (click)="accessTo('File d’attente pointages atelier')">File
+                d'attente</a>
               <hr *ngIf="canRead('M_POINTAGES_ARCHIVES')">
-              <a class="collapse-item" *ngIf="canRead('M_POINTAGES_ARCHIVES')" [routerLink]="['/archives-pointages']"(click)="accessTo('Archives des pointages')">Archives</a>
-
+              <a class="collapse-item" *ngIf="canRead('M_POINTAGES_ARCHIVES')" [routerLink]="['/archives-pointages']"
+                (click)="accessTo('Archives des pointages')">Archives</a>
             </div>
           </div>
-        </ng-container> -->
+        </ng-container>
       </li>
 
 
@@ -118,7 +147,7 @@
 
       <!-- Divider -->
       <hr class="sidebar-divider" *ngIf="canRead('A_ADMINISTRATION')">
-      
+
       <div class="sidebar-heading" *ngIf="canRead('A_ADMINISTRATION')">
         Administratif
       </div>
@@ -163,7 +192,7 @@
 
             <!-- Nav Item - Alerts -->
             <li class="nav-item dropdown no-arrow mx-1">
-              <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown"
+              <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-bs-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-bell fa-fw"></i>
                 <!-- Counter - Alerts -->
@@ -246,7 +275,7 @@
   <!-- End of Page Wrapper -->
 
   <!-- Scroll to Top Button-->
-  <button class="scroll-to-top rounded" (click)="scrollToTop()">
+  <button class="scroll-to-top rounded" (click)="scrollToTop()" [ngClass]="{ 'd-none': !showScrollToTop }">
     <i class="fas fa-angle-up"></i>
   </button>
 

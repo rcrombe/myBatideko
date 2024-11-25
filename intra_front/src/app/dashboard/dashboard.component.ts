@@ -3,9 +3,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Constants } from '../constants';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-// import { RouterLink, RouterOutlet } from '@angular/router';
+import { RouterLink, RouterOutlet, NavigationEnd } from '@angular/router';
 // import * as jQuery from 'jquery';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { Modal } from 'bootstrap';
 
 declare var $: any;
 
@@ -16,6 +17,9 @@ declare var $: any;
 })
 export class DashboardComponent implements OnInit {
   private MODULE_ID = null;
+  menuStates: { [key: string]: boolean } = {};
+
+  public showScrollToTop: boolean = false;
 
   public pageTitle: any;
   public utilisateur;
@@ -76,70 +80,28 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // jquery du template (traduit vers Angular)
-    // Toggle the side navigation
-    $("#sidebarToggle, #sidebarToggleTop").on('click', function (e: any) {
-      $("body").toggleClass("sidebar-toggled");
-      $(".sidebar").toggleClass("toggled");
-      if ($(".sidebar").hasClass("toggled")) {
-        $('.sidebar .collapse').collapse('hide');
-      };
-    });
-
-    // Close any open menu accordions when window is resized below 768px
-    $(window).resize(function () {
-      if ($(window).width() < 768) {
-        $('.sidebar .collapse').collapse('hide');
-      };
-    });
-
-    // Prevent the content wrapper from scrolling when the fixed side navigation hovered over
-    $('body.fixed-nav .sidebar').on('mousewheel DOMMouseScroll wheel', (e: { originalEvent: any; preventDefault: () => void; }) => {
-      if ($(window).width() > 768) {
-        const e0 = e.originalEvent;
-        const delta = e0.wheelDelta || -e0.detail;
-        this.scrollTop += (delta < 0 ? 1 : -1) * 30;
-        e.preventDefault();
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.closeAllMenus();
       }
     });
 
-    // Scroll to top button appear
-    $(document).on('scroll', (e: any) => {
-      const scrollDistance = $(this).scrollTop();
-      if (scrollDistance > 100) {
-        $('.scroll-to-top').fadeIn();
-      } else {
-        $('.scroll-to-top').fadeOut();
-      }
+    // Détecter le défilement pour afficher/masquer le bouton
+    window.addEventListener('scroll', () => {
+      const scrollPosition = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+      this.showScrollToTop = scrollPosition > 200; // Le bouton apparaît si le défilement dépasse 200px
+      console.log('Scroll position:', scrollPosition, 'Show button:', this.showScrollToTop);
     });
-
-    // Smooth scrolling using jQuery easing
-    $(document).on('click', 'a[href^="#"]:not([routerLink])', (e: { currentTarget: HTMLAnchorElement; preventDefault: () => void; }) => {
-      const $anchor = $(e.currentTarget as HTMLAnchorElement);
-      const href = $anchor.attr('href');
-
-      // Si href est "#", empêcher le comportement par défaut
-      if (href === "#") {
-        e.preventDefault();
-        return;
-      }
-
-      // Animation pour le défilement fluide
-      $('html, body')
-        .stop()
-        .animate(
-          {
-            scrollTop: $(href).offset()?.top || 0,
-          },
-          1000,
-          'easeInOutExpo'
-        );
-
-      e.preventDefault();
-    });
-
-
   }
+
+  toggleMenu(menuKey: string): void {
+    this.menuStates[menuKey] = !this.menuStates[menuKey];
+  }
+
+  closeAllMenus(): void {
+    this.menuStates = {}; // Réinitialiser tous les menus à leur état fermé
+  }
+
 
   scrollToTop() {
     (function smoothscroll() {

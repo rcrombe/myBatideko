@@ -16,16 +16,13 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
 
 import { Constants } from "./constants";
 import { AuthGuard } from "./guards/auth.guard";
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { HomeComponent } from './dashboard/home/home.component';
-import { AbsencesComponent } from './dashboard/absences/absences.component';
+
 import { AdministrationComponent } from './dashboard/administration/administration.component';
-import { ArchivesPointagesComponent } from './dashboard/archives-pointages/archives-pointages.component';
-import { CongesComponent } from './dashboard/conges/conges.component';
-import { FichePaieComponent } from './dashboard/fiche-paie/fiche-paie.component';
 import { GestionAbsencesComponent } from './dashboard/gestion-absences/gestion-absences.component';
 import { GestionAdministratifComponent } from './dashboard/gestion-administratif/gestion-administratif.component';
 import { GestionAlertesComponent } from './dashboard/gestion-alertes/gestion-alertes.component';
@@ -41,6 +38,13 @@ import { GestionSocietesComponent } from './dashboard/gestion-societes/gestion-s
 import { GestionSynchronisationComponent } from './dashboard/gestion-synchronisation/gestion-synchronisation.component';
 import { GestionUtilisateursComponent } from './dashboard/gestion-utilisateurs/gestion-utilisateurs.component';
 import { GestionVehiculesComponent } from './dashboard/gestion-vehicules/gestion-vehicules.component';
+
+import { AbsencesComponent } from './dashboard/absences/absences.component';
+
+import { ArchivesPointagesComponent } from './dashboard/archives-pointages/archives-pointages.component';
+import { CongesComponent } from './dashboard/conges/conges.component';
+import { FichePaieComponent } from './dashboard/fiche-paie/fiche-paie.component';
+
 import { HistoriqueComponent } from './dashboard/historique/historique.component';
 import { HistoriqueChantiersComponent } from './dashboard/historique-chantiers/historique-chantiers.component';
 import { HomeAnneeComponent } from './dashboard/home-annee/home-annee.component';
