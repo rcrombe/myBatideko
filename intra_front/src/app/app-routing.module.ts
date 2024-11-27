@@ -15,6 +15,7 @@ import { GestionResourcesComponent } from './dashboard/gestion-resources/gestion
 import { GestionAdministratifComponent } from './dashboard/gestion-administratif/gestion-administratif.component';
 import { GestionVehiculesComponent } from './dashboard/gestion-vehicules/gestion-vehicules.component';
 import { GestionAbsencesComponent } from './dashboard/gestion-absences/gestion-absences.component';
+import { HistoriqueComponent } from './dashboard/historique/historique.component';
 
 import { PlanningComponent } from './dashboard/planning/planning.component';
 import { PlanningParChantierComponent } from './dashboard/planning-par-chantier/planning-par-chantier.component';
@@ -29,7 +30,6 @@ import { VehiculesComponent } from './dashboard/vehicules/vehicules.component';
 import { AbsencesComponent } from './dashboard/absences/absences.component';
 import { GestionPointagesComponent } from './dashboard/gestion-pointages/gestion-pointages.component';
 import { RendezvousChantierComponent } from './dashboard/rendezvous-chantier/rendezvous-chantier.component';
-import { HistoriqueComponent } from './dashboard/historique/historique.component';
 import { FichePaieComponent } from './dashboard/fiche-paie/fiche-paie.component';
 import { GestionSynchronisationComponent } from './dashboard/gestion-synchronisation/gestion-synchronisation.component';
 import { GestionConducteursComponent } from './dashboard/gestion-conducteurs/gestion-conducteurs.component';
@@ -159,6 +159,15 @@ const routes: Routes = [
           title: 'Gestion Absences',
           role: [1,3,4],
           module_id: 'A_GESTION_ABSENCES'
+        }
+      },
+      {
+        path: 'historique',
+        component: HistoriqueComponent,
+        data: {
+          title: 'Historique',
+          role: [1],
+          module_id: 'A_HISTORIQUE'
         }
       },
 

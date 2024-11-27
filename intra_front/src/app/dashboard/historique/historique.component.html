@@ -1,1 +1,171 @@
-<p>historique works!</p>
+<div class="card shadow mb-4">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-12" style= "text-align: center;">
+                <button type="button" class="btn btn-grey float-left" data-bs-toggle="modal" data-bs-target="#logLevel" (click)="initParams()">
+                    <i class="fa fa-cog"></i>
+                    Paramètres
+                </button>
+                <span class="h3 mb-0 text-gray-800">Historique</span>
+                <button type="button" class="btn btn-danger float-right" data-bs-toggle="modal" data-bs-target="#stopActions">
+                    Refuser toutes actions sur le site
+                </button>
+
+            </div>
+        </div>
+    </div>
+    <div class="card-body table-responsive">
+        <div class="col-12" style= "text-align: center;">
+            <span class="h4 mb-0 text-gray-800">Filtre</span>
+        </div>
+        <div class="row" style="margin-bottom: 20px;">
+            <div class="col-3">
+                <label for="date_debut">Date début :</label>
+                <input class="form-control" type="date" id="date_debut" name="trip-start" >
+
+                <label for="date_debut">Date fin :</label>
+                <input class="form-control" type="date" id="date_fin" name="trip-start" >
+            </div>
+            <div class="col-3">
+                <label for="date_debut">Personne :</label>
+                <input class="form-control" list="utilisateurs" type="text" id="resource" name="trip-start" >
+                <datalist id="utilisateurs">
+                    <option *ngFor="let ut of utilisateurs" value='{{ut.nom}}'>
+                    <option value="NULL">
+                </datalist>
+            </div>
+            <div class="col-3">
+                <label for="date_debut">Module :</label>
+                <input class="form-control" list="modules" type="text" id="module" name="trip-start" >
+                <datalist id="modules">
+                    <option *ngFor="let module of ['Chantiers','Absences','Pointages']" value='{{module}}'>
+                </datalist>
+
+            </div>
+            <div class="col-3">
+                <label for="date_debut">Filtrer l'action :</label>
+                <input class="form-control"  type="text" id="action" name="trip-start" >
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12" style= "text-align: center;">
+                <button type="button" class="btn btn-success float-right" (click)="filtrer()">
+                    Filtrer
+                </button>
+            </div>
+        </div>
+        <hr>
+
+        <div class="col-12" style= "text-align: center;">
+            <span class="h4 mb-0 text-gray-800">Tableau </span>
+        </div>
+
+        <table class="table table-bordered" id="myTable" width="100%" cellspacing="0" style="text-align: center;margin-top:50px">
+            <thead>
+            <tr role="row">
+                <th style="text-align: center;" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 57px;">
+                    Date
+                </th>
+                <th scope="col">Personne</th>
+                <th scope="col">Action</th>
+                <th scope="col">Module</th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let action of historique">
+                    <td >{{action.date |date:'short' }}</td>
+                    <td >{{action.nom}} {{action.prenom}}</td>
+                    <td >{{action.description}}</td>
+                    <td >{{action.module}}</td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade bd-example-modal-xl" id="stopActions" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Refuser les actions</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="card-body table-responsive">
+                    <div class="row">
+                        <div class="col-6">
+                            <label>Date de début : </label>
+                            <input id="date_start" class="form-control" type="date">
+                            <input id="time_start" class="form-control" type="time">
+                        </div>
+                        <div class="col-6">
+                            <label>Date de fin : </label>
+                            <input id="date_end" class="form-control" type="date">
+                            <input id="time_end" class="form-control" type="time" style="margin-bottom: 15px">
+                        </div>
+                    </div>
+                    Sur quel(s) module(s) refuser les actions ?
+                    <div class="row" style="margin-top: 15px">
+                        <div class="col-3">
+                                <input type="checkbox" id="caseChantiers">
+                                <label for="caseChantiers" style="margin-left: 3px;">Chantiers</label>
+                        </div>
+                        <div class="col-3">
+                            <input type="checkbox" id="caseVéhicules">
+                            <label for="caseVéhicules" style="margin-left: 3px;">Véhicules</label>
+                        </div>
+                        <div class="col-3">
+                            <input type="checkbox" id="caseAbsences">
+                            <label for="caseAbsences" style="margin-left: 3px;">Absences</label>
+                        </div>
+                        <div class="col-3">
+                            <input type="checkbox" id="casePointages">
+                            <label for="casePointages" style="margin-left: 3px;">Pointages</label>
+                        </div>
+                    </div>
+                    <label>Message d'alerte :  </label>
+                    <textarea id="message" class="form-control" type="text"></textarea>
+                </div>
+            </div>
+            <!-- <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                <button type="button" class="btn btn-primary" (click)="copierSemainePrec();">Valider</button>
+            </div> -->
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bd-example-modal-xl" id="logLevel" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Refuser les actions</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="card-body table-responsive">
+                    A quel niveau souhaitez-vous enregistrer les actions du site ?
+                    <div class="row" style="margin-top: 15px">
+                        <div class="col-9">
+                           <input style="width:100%;height:100%;" type="range" value="2" min="0" max="3"  id="level"
+                                  (change)="descriptifLevel()">
+                        </div>
+                        <div class="col-3">
+                          <output class="h3" id="outputLevel" style="margin-left: 5px">2</output>
+                          <span id="descriptifLevel"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                <button type="button" class="btn btn-primary" (click)="initLogLevel();">Valider</button>
+            </div>
+        </div>
+    </div>
+</div>
