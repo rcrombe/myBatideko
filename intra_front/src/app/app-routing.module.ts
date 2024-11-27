@@ -19,6 +19,7 @@ import { HistoriqueComponent } from './dashboard/historique/historique.component
 import { GestionConducteursComponent } from './dashboard/gestion-conducteurs/gestion-conducteurs.component';
 import { GestionAlertesComponent } from './dashboard/gestion-alertes/gestion-alertes.component';
 import { GestionCodesAtelierComponent } from './dashboard/gestion-codes-atelier/gestion-codes-atelier.component';
+import { GestionSocietesComponent } from './dashboard/gestion-societes/gestion-societes.component';
 
 import { PlanningComponent } from './dashboard/planning/planning.component';
 import { PlanningParChantierComponent } from './dashboard/planning-par-chantier/planning-par-chantier.component';
@@ -47,7 +48,6 @@ import { PointagesAtelierComponent } from './dashboard/pointages-atelier/pointag
 import { GestionPointagesAtelierComponent } from './dashboard/gestion-pointages-atelier/gestion-pointages-atelier.component';
 import { PointagesAtelier2Component } from './dashboard/pointages-atelier2/pointages-atelier2.component';
 import { PointagesAtelier3Component } from './dashboard/pointages-atelier3/pointages-atelier3.component';
-import { GestionSocietesComponent } from './dashboard/gestion-societes/gestion-societes.component';
 import { PointagesSyntheseChantiersComponent } from './dashboard/pointages-synthese-chantiers/pointages-synthese-chantiers.component';
 
 import { AuthGuard } from './guards/auth.guard';
@@ -157,7 +157,7 @@ const routes: Routes = [
         component: GestionAbsencesComponent,
         data: {
           title: 'Gestion Absences',
-          role: [1,3,4],
+          role: [1, 3, 4],
           module_id: 'A_GESTION_ABSENCES'
         }
       },
@@ -173,9 +173,9 @@ const routes: Routes = [
       {
         path: 'gestion-conducteurs',
         component: GestionConducteursComponent,
-        data:{
+        data: {
           title: 'Gestion des conducteurs',
-          role: [1,2],
+          role: [1, 2],
           module_id: 'A_GESTION_CTX'
         }
       },
@@ -193,8 +193,17 @@ const routes: Routes = [
         component: GestionCodesAtelierComponent,
         data: {
           title: 'Gestion des Pointages Atelier',
-          role: [1,2,3,4,5],
+          role: [1, 2, 3, 4, 5],
           module_id: 'A_GESTION_CODES_ATELIER'
+        }
+      },
+      {
+        path: 'gestion-societes',
+        component: GestionSocietesComponent,
+        data: {
+          title: 'Gestion des sociétés',
+          role: [1, 2, 3, 4, 5],
+          module_id: 'A_GESTION_SOCIETES'
         }
       },
 
