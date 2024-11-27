@@ -1,1 +1,108 @@
-<p>gestion-alertes works!</p>
+<div class="card shadow mb-4" xmlns="http://www.w3.org/1999/html">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-12" style= "text-align: center;">
+                <span class="h3 mb-0 text-gray-800">Gestion des alertes </span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card-body table-responsive">
+        <div class="row" style="margin-bottom: 20px;">
+            <div class="col-3">
+            </div>
+            <div class="col-4">
+            </div>
+            <div class="col-5" style="text-align: right;">
+
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#ajoutAlerte" (click)="initAjoutAlerte()">
+                    Ajouter une alerte
+                    <i class="fas fa-fw fa-plus"></i>
+                </button>
+            </div>
+        </div>
+
+
+
+
+        <table class="table table-bordered" id="myTable" width="100%" cellspacing="0">
+            <thead>
+            <tr role="row" style="text-align: center">
+                <th scope="col">id</th>
+                <th scope="col">Nom</th>
+                <th scope="col" style="width: 20%">Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let alerte of alertes">
+                <td style="text-align: center;">{{alerte.id}}</td>
+                <td style="text-align: center;">{{alerte.nom}}</td>
+                <td style="text-align: center;">
+                    <button type="button" class="btn btn-danger" (click)="supprimer(alerte.id, alerte.nom)">
+                        <i class="fas fa-fw fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade bd-example-modal-lg" id="ajoutAlerte" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Ajouter une alerte</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="creationAlerte">
+                    <div class="form-group">
+                        <label>
+                            Alerte ID :
+                        </label>
+                        <input id="id" class="form-control" type="text">
+
+                        <label>
+                            Nom :
+                        </label>
+                        <input id="nom" class="form-control" type="text">
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                <button type="button" class="btn btn-primary" (click)="ajouterAlerte();">Ajouter l'alerte</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade bd-example-modal-lg" id="supprimeAlerte" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Supprimer une alerte</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Souhaitez-vous vraiment surpprimer cette alerte ?<br>
+                ID : <span id="idASupprimer"></span><br>
+                Nom : <span id="nomASupprimer"></span>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Non</button>
+                <button type="button" class="btn btn-primary" (click)="supprimerAlerte();">Supprimer l'alerte</button>
+            </div>
+        </div>
+    </div>
+</div>

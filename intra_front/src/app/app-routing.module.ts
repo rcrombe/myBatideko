@@ -16,6 +16,8 @@ import { GestionAdministratifComponent } from './dashboard/gestion-administratif
 import { GestionVehiculesComponent } from './dashboard/gestion-vehicules/gestion-vehicules.component';
 import { GestionAbsencesComponent } from './dashboard/gestion-absences/gestion-absences.component';
 import { HistoriqueComponent } from './dashboard/historique/historique.component';
+import { GestionConducteursComponent } from './dashboard/gestion-conducteurs/gestion-conducteurs.component';
+import { GestionAlertesComponent } from './dashboard/gestion-alertes/gestion-alertes.component';
 
 import { PlanningComponent } from './dashboard/planning/planning.component';
 import { PlanningParChantierComponent } from './dashboard/planning-par-chantier/planning-par-chantier.component';
@@ -32,14 +34,12 @@ import { GestionPointagesComponent } from './dashboard/gestion-pointages/gestion
 import { RendezvousChantierComponent } from './dashboard/rendezvous-chantier/rendezvous-chantier.component';
 import { FichePaieComponent } from './dashboard/fiche-paie/fiche-paie.component';
 import { GestionSynchronisationComponent } from './dashboard/gestion-synchronisation/gestion-synchronisation.component';
-import { GestionConducteursComponent } from './dashboard/gestion-conducteurs/gestion-conducteurs.component';
 import { Pointages3Component } from './dashboard/pointages3/pointages3.component';
 import { ArchivesPointagesComponent } from './dashboard/archives-pointages/archives-pointages.component';
 import { ZonesComponent } from './dashboard/zones/zones.component';
 import { PointagesSyntheseComponent } from './dashboard/pointages-synthese/pointages-synthese.component';
 import { HistoriqueChantiersComponent } from './dashboard/historique-chantiers/historique-chantiers.component';
 import { NotificationsComponent } from './dashboard/notifications/notifications.component';
-import { GestionAlertesComponent } from './dashboard/gestion-alertes/gestion-alertes.component';
 import { GestionAtelierComponent } from './dashboard/gestion-atelier/gestion-atelier.component';
 import { GestionOuvragesComponent } from './dashboard/gestion-ouvrages/gestion-ouvrages.component';
 import { PointagesAtelierComponent } from './dashboard/pointages-atelier/pointages-atelier.component';
@@ -168,6 +168,24 @@ const routes: Routes = [
           title: 'Historique',
           role: [1],
           module_id: 'A_HISTORIQUE'
+        }
+      },
+      {
+        path: 'gestion-conducteurs',
+        component: GestionConducteursComponent,
+        data:{
+          title: 'Gestion des conducteurs',
+          role: [1,2],
+          module_id: 'A_GESTION_CTX'
+        }
+      },
+      {
+        path: 'gestion-alertes',
+        component: GestionAlertesComponent,
+        data: {
+          title: 'Gestion des alertes',
+          role: [1],
+          module_id: 'A_GESTION_ALERTES'
         }
       },
 
