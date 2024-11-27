@@ -18,6 +18,7 @@ import { GestionAbsencesComponent } from './dashboard/gestion-absences/gestion-a
 import { HistoriqueComponent } from './dashboard/historique/historique.component';
 import { GestionConducteursComponent } from './dashboard/gestion-conducteurs/gestion-conducteurs.component';
 import { GestionAlertesComponent } from './dashboard/gestion-alertes/gestion-alertes.component';
+import { GestionCodesAtelierComponent } from './dashboard/gestion-codes-atelier/gestion-codes-atelier.component';
 
 import { PlanningComponent } from './dashboard/planning/planning.component';
 import { PlanningParChantierComponent } from './dashboard/planning-par-chantier/planning-par-chantier.component';
@@ -45,7 +46,6 @@ import { GestionOuvragesComponent } from './dashboard/gestion-ouvrages/gestion-o
 import { PointagesAtelierComponent } from './dashboard/pointages-atelier/pointages-atelier.component';
 import { GestionPointagesAtelierComponent } from './dashboard/gestion-pointages-atelier/gestion-pointages-atelier.component';
 import { PointagesAtelier2Component } from './dashboard/pointages-atelier2/pointages-atelier2.component';
-import { GestionCodesAtelierComponent } from './dashboard/gestion-codes-atelier/gestion-codes-atelier.component';
 import { PointagesAtelier3Component } from './dashboard/pointages-atelier3/pointages-atelier3.component';
 import { GestionSocietesComponent } from './dashboard/gestion-societes/gestion-societes.component';
 import { PointagesSyntheseChantiersComponent } from './dashboard/pointages-synthese-chantiers/pointages-synthese-chantiers.component';
@@ -186,6 +186,15 @@ const routes: Routes = [
           title: 'Gestion des alertes',
           role: [1],
           module_id: 'A_GESTION_ALERTES'
+        }
+      },
+      {
+        path: 'gestion-codes-atelier',
+        component: GestionCodesAtelierComponent,
+        data: {
+          title: 'Gestion des Pointages Atelier',
+          role: [1,2,3,4,5],
+          module_id: 'A_GESTION_CODES_ATELIER'
         }
       },
 

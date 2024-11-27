@@ -1,1 +1,118 @@
-<p>gestion-codes-atelier works!</p>
+<div class="card shadow mb-4" xmlns="http://www.w3.org/1999/html">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-12" style= "text-align: center;">
+                <span class="h3 mb-0 text-gray-800">Gestion Atelier </span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card-body table-responsive">
+        <table class="table table-bordered" id="myTable" width="100%" cellspacing="0"style="text-align: center;">
+            <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Nom de l'action</th>
+                <th scope="col">Code Type Travail</th>
+                <th scope="col">NB Used</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td></td>
+                <td><input class="form-control" type="text" placeholder="Nom de l'action" id="newAction"></td>
+                <td><input class="form-control" type="text" placeholder="Code Type Travail" id="newCTT"></td>
+                <td><input class="form-control" type="text" placeholder="0" disabled></td>
+                <td>
+                    <button type="button" class="btn-circle btn-success" (click)="ajouterCodeAtelier()">
+                        <i class="fas fa-fw fa-plus"></i>
+                    </button>
+                </td>
+            </tr>
+            <tr *ngFor="let action of actions">
+                <td>{{action.id}}</td>
+                <td>{{action.nom_action}}</td>
+                <td>{{action.nav_action}}</td>
+                <td>{{action.nb_used}}</td>
+                <td>
+                    <button type="button" class="btn-circle btn-warning"
+                            data-bs-toggle="modal" data-bs-target="#modifierAction" (click)="modalCodeAction(action)">
+                        <i class="fas fa-fw fa-pen"></i>
+                    </button>
+                    <button type="button" class="btn-circle btn-danger" *ngIf="action.nb_used == 0"
+                            data-bs-toggle="modal" data-bs-target="#supprimerAction" (click)="initModalSupprimer(action.id)">
+                        <i class="fas fa-fw fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<div class="modal modal-dialog-scrollable fade bd-example-modal-xl" id="modifierAction"  role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modifier une action</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table-bordered" style="text-align: center; width: 100%">
+                    <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Nom de l'action</th>
+                        <th scope="col">Code Type Travail</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>
+                            <input class="form-control" type="text" placeholder="ID" id="modifID" disabled>
+                        </td>
+                        <td>
+                            <input class="form-control" type="text" placeholder="Nom de l'action" id="modifNom">
+                        </td>
+                        <td>
+                            <input class="form-control" type="text" placeholder="Code Type Travail" id="modifNavId">
+                        </td>
+
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                <button type="button" class="btn btn-primary" (click)="modifierAction()">Valider les modifications</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal modal-dialog-scrollable fade bd-example-modal-xl" id="supprimerAction"  role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Supprimer une action</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <span>Souhaitez vous vraiment supprimer cette action ?</span>
+                <br>
+                <span id="actionAmodifier"></span>
+                <span id="typeAmodifier" hidden="true"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                <button type="button" class="btn btn-primary" (click)="supprimerAction()">Supprimer</button>
+            </div>
+        </div>
+    </div>
+</div>
