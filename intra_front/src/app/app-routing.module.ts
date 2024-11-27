@@ -13,15 +13,17 @@ import { GestionModulesComponent } from './dashboard/gestion-modules/gestion-mod
 import { GestionGroupesComponent } from './dashboard/gestion-groupes/gestion-groupes.component';
 import { GestionResourcesComponent } from './dashboard/gestion-resources/gestion-resources.component';
 import { GestionAdministratifComponent } from './dashboard/gestion-administratif/gestion-administratif.component';
+import { GestionVehiculesComponent } from './dashboard/gestion-vehicules/gestion-vehicules.component';
 
 import { PlanningComponent } from './dashboard/planning/planning.component';
+import { PlanningParChantierComponent } from './dashboard/planning-par-chantier/planning-par-chantier.component';
+import { PlanningSousTraitantComponent } from './dashboard/planning-sous-traitant/planning-sous-traitant.component';
+import { PlanningAbsencesViewerComponent } from './dashboard/planning-absences-viewer/planning-absences-viewer.component';
+import { PlanningAtelierComponent } from './dashboard/planning-atelier/planning-atelier.component';
 
 import { PointagesComponent } from './dashboard/pointages/pointages.component';
 import { Pointages2Component } from './dashboard/pointages2/pointages2.component';
 import { CongesComponent } from './dashboard/conges/conges.component';
-import { GestionVehiculesComponent } from './dashboard/gestion-vehicules/gestion-vehicules.component';
-import { PlanningParChantierComponent } from './dashboard/planning-par-chantier/planning-par-chantier.component';
-import { PlanningSousTraitantComponent } from './dashboard/planning-sous-traitant/planning-sous-traitant.component';
 import { VehiculesComponent } from './dashboard/vehicules/vehicules.component';
 import { AbsencesComponent } from './dashboard/absences/absences.component';
 import { GestionAbsencesComponent } from './dashboard/gestion-absences/gestion-absences.component';
@@ -38,8 +40,6 @@ import { PointagesSyntheseComponent } from './dashboard/pointages-synthese/point
 import { HistoriqueChantiersComponent } from './dashboard/historique-chantiers/historique-chantiers.component';
 import { NotificationsComponent } from './dashboard/notifications/notifications.component';
 import { GestionAlertesComponent } from './dashboard/gestion-alertes/gestion-alertes.component';
-import { PlanningAbsencesViewerComponent } from './dashboard/planning-absences-viewer/planning-absences-viewer.component';
-import { PlanningAtelierComponent } from './dashboard/planning-atelier/planning-atelier.component';
 import { GestionAtelierComponent } from './dashboard/gestion-atelier/gestion-atelier.component';
 import { GestionOuvragesComponent } from './dashboard/gestion-ouvrages/gestion-ouvrages.component';
 import { PointagesAtelierComponent } from './dashboard/pointages-atelier/pointages-atelier.component';
@@ -141,6 +141,15 @@ const routes: Routes = [
           title: "Gestion de l'administratif",
           role: [1],
           module_id: 'A_GESTION_ADMINISTRATIF'
+        }
+      },
+      {
+        path: 'gestion-vehicules',
+        component: GestionVehiculesComponent,
+        data:{
+          title: 'Gestion Véhicules',
+          role: [1,2,3],
+          module_id: 'A_GESTION_VEHICULES'
         }
       },
       //Chantiers

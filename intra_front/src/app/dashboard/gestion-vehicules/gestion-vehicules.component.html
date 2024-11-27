@@ -1,1 +1,410 @@
-<p>gestion-vehicules works!</p>
+<div class="card shadow mb-4">
+    <div class="card-header">
+      <div class="row">
+        <div class="col-12" style= "text-align: center;">
+          <span class="h3 mb-0 text-gray-800">Gestion vehicules </span>
+        </div>
+      </div>
+    </div>
+    <div class="card-body table-responsive">
+      <div class="row" style="margin-bottom: 20px;">
+        <div class="col-3">
+          <div class="btn-group">
+            <input class="form-control" id="filtrer_vehicules" type="text" (keyup)="myFunction()" placeholder="Filtrer par véhicule">
+  
+            <button type="button" class="btn btn-primary"(click)="imprimer()" >
+              Imprimer
+            </button>
+          </div>
+        </div>
+        <div class="col-4">
+        </div>
+        <div class="col-5" style="text-align: right;">
+          <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#ajoutVehicule" (click)="InitAjoutVehicule()">
+            Ajouter un véhicule
+            <i class="fas fa-fw fa-plus"></i>
+          </button>
+        </div>
+        <div class="col-2">
+  
+        </div>
+      </div>
+  
+      <table class="table table-bordered" id="myTable" width="100%" cellspacing="0" style="text-align: center;">
+        <thead>
+        <tr role="row">
+          <th style="text-align: center;" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 57px;">
+            Immatriculation
+          </th>
+          <th scope="col">Type</th>
+          <th scope="col">Marque</th>
+          <th scope="col">Nombre de places</th>
+          <th scope="col">Chauffeur attitré</th>
+          <th scope="col">Contrôle technique</th>
+          <th scope="col">Contrôle pollution</th>
+          <th scope="col">Kilometrage</th>
+          <th scope="col">Certificat air</th>
+          <th scope="col">Carte</th>
+          <th scope="col">Stationnement</th>
+          <th scope="col">Location</th>
+          <th scope="col">Commentaire</th>
+          <th scope="col">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <ng-container *ngFor="let vehicule of vehicules">
+          <tr *ngIf="vehicule.immatriculation !==null">
+            <td >{{vehicule.immatriculation}}</td>
+            <td >{{vehicule.type}}</td>
+            <td >{{vehicule.flocage}}</td>
+            <td >{{vehicule.nb_places}}</td>
+            <td [ngStyle]="{'color' : vehicule.domicile==1 ? 'blue' : '#6e707e'}">{{vehicule.Nom}}</td>
+            <td >
+              <ng-container *ngIf="vehicule.diff>-60 && vehicule.diff<0; else autre_CT">
+                <span class="text-danger font-weight-bold">{{vehicule.controle_technique | date:"shortDate"}}</span>
+              </ng-container>
+              <ng-template #autre_CT>
+                <span>{{vehicule.controle_technique | date:"shortDate"}}</span>
+              </ng-template>
+  
+            </td>
+            <td >
+              <ng-container *ngIf="vehicule.diff_pollution>-60 && vehicule.diff_pollution<0; else autre_CP">
+                <span class="text-danger font-weight-bold">{{vehicule.controle_pollution | date:"shortDate"}}</span>
+              </ng-container>
+              <ng-template #autre_CP>
+                <span>{{vehicule.controle_pollution | date:"shortDate"}}</span>
+              </ng-template>
+  
+            </td>
+            <td >
+              {{vehicule.kilometrage}} km
+              <span *ngIf="vehicule.derniere_modif_km!== null && vehicule.derniere_modif_km!==''">
+                (Mise à jour le : {{vehicule.derniere_modif_km | date:"shortDate"}})
+              </span>
+            </td>
+            <td >{{vehicule.certificat_air | date:"shortDate"}}</td>
+            <td >{{vehicule.carte}}<br>{{vehicule.gazole}}</td>
+            <td>
+              <ng-container *ngIf="vehicule.diff_stationnement>-60 && vehicule.diff_stationnement<0; else autre_ST">
+                <span class="text-danger font-weight-bold">{{vehicule.fin_stationnement | date:"shortDate"}}</span>
+              </ng-container>
+              <ng-template #autre_ST>
+                <span>{{vehicule.fin_stationnement | date:"shortDate"}}</span>
+              </ng-template>
+            </td>
+            <td>
+              <ng-container *ngIf="vehicule.diff_location>-60 && vehicule.diff_location<0; else autre_LOC">
+                <span class="text-danger font-weight-bold">{{vehicule.fin_location | date:"shortDate"}}</span>
+              </ng-container>
+              <ng-template #autre_LOC>
+                <span>{{vehicule.fin_location | date:"shortDate"}}</span>
+              </ng-template>
+            </td>
+            <td >{{vehicule.commentaire}}</td>
+            <td>
+              <button  type="button" [ngClass]="{'btn-success':vehicule.dispo==1,'btn-danger': vehicule.dispo==0} "
+                       (click)="changeDispo(vehicule.immatriculation, vehicule.dispo )" style="margin-bottom: 5px">
+                Disponibilité
+              </button>
+              <button  type="button" [ngClass]="{'btn-success':vehicule.bureaux==0,'btn-info': vehicule.bureaux==1} "
+                       (click)="changeBureaux(vehicule.immatriculation, vehicule.bureaux )" style="margin-bottom: 5px">
+                {{ vehicule.bureaux == 1 ? 'Bureaux' : 'Chantier' }}
+              </button> <br>
+              <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modifierVehicule"
+                      (click)="modalModifierVehicule(vehicule.immatriculation)">
+                <i class="fas fa-fw fa-pen"></i>
+              </button>
+              <!--<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#suppressionVehicule"
+                      (click)="initModaleSuppression(vehicule.immatriculation)">
+                <i class="fas fa-fw fa-trash"></i>
+              </button>-->
+              <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#venteVehicule"
+                      (click)="initModaleVente(vehicule.immatriculation)">
+                <i class="fas fa-fw fa-dollar-sign"></i>
+              </button>
+  
+            </td>
+          </tr>
+        </ng-container>
+  
+  
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  
+  <div class="modal fade bd-example-modal-lg" id="ajoutVehicule" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Ajouter un véhicule</h5>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="creationUtilisateur">
+            <div class="form-group">
+              <label>
+                Immatriculation :
+              </label>
+              <input id="immatriculation" class="form-control" type="text">
+            </div>
+            <div class="form-group">
+              <label>
+                Type :
+              </label>
+              <input id="type" class="form-control" type="text">
+            </div>
+            <div class="form-group">
+              <label>
+                Flocage :
+              </label>
+              <input id="flocage" class="form-control" type="text">
+            </div>
+            <div class="form-group">
+              <label>
+                Nom du vehicule:
+              </label>
+              <input type="text" id="nom" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>
+                Chauffeur attitré :
+                <input type="checkbox" id="domicile" style="margin-left: 15px;">
+                <label for="domicile" style="margin-left: 3px;">Véhicule personnel</label>
+              </label>
+              <input class="form-control" list="listChauffeurs" id="chauffeur">
+              <datalist id="listChauffeurs">
+                <option *ngFor="let chauffeur of chauffeurs" value='{{chauffeur.Nom}}'>
+              </datalist>
+  
+            </div>
+            <div class="form-group">
+              <label>
+                Nombre de places :
+              </label>
+              <input class="form-control" list="listPlaces" id="nb_places">
+              <datalist id="listPlaces">
+                <option *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]" value={{i}}>
+              </datalist>
+            </div>
+            <div class="form-group">
+              <label>
+                Contrôle technique :
+              </label>
+              <input type="date" id="controle_technique" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>
+                Contrôle pollution :
+              </label>
+              <input type="date" id="controle_pollution" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>
+                Kilometrage :
+              </label>
+              <input type="text" id="kilometrage" class="form-control">
+              <input type="date" id="derniere_modif_km" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>
+                Certificat air :
+              </label>
+              <input type="date" id="certificat_air" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>
+                Carte :
+              </label>
+              <input type="text" id="carte" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>
+                Gazole :
+              </label>
+              <input type="text" id="gazole" class="form-control">
+            </div>
+  
+  
+            <div class="form-group">
+              <label>
+                Fin stationnement :
+              </label>
+              <input type="date" id="fin_stationnement" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>
+                Fin location :
+              </label>
+              <input type="date" id="fin_location" class="form-control">
+            </div>
+  
+            <div class="form-group">
+              <label>
+                Commentaires :
+              </label>
+              <textarea type="text" id="commentaire" class="form-control"></textarea>
+            </div>
+          </form>
+  
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+          <button type="button" class="btn btn-primary" (click)="ajouterVehicule();">Ajouter le véhicule</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  <div class="modal fade bd-example-modal-lg" id="venteVehicule" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Vendre un vehicule</h5>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Souhaitez-vous vraiment passer ce véhicule en vendu ? <b><u>Cette action est irréversible</u></b><br>
+          <span id="vehiculeASupprimer"></span>
+        </div>
+  
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Non</button>
+          <button type="button" class="btn btn-primary" (click)="vendreVehicule();">Vendre le vehicule</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal fade bd-example-modal-lg" id="modifierVehicule" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Modifier un véhicule</h5>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="modifierUtilisateur">
+            <div class="form-group">
+              <label>
+                Immatriculation :
+              </label>
+              <input id="modifierimmatriculation" class="form-control" type="text" [disabled]=true>
+            </div>
+            <div class="form-group">
+              <label>
+                Type :
+              </label>
+              <input id="modifiertype" class="form-control" type="text">
+            </div>
+            <div class="form-group">
+              <label>
+                Flocage :
+              </label>
+              <input id="modifierflocage" class="form-control" type="text">
+            </div>
+            <div class="form-group">
+              <label>
+                Nom du vehicule:
+              </label>
+              <input type="text" id="modifiernom" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>
+                Chauffeur attitré :
+                <input type="checkbox" id="modifierdomicile" style="margin-left: 15px;">
+                <label for="modifierdomicile" style="margin-left: 3px;">Véhicule personnel</label>
+              </label>
+              <input class="form-control" list="listChauffeurs" id="modifierchauffeur">
+              <datalist id="listChauffeurs">
+                <option *ngFor="let chauffeur of chauffeurs" value='{{chauffeur.Nom}}'>
+              </datalist>
+            </div>
+            <div class="form-group">
+              <label>
+                Nombre de places :
+              </label>
+              <input class="form-control" list="listPlaces" id="modifiernb_places">
+              <datalist id="listPlaces">
+                <option *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]" value={{i}}>
+              </datalist>
+            </div>
+            <div class="form-group">
+              <label>
+                Contrôle technique :
+              </label>
+              <input type="date" id="modifiercontrole_technique" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>
+                Contrôle pollution :
+              </label>
+              <input type="date" id="modifiercontrole_pollution" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>
+                Kilometrage :
+              </label>
+              <input type="text" id="modifierkilometrage" class="form-control">
+              <label>
+                Mis à jour le :
+              </label>
+              <input type="date" id="modifierderniere_modif_km" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>
+                Certificat air :
+              </label>
+              <input type="date" id="modifiercertificat_air" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>
+                Carte :
+              </label>
+              <input type="text" id="modifiercarte" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>
+                Gazole :
+              </label>
+              <input type="text" id="modifiergazole" class="form-control">
+            </div>
+  
+            <div class="form-group">
+              <label>
+                Fin stationnement :
+              </label>
+              <input type="date" id="modifierfin_stationnement" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>
+                Fin location :
+              </label>
+              <input type="date" id="modifierfin_location" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>
+                Commentaires :
+              </label>
+              <textarea type="text" id="modifiercommentaire" class="form-control"></textarea>
+            </div>
+          </form>
+  
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" (click)="modifierVehicule();">Modifier le vehicule</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
