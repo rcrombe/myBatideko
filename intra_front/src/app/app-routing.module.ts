@@ -14,6 +14,7 @@ import { GestionGroupesComponent } from './dashboard/gestion-groupes/gestion-gro
 import { GestionResourcesComponent } from './dashboard/gestion-resources/gestion-resources.component';
 import { GestionAdministratifComponent } from './dashboard/gestion-administratif/gestion-administratif.component';
 import { GestionVehiculesComponent } from './dashboard/gestion-vehicules/gestion-vehicules.component';
+import { GestionAbsencesComponent } from './dashboard/gestion-absences/gestion-absences.component';
 
 import { PlanningComponent } from './dashboard/planning/planning.component';
 import { PlanningParChantierComponent } from './dashboard/planning-par-chantier/planning-par-chantier.component';
@@ -26,7 +27,6 @@ import { Pointages2Component } from './dashboard/pointages2/pointages2.component
 import { CongesComponent } from './dashboard/conges/conges.component';
 import { VehiculesComponent } from './dashboard/vehicules/vehicules.component';
 import { AbsencesComponent } from './dashboard/absences/absences.component';
-import { GestionAbsencesComponent } from './dashboard/gestion-absences/gestion-absences.component';
 import { GestionPointagesComponent } from './dashboard/gestion-pointages/gestion-pointages.component';
 import { RendezvousChantierComponent } from './dashboard/rendezvous-chantier/rendezvous-chantier.component';
 import { HistoriqueComponent } from './dashboard/historique/historique.component';
@@ -74,7 +74,7 @@ const routes: Routes = [
         path: 'home-annee',
         component: HomeAnneeComponent,
         data: {
-          title : 'Tableau de bord',
+          title: 'Tableau de bord',
           role: [1, 2, 3, 4, 5],
           module_id: 'M_DASHBOARD'
         }
@@ -83,7 +83,7 @@ const routes: Routes = [
         path: 'home-mois',
         component: HomeMoisComponent,
         data: {
-          title : 'Tableau de bord',
+          title: 'Tableau de bord',
           role: [1, 2, 3, 4, 5],
           module_id: 'M_DASHBOARD'
         }
@@ -92,9 +92,9 @@ const routes: Routes = [
       {
         path: 'administration',
         component: AdministrationComponent,
-        data:{
+        data: {
           title: 'Administration',
-          role: [1,2,3],
+          role: [1, 2, 3],
           module_id: 'A_ADMINISTRATION'
         }
       },
@@ -110,7 +110,7 @@ const routes: Routes = [
       {
         path: 'gestion-utilisateurs',
         component: GestionUtilisateursComponent,
-        data:{
+        data: {
           title: 'Gestion Utilisateurs',
           role: [1],
           module_id: 'A_GESTION_USERS'
@@ -119,7 +119,7 @@ const routes: Routes = [
       {
         path: 'gestion-groupes',
         component: GestionGroupesComponent,
-        data:{
+        data: {
           title: 'Gestion des groupes',
           role: [1],
           module_id: 'A_GESTION_GROUPES'
@@ -128,9 +128,9 @@ const routes: Routes = [
       {
         path: 'gestion-resources',
         component: GestionResourcesComponent,
-        data:{
+        data: {
           title: 'Gestion Resources',
-          role: [1,2,3],
+          role: [1, 2, 3],
           module_id: 'A_GESTION_RESSOURCES'
         }
       },
@@ -146,19 +146,29 @@ const routes: Routes = [
       {
         path: 'gestion-vehicules',
         component: GestionVehiculesComponent,
-        data:{
+        data: {
           title: 'Gestion Véhicules',
-          role: [1,2,3],
+          role: [1, 2, 3],
           module_id: 'A_GESTION_VEHICULES'
         }
       },
+      {
+        path: 'gestion-absences',
+        component: GestionAbsencesComponent,
+        data: {
+          title: 'Gestion Absences',
+          role: [1,3,4],
+          module_id: 'A_GESTION_ABSENCES'
+        }
+      },
+
       //Chantiers
       {
         path: 'planning',
         component: PlanningComponent,
-        data:{
+        data: {
           title: 'Planning',
-          role: [1,2,3,4,5],
+          role: [1, 2, 3, 4, 5],
           module_id: 'M_CHANTIERS_PLANNING_G'
         }
       },

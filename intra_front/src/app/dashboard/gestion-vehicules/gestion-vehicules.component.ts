@@ -60,7 +60,6 @@ export class GestionVehiculesComponent implements OnInit {
     this.http.get<Array<any>>(this.cst.apiUrl + 'gestion_vehicules/chauffeurs').subscribe(
       (arr: Array<any>) => { this.chauffeurs = arr },
     )
-    window.location.reload();
   }
 
   public initModaleVente(immatriculation: string | JQuery.Node | ((this: HTMLElement, index: number, oldhtml: JQuery.htmlString) => JQuery.htmlString | JQuery.Node)) {

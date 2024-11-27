@@ -1,1 +1,133 @@
-<p>gestion-absences works!</p>
+<div class="card shadow mb-4" xmlns="http://www.w3.org/1999/html">
+    <div class="card-header">
+      <div class="row">
+        <div class="col-12" style= "text-align: center;">
+          <span class="h3 mb-0 text-gray-800">Gestion absences </span>
+        </div>
+      </div>
+  
+    </div>
+  
+    <div class="card-body table-responsive">
+      <div class="row" style="margin-bottom: 20px;">
+        <div class="col-3">
+          <input id="filtrer_utilisateurs" class="form-control" type="text" (keyup)="myFunction()" placeholder="Filtrer par code absence">
+        </div>
+        <div class="col-4">
+        </div>
+      </div>
+      <table class="table table-bordered" id="myTable" width="100%" cellspacing="0"style="text-align: center;">
+        <thead>
+        <tr>
+          <th scope="col">Couleur</th>
+          <th scope="col">Code absence</th>
+          <th scope="col">Description</th>
+          <th scope="col">Associé à </th>
+          <th scope="col">Modifications</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td><input class="form-control" type="color" id="newColor"></td>
+          <td><input class="form-control" type="text" placeholder="Code absence" id="newCode"></td>
+          <td><input class="form-control" type="text" placeholder="Description" id="newDescription"></td>
+          <td><input class="form-control" list="absencesList" placeholder="..." id="newAssociation">
+            <datalist id="absencesList">
+              <option *ngFor="let abs of absences" value='{{abs.code_absence}}'>
+            </datalist></td>
+          <td>
+            <button type="button" class="btn-circle btn-success" (click)="ajouterAbsence()">
+              <i class="fas fa-fw fa-plus"></i>
+            </button>
+          </td>
+        </tr>
+        <tr *ngFor="let abs of absences">
+          <td id="couleur_{{abs.code_absence}}" [ngStyle]="{'background-color':abs.couleur }"></td>
+          <td>{{abs.code_absence}}</td>
+          <td>{{abs.description}}</td>
+          <td>{{abs.type}}</td>
+          <td>
+            <button type="button" class="btn-circle btn-warning" data-bs-toggle="modal" data-bs-target="#modifierAbsence" (click)="modalAbsence(abs)">
+              <i class="fas fa-fw fa-paint-brush"></i>
+            </button>
+            <button *ngIf="abs.type!== 'ERP'"type="button" class="btn-circle btn-danger"
+                    data-bs-toggle="modal" data-bs-target="#supprimerAbsence" (click)="initModalSupprimer(abs.code_absence, abs.type)">
+              <i class="fas fa-fw fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  
+  <div class="modal modal-dialog-scrollable fade bd-example-modal-xl" id="modifierAbsence"  role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Modifier une absence</h5>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <table class="table-bordered" style="text-align: center; width: 100%">
+            <thead>
+            <tr>
+              <th scope="col">Couleur</th>
+              <th scope="col">Code absence</th>
+              <th scope="col">Description</th>
+              <th scope="col">Associé à </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td>
+                <input class="form-control" type="color" id="modifColor" value="{'background-color':abs.couleur }">
+              </td>
+              <td>
+                <input class="form-control" type="text" placeholder="Code absence" id="modifCode" [disabled]=true>
+              </td>
+              <td>
+                <input class="form-control" type="text" placeholder="Description" id="modifDescription" [disabled]=true>
+              </td>
+              <td>
+                <input class="form-control" list="absencesList" placeholder="..." id="modifAssociation" [disabled]=true>
+              </td>
+  
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+          <button type="button" class="btn btn-primary" (click)="modifierAbsence()">Valider la personnalisation</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal modal-dialog-scrollable fade bd-example-modal-xl" id="supprimerAbsence"  role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Supprimer une absence</h5>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <span>Souhaitez vous vraiment supprimer cette absence ?  </span>
+          <br>
+          <span id="absenceAmodifier"></span>
+          <span id="typeAmodifier" hidden="true"></span>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+          <button type="button" class="btn btn-primary" (click)="supprimerAbsence()">Supprimer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
