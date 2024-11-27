@@ -1,1 +1,2215 @@
-<p>planning works!</p>
+<!-- Week Calendar  -->
+<div class="card shadow mb-4">
+  <div class="card-header">
+    <div class="row">
+      <div class="col-12" style= "text-align: center;">
+        <button type="button" class="btn btn-primary" style="margin-right: 40px;" (click)="semainePrecedente()">
+          <i class="fas fa-fw fa-arrow-left"></i>
+        </button>
+        <select id="weekSelector" class="form-control" (change)="weekSelected()" style="max-width : 20%; display: inline; font-size: large; font-weight: bold; text-align-last: center;">
+          <ng-container *ngFor="let semaine of semaines">
+            <option value="{{ semaine.id }}" [attr.selected]="semaine.id == idSemaine ? true : null">Semaine {{semaine.nb_semaine}} {{semaine.date_start | date : 'yyyy' }}</option>
+          </ng-container>
+        </select>
+        <button type="button" class="btn btn-primary" style="margin-left: 40px;" (click)="semaineSuivante()">
+          <i class="fas fa-fw fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12" style= "text-align: center;" *ngIf="canSpecial(null)">
+        <button type="button" [ngClass]="(conducteur ? 'btn-circle btn-success' :'btn-circle btn-danger') "
+                (click)="changerAccesPlanning()" id="verrou">
+          <i id="iconeVerrou" [ngClass]="(conducteur ? 'fas fa-fw fa-lock-open' :'fas fa-fw fa-lock')"></i>
+        </button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12" style= "text-align: center;">
+        <span id="date_planning" class="mb-0 text-gray-800">Du {{dateStart | date : 'dd/MM/yyyy' }} au {{dateEnd | date : 'dd/MM/yyyy'}}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-body table-responsive">
+    <div class="row " style ="margin-bottom: 10px;">
+      <div class="col-2">
+        <div class="btn-group" style="margin-bottom: 10px">
+          <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Imprimer
+          </button>
+          <div class="dropdown-menu">
+            <button class="dropdown-item" (click)="imprimer('a3')">Format A3</button>
+            <button class="dropdown-item" (click)="imprimer('a0')">Format A0</button>
+          </div>
+        </div>
+        <input class="form-control" type="text" id="parChantier"
+               (keyup)="myFunctionC()" placeholder="Filtrer" >
+      </div>
+      <div class="col-7">
+      </div>
+      <div class="col-3" style="text-align: right;" *ngIf="canSpecial(null) || (canWrite(null) && conducteur )">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalCenter"
+                (click)="initInput()" style="margin-bottom: 10px; float : right">
+          Attribuer des chantiers ou absences
+        </button>
+        <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#copierSemainePrec"
+                style="margin-bottom: 10px; float : right" *ngIf="canSpecial(null)">
+          Copier la semaine précédente
+        </button>
+      </div>
+    </div>
+
+    <table class="table table-bordered" id="myTable" cellspacing="0" style="text-align: center">
+      <thead>
+      <tr role="row">
+        <th>Nom</th>
+        <th scope="col" >Lundi</th>
+        <th scope="col" >Mardi</th>
+        <th scope="col" >Mercredi</th>
+        <th scope="col" >Jeudi</th>
+        <th scope="col" >Vendredi</th>
+        <th scope="col" *ngIf="samedi">Samedi</th>
+        <th scope="col" *ngIf="canSpecial(null) || (canWrite(null) && conducteur )">Actions</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr *ngIf="canSpecial(null) || (canWrite(null) && conducteur )">
+        <td>
+          <form class="user">
+            <div class="form-group">
+              <input id="newnom" autocomplete="on" type="text" class="form-control" placeholder="Nom">
+              <input id="newtype" autocomplete="on" list="typeList" type="text" class="form-control" placeholder="Type">
+              <datalist id="typeList">
+                <option value='SALARIE'>
+                <option value='INTERIM/STAGIAIRE'>
+                <option value='ATELIER'>
+                <option value='DEPOT'>
+              </datalist>
+            </div>
+          </form>
+        </td>
+        <td *ngFor="let i of [0,1,2,3,4]">
+          <input class="form-control" list="datalistOptions" id="newchantier_{{i}}" placeholder="Chantier...">
+          <datalist id="datalistChantiers_{{i}}">
+            <option *ngFor="let code of chantiers" value='{{code.code_chantier}} / {{code.Nom}}'>
+          </datalist>
+          <input class="form-control" list="datalistActivite" id="activite_fantome{{i}}" placeholder="Activité...">
+          <textarea class="form-control" id="newcomm_{{i}}"></textarea>
+          <div class="row">
+            <div class="col-6">
+              <input type="checkbox" id="newmatin_{{i}}" (click)="journeeChecked('newapresmidi_'+i)">
+              <label for="newmatin_{{i}}" style="font-size:1vw;">AM</label>
+            </div>
+            <div class="col-6">
+              <input type="checkbox" id="newapresmidi_{{i}}" (click)="journeeChecked('newmatin_'+i)">
+              <label for="newapresmidi_{{i}}" style="font-size:1vw;">PM</label>
+            </div>
+          </div>
+        </td>
+        <td *ngIf="samedi">
+          <input class="form-control" list="datalistOptions" id="newchantier_5" placeholder="Chantier...">
+          <datalist id="datalistChantiers_5">
+            <option *ngFor="let code of chantiers" value='{{code.code_chantier}} / {{code.Nom}}'>
+          </datalist>
+          <input class="form-control" list="datalistActivite" id="activite_fantome5" placeholder="Activité...">
+          <textarea class="form-control" id="newcomm_5"></textarea>
+          <div class="row">
+            <div class="col-6">
+              <input type="checkbox" id="newmatin_5" (click)="journeeChecked('newapresmidi_5')">
+              <label for="newmatin_5" style="font-size:1vw;">AM</label>
+            </div>
+            <div class="col-6">
+              <input type="checkbox" id="newapresmidi_5" (click)="journeeChecked('newmatin_5')">
+              <label for="newapresmidi_5" style="font-size:1vw;">PM</label>
+            </div>
+          </div>
+
+        </td>
+        <td>
+          <button type="button" class="btn-circle btn-info" (click)="ajouterLigne()">
+            <i class="fas fa-fw fa-plus"></i>
+          </button>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="7" style="font-weight: bold">
+          Salariés BATIDEKO
+        </td>
+      </tr>
+      <tr *ngFor="let el of assignations"
+          [ngStyle]="{'background-color' : (el.type_assignation == 'fantome' ? 'yellow' : 'white')}">
+        <ng-container *ngIf="el.type==='SALARIE' && el.activite!=='3.50-ATELIER' && el.activite!=='4.40-DEPOT'">
+          <td id="nom_{{ el.matricule_resource }}" style="text-align: center; font-weight: bold;">
+            {{el.Nom_matricule}}
+            <br>
+
+            <p><span class="badge badge-info">{{ el.code_nature_nom }}</span></p>
+            <p *ngFor="let attr of el.attributs" class="text-xs text-green-500">{{attr}}</p>
+
+            <br *ngIf="el.tuteur != null">
+            <p *ngIf="el.tuteur != null" class="text-s text-green-500"><i class="fas fa-fw fa-chalkboard-teacher"></i> {{ el.tuteur_nom }}</p>
+
+            <ng-container *ngIf="el.apprentis != null">
+              <br />
+              <p *ngFor="let apprenti of el.apprentis" class="text-s text-green-500"><i class="fas fa-fw fa-graduation-cap"></i> {{ apprenti }}</p>
+            </ng-container>
+
+          </td>
+          <td  style="text-align: center;" *ngFor="let i of [0,1,2,3,4]">
+            <div *ngFor="let ass of el.semaine[i]">
+              <ng-container *ngIf="ass.journee ===1">
+                <div *ngIf="ass.commentaires!=='ABSENCE'; else absence">
+                <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold;" *ngIf="ass.code_chantier !== 'CC000000';else inconnu ">
+                  {{ass.code_chantier}}
+                </span>
+                  <ng-template #inconnu>
+                  <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold; background-color: #EFEF6DFF" >
+                  {{ass.code_chantier}}
+                </span>
+                  </ng-template>
+
+                  <br>
+                  <span class="text-xs" *ngIf="ass.nom_chantier !== 'Nouveau chantier';else inconnu_nom">{{ass.nom_chantier}}</span>
+
+                  <ng-template #inconnu_nom>
+                    <span class="text-xs">{{ass.commentaires}}</span>
+                  </ng-template>
+                  <br>
+                  <span class="badge badge-pill badge-info" [ngStyle]="{'background-color': ass.conducteur_couleur } ">{{ass.conducteur}}</span>
+                  <br>
+                  <span id="comm{{i}}_{{ el.matricule_resource }}" class="text-xs text-gray-500">{{ass.commentaires}}</span>
+                  <br>
+<ng-container *ngIf="ass.chef_chantier===1; else autre">
+                  <span id="btn{{i}}{{ el.matricule_resource }}{{ass.code_chantier}}"
+                        class="badge badge-pill badge-success">
+                    <i class="fas fa-fw fa-chess-king" style="margin: 3px"></i>
+                  </span>
+                  </ng-container>
+                  <ng-container *ngIf="ass.grand_deplacement===1">
+                  <span id="btn_deplacement{{i}}{{ el.matricule_resource }}{{ass.code_chantier}}"
+                        class="badge badge-pill badge-success" style="margin-left: 5px;">
+                    <i class="fas fa-fw fa-car" style="margin: 3px"></i>
+                  </span>
+                  </ng-container>
+                </div>
+                <ng-template #absence>
+                  <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold; color:red">{{ass.code_chantier}}</span>
+                  <br>
+                  <span class="text-xs" style="color: red">{{ass.nom_chantier}}</span>
+                  <br>
+                </ng-template>
+              </ng-container>
+            </div>
+            <hr *ngIf="findJournee1(el.semaine[i]) || findJournee2(el.semaine[i])">
+            <div *ngFor="let ass of el.semaine[i]">
+              <ng-container *ngIf="ass.journee ===2">
+                <div *ngIf="ass.commentaires!=='ABSENCE'; else absence">
+                <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold;" *ngIf="ass.code_chantier !== 'CC000000';else inconnu ">
+                  {{ass.code_chantier}}
+                </span>
+                  <ng-template #inconnu>
+                  <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold; background-color: #EFEF6DFF" >
+                  {{ass.code_chantier}}
+                </span>
+                  </ng-template>
+
+                  <br>
+
+                  <span class="text-xs" *ngIf="ass.nom_chantier !== 'Nouveau chantier';else inconnu_nom">{{ass.nom_chantier}}</span>
+
+                  <ng-template #inconnu_nom>
+                    <span class="text-xs">{{ass.commentaires}}</span>
+                  </ng-template>
+                  <br>
+                  <span class="badge badge-pill badge-info" [ngStyle]="{'background-color': ass.conducteur_couleur } ">{{ass.conducteur}}</span>
+                  <br>
+                  <span id="comm{{i}}_{{ el.matricule_resource }}" class="text-xs text-gray-500">{{ass.commentaires}}</span>
+                  <br>
+<ng-container *ngIf="ass.chef_chantier===1; else autre">
+                  <span id="btn{{i}}{{ el.matricule_resource }}{{ass.code_chantier}}"
+                        class="badge badge-pill badge-success">
+                    <i class="fas fa-fw fa-chess-king" style="margin: 3px"></i>
+                  </span>
+                  </ng-container>
+                  <ng-container *ngIf="ass.grand_deplacement===1">
+                  <span id="btn_deplacement{{i}}{{ el.matricule_resource }}{{ass.code_chantier}}"
+                        class="badge badge-pill badge-success" style="margin-left: 5px;">
+                    <i class="fas fa-fw fa-car" style="margin: 3px"></i>
+                  </span>
+                  </ng-container>
+                </div>
+                <ng-template #absence>
+                  <hr *ngIf="el.semaine[i].indexOf(ass) != 0">
+                  <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold; color:red">{{ass.code_chantier}}</span>
+                  <br>
+                  <span class="text-xs" style="color: red">{{ass.nom_chantier}}</span>
+                  <br>
+                </ng-template>
+              </ng-container>
+            </div>
+            <div *ngFor="let ass of el.semaine[i]">
+              <ng-container *ngIf="ass.journee ===0">
+                <div *ngIf="ass.commentaires!=='ABSENCE'; else absence">
+                <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold;" *ngIf="ass.code_chantier !== 'CC000000';else inconnu ">
+                  {{ass.code_chantier}}
+                </span>
+                  <ng-template #inconnu>
+                  <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold; background-color: #EFEF6DFF" >
+                  {{ass.code_chantier}}
+                </span>
+                  </ng-template>
+
+                  <br>
+                  <span class="text-xs" *ngIf="ass.nom_chantier !== 'Nouveau chantier';else inconnu_nom">{{ass.nom_chantier}}</span>
+
+                  <ng-template #inconnu_nom>
+                    <span class="text-xs">{{ass.commentaires}}</span>
+                  </ng-template>
+                  <br>
+                  <span class="badge badge-pill badge-info" [ngStyle]="{'background-color': ass.conducteur_couleur } ">{{ass.conducteur}}</span>
+                  <br>
+                  <span id="comm{{i}}_{{ el.matricule_resource }}" class="text-xs text-gray-500">{{ass.commentaires}}</span>
+                  <br>
+<ng-container *ngIf="ass.chef_chantier===1; else autre">
+                  <span id="btn{{i}}{{ el.matricule_resource }}{{ass.code_chantier}}"
+                        class="badge badge-pill badge-success">
+                    <i class="fas fa-fw fa-chess-king" style="margin: 3px"></i>
+                  </span>
+                  </ng-container>
+                  <ng-container *ngIf="ass.grand_deplacement===1">
+                  <span id="btn_deplacement{{i}}{{ el.matricule_resource }}{{ass.code_chantier}}"
+                        class="badge badge-pill badge-success" style="margin-left: 5px;">
+                    <i class="fas fa-fw fa-car" style="margin: 3px"></i>
+                  </span>
+                  </ng-container>
+                </div>
+                <ng-template #absence>
+                  <hr *ngIf="el.semaine[i].indexOf(ass) != 0">
+                  <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold; color:red">{{ass.code_chantier}}</span>
+                  <br>
+                  <span class="text-xs" style="color: red">{{ass.nom_chantier}}</span>
+                  <br>
+                </ng-template>
+              </ng-container>
+            </div>
+          </td>
+          <td *ngIf="samedi" style="text-align: center;">
+            <div *ngFor="let ass of el.semaine[5]">
+              <ng-container *ngIf="ass.journee ===1">
+                <div *ngIf="ass.commentaires!=='ABSENCE'; else absence">
+                <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold;" *ngIf="ass.code_chantier !== 'CC000000';else inconnu ">
+                  {{ass.code_chantier}}
+                </span>
+                  <ng-template #inconnu>
+                  <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold; background-color: #EFEF6DFF" >
+                  {{ass.code_chantier}}
+                </span>
+                  </ng-template>
+
+                  <br>
+                  <span class="text-xs" *ngIf="ass.nom_chantier !== 'Nouveau chantier';else inconnu_nom">{{ass.nom_chantier}}</span>
+
+                  <ng-template #inconnu_nom>
+                    <span class="text-xs">{{ass.commentaires}}</span>
+                  </ng-template>
+                  <br>
+                  <span class="badge badge-pill badge-info" [ngStyle]="{'background-color': ass.conducteur_couleur } ">{{ass.conducteur}}</span>
+                  <br>
+                  <span id="comm{{i}}_{{ el.matricule_resource }}" class="text-xs text-gray-500">{{ass.commentaires}}</span>
+                  <br>
+<ng-container *ngIf="ass.chef_chantier===1; else autre">
+                  <span id="btn{{i}}{{ el.matricule_resource }}{{ass.code_chantier}}"
+                        class="badge badge-pill badge-success">
+                    <i class="fas fa-fw fa-chess-king" style="margin: 3px"></i>
+                  </span>
+                  </ng-container>
+                  <ng-container *ngIf="ass.grand_deplacement===1">
+                  <span id="btn_deplacement{{i}}{{ el.matricule_resource }}{{ass.code_chantier}}"
+                        class="badge badge-pill badge-success" style="margin-left: 5px;">
+                    <i class="fas fa-fw fa-car" style="margin: 3px"></i>
+                  </span>
+                  </ng-container>
+                </div>
+                <ng-template #absence>
+                  <hr *ngIf="el.semaine[5].indexOf(ass) != 0">
+                  <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold; color:red">{{ass.code_chantier}}</span>
+                  <br>
+                  <span class="text-xs" style="color: red">{{ass.nom_chantier}}</span>
+                  <br>
+                </ng-template>
+              </ng-container>
+            </div>
+            <hr *ngIf="findJournee1(el.semaine[5]) || findJournee2(el.semaine[5])">
+            <div *ngFor="let ass of el.semaine[5]">
+              <ng-container *ngIf="ass.journee ===2">
+                <div *ngIf="ass.commentaires!=='ABSENCE'; else absence">
+                <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold;" *ngIf="ass.code_chantier !== 'CC000000';else inconnu ">
+                  {{ass.code_chantier}}
+                </span>
+                  <ng-template #inconnu>
+                  <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold; background-color: #EFEF6DFF" >
+                  {{ass.code_chantier}}
+                </span>
+                  </ng-template>
+
+                  <br>
+                  <span class="text-xs" *ngIf="ass.nom_chantier !== 'Nouveau chantier';else inconnu_nom">{{ass.nom_chantier}}</span>
+
+                  <ng-template #inconnu_nom>
+                    <span class="text-xs">{{ass.commentaires}}</span>
+                  </ng-template>
+                  <br>
+                  <span class="badge badge-pill badge-info" [ngStyle]="{'background-color': ass.conducteur_couleur } ">{{ass.conducteur}}</span>
+                  <br>
+                  <span id="comm{{i}}_{{ el.matricule_resource }}" class="text-xs text-gray-500">{{ass.commentaires}}</span>
+                  <br>
+<ng-container *ngIf="ass.chef_chantier===1; else autre">
+                  <span id="btn{{i}}{{ el.matricule_resource }}{{ass.code_chantier}}"
+                        class="badge badge-pill badge-success">
+                    <i class="fas fa-fw fa-chess-king" style="margin: 3px"></i>
+                  </span>
+                  </ng-container>
+                  <ng-container *ngIf="ass.grand_deplacement===1">
+                  <span id="btn_deplacement{{i}}{{ el.matricule_resource }}{{ass.code_chantier}}"
+                        class="badge badge-pill badge-success" style="margin-left: 5px;">
+                    <i class="fas fa-fw fa-car" style="margin: 3px"></i>
+                  </span>
+                  </ng-container>
+                </div>
+                <ng-template #absence>
+                  <hr *ngIf="el.semaine[5].indexOf(ass) != 0">
+                  <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold; color:red">{{ass.code_chantier}}</span>
+                  <br>
+                  <span class="text-xs" style="color: red">{{ass.nom_chantier}}</span>
+                  <br>
+                </ng-template>
+              </ng-container>
+            </div>
+            <div *ngFor="let ass of el.semaine[5]">
+              <ng-container *ngIf="ass.journee ===0">
+                <div *ngIf="ass.commentaires!=='ABSENCE'; else absence">
+                <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold;" *ngIf="ass.code_chantier !== 'CC000000';else inconnu ">
+                  {{ass.code_chantier}}
+                </span>
+                  <ng-template #inconnu>
+                  <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold; background-color: #EFEF6DFF" >
+                  {{ass.code_chantier}}
+                </span>
+                  </ng-template>
+
+                  <br>
+                  <span class="text-xs" *ngIf="ass.nom_chantier !== 'Nouveau chantier';else inconnu_nom">{{ass.nom_chantier}}</span>
+
+                  <ng-template #inconnu_nom>
+                    <span class="text-xs">{{ass.commentaires}}</span>
+                  </ng-template>
+                  <br>
+                  <span class="badge badge-pill badge-info" [ngStyle]="{'background-color': ass.conducteur_couleur } ">{{ass.conducteur}}</span>
+                  <br>
+                  <span id="comm{{i}}_{{ el.matricule_resource }}" class="text-xs text-gray-500">{{ass.commentaires}}</span>
+                  <br>
+<ng-container *ngIf="ass.chef_chantier===1; else autre">
+                  <span id="btn{{i}}{{ el.matricule_resource }}{{ass.code_chantier}}"
+                        class="badge badge-pill badge-success">
+                    <i class="fas fa-fw fa-chess-king" style="margin: 3px"></i>
+                  </span>
+                  </ng-container>
+                  <ng-container *ngIf="ass.grand_deplacement===1">
+                  <span id="btn_deplacement{{i}}{{ el.matricule_resource }}{{ass.code_chantier}}"
+                        class="badge badge-pill badge-success" style="margin-left: 5px;">
+                    <i class="fas fa-fw fa-car" style="margin: 3px"></i>
+                  </span>
+                  </ng-container>
+                </div>
+                <ng-template #absence>
+                  <hr *ngIf="el.semaine[5].indexOf(ass) != 0">
+                  <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold; color:red">{{ass.code_chantier}}</span>
+                  <br>
+                  <span class="text-xs" style="color: red">{{ass.nom_chantier}}</span>
+                  <br>
+                </ng-template>
+              </ng-container>
+            </div>
+          </td>
+          <td *ngIf="canSpecial(null) || (canWrite(null) && conducteur )">
+            <button type="button" class="btn-circle btn-warning" (click)="modifierLigne(el.matricule_resource,(el.type_assignation == 'fantome'))">
+              <i class="fas fa-fw fa-pen"></i>
+            </button>
+            <button type="button" class="btn-circle btn-danger" (click)="afficherModaleSuppressionLigne(el.matricule_resource)" >
+              <i class="fas fa-fw fa-redo"></i>
+            </button>
+            <button type="button" style="margin-right: 3px;" class="btn-circle btn-info" (click)="initCopierLigne(el)"
+                    data-bs-toggle="modal" data-bs-target="#copierLigne">
+              <i class="fas fa-fw fa-clone"></i>
+            </button>
+          </td>
+        </ng-container>
+      </tr>
+      <tr>
+        <td colspan="7" style="font-weight: bold">Intérims, Stagiaires</td>
+      </tr>
+      <tr *ngFor="let el of assignations"
+          [ngStyle]="{'background-color' : (el.type_assignation == 'fantome' ? 'yellow' : 'white')}">
+        <ng-container *ngIf="el.type==='INTERIM' || el.type === 'STAGIAIRE'">
+          <td id="nom_{{ el.matricule_resource }}" style="text-align: center; font-weight: bold;">
+            {{el.Nom_matricule}}
+
+
+            <br *ngIf="el.tuteur != null">
+            <p *ngIf="el.tuteur != null" class="text-s text-green-500"><i class="fas fa-fw fa-chalkboard-teacher"></i> {{ el.tuteur_nom }}</p>
+          </td>
+          <td  style="text-align: center;" *ngFor="let i of [0,1,2,3,4]">
+            <div *ngFor="let ass of el.semaine[i]">
+              <div *ngIf="ass.commentaires!=='ABSENCE'; else absence">
+                <hr *ngIf="el.semaine[i].indexOf(ass) != 0">
+                <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold;" *ngIf="ass.code_chantier !== 'CC000000';else inconnu ">
+                  {{ass.code_chantier}}
+                </span>
+                <ng-template #inconnu>
+                  <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold; background-color: #EFEF6DFF" >
+                  {{ass.code_chantier}}
+                </span>
+                </ng-template>
+
+                <br>
+                <span class="text-xs" *ngIf="ass.nom_chantier !== 'Nouveau chantier';else inconnu_nom">{{ass.nom_chantier}}</span>
+
+                <ng-template #inconnu_nom>
+                  <span class="text-xs">{{ass.commentaires}}</span>
+                </ng-template>
+                <br>
+                <span class="badge badge-pill badge-info" [ngStyle]="{'background-color': ass.conducteur_couleur } ">{{ass.conducteur}}</span>
+                <br>
+                <span id="comm{{i}}_{{ el.matricule_resource }}" class="text-xs text-gray-500">{{ass.commentaires}}</span>
+                <br>
+<ng-container *ngIf="ass.chef_chantier===1; else autre">
+                  <span id="btn{{i}}{{ el.matricule_resource }}{{ass.code_chantier}}"
+                        class="badge badge-pill badge-success">
+                    <i class="fas fa-fw fa-chess-king" style="margin: 3px"></i>
+                  </span>
+                </ng-container>
+                <ng-container *ngIf="ass.grand_deplacement===1">
+                  <span id="btn_deplacement{{i}}{{ el.matricule_resource }}{{ass.code_chantier}}"
+                        class="badge badge-pill badge-success" style="margin-left: 5px;">
+                    <i class="fas fa-fw fa-car" style="margin: 3px"></i>
+                  </span>
+                </ng-container>
+              </div>
+              <ng-template #absence>
+                <hr *ngIf="el.semaine[i].indexOf(ass) != 0">
+                <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold; color:red">{{ass.code_chantier}}</span>
+                <br>
+                <span class="text-xs" style="color: red">{{ass.nom_chantier}}</span>
+                <br>
+              </ng-template>
+
+            </div>
+          </td>
+          <td *ngIf="samedi" style="text-align: center;">
+            <div *ngFor="let ass of el.semaine[5]">
+              <div *ngIf="ass.commentaires!=='ABSENCE'; else absence">
+                <hr *ngIf="el.semaine[5].indexOf(ass) != 0">
+                <span id="5_{{ el.matricule_resource }}" style="font-weight: bold;">{{ass.code_chantier}}</span>
+                <br>
+                <span class="text-xs">{{ass.nom_chantier}}</span>
+                <br>
+                <span class="badge badge-pill badge-info" [ngStyle]="{'background-color': ass.conducteur_couleur } ">{{ass.conducteur}}</span>
+                <span id="comm5_{{ el.matricule_resource }}" class="text-xs text-gray-500">{{ass.commentaires}}</span>
+                <br>
+                <ng-container *ngIf="ass.chef_chantier===1; else autre">
+                  <span id="btn{{i}}{{ el.matricule_resource }}{{ass.code_chantier}}"
+                        class="badge badge-pill badge-success">
+                    <i class="fas fa-fw fa-chess-king" style="margin: 3px"></i>
+                  </span>
+                </ng-container>
+                <ng-container *ngIf="ass.grand_deplacement===1">
+                  <span id="btn_deplacement{{i}}{{ el.matricule_resource }}{{ass.code_chantier}}"
+                        class="badge badge-pill badge-success" style="margin-left: 5px;">
+                    <i class="fas fa-fw fa-car" style="margin: 3px"></i>
+                  </span>
+                </ng-container>
+              </div>
+              <ng-template #absence>
+                <hr *ngIf="el.semaine[5].indexOf(ass) != 0">
+                <span id="5_{{ el.matricule_resource }}" style="font-weight: bold; color:red">{{ass.code_chantier}}</span>
+                <br>
+                <span class="text-xs" style="color: red">{{ass.nom_chantier}}</span>
+                <br>
+              </ng-template>
+            </div>
+          </td>
+          <td *ngIf="canSpecial(null) || (canWrite(null) && conducteur )">
+            <button type="button" class="btn-circle btn-warning" (click)="modifierLigne(el.matricule_resource,(el.type_assignation == 'fantome'))">
+              <i class="fas fa-fw fa-pen"></i>
+            </button>
+            <button type="button" class="btn-circle btn-danger" (click)="afficherModaleSuppressionLigne(el.matricule_resource)" >
+              <i class="fas fa-fw fa-redo"></i>
+            </button>
+            <button type="button" style="margin-right: 3px;" class="btn-circle btn-info" (click)="initCopierLigne(el)"
+                    data-bs-toggle="modal" data-bs-target="#copierLigne">
+              <i class="fas fa-fw fa-clone"></i>
+            </button>
+          </td>
+        </ng-container>
+      </tr>
+      <tr>
+        <td colspan="7" style="font-weight: bold">Atelier</td>
+      </tr>
+      <tr *ngFor="let el of assignations"
+          [ngStyle]="{'background-color' : (el.type_assignation == 'fantome' ? 'yellow' : 'white')}">
+        <ng-container *ngIf="el.activite==='3.50-ATELIER' || el.type == 'ATELIER'">
+          <td id="nom_{{ el.matricule_resource }}" style="text-align: center; font-weight: bold;">{{el.Nom_matricule}}</td>
+          <td  style="text-align: center;" *ngFor="let i of [0,1,2,3,4]">
+            <div *ngFor="let ass of el.semaine[i]">
+
+              <ng-container *ngIf="ass.journee ===1">
+                <div *ngIf="ass.commentaires!=='ABSENCE'; else absence">
+                  <hr *ngIf="el.semaine[i].indexOf(ass) != 0">
+                  <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold;" *ngIf="ass.code_chantier !== 'CC000000';else inconnu ">
+                  {{ass.code_chantier}}
+                </span>
+                  <ng-template #inconnu>
+                  <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold; background-color: #EFEF6DFF" >
+                  {{ass.code_chantier}}
+                </span>
+                  </ng-template>
+
+                  <br>
+                  <span class="text-xs" *ngIf="ass.nom_chantier !== 'Nouveau chantier';else inconnu_nom">{{ass.nom_chantier}}</span>
+
+                  <ng-template #inconnu_nom>
+                    <span class="text-xs">{{ass.commentaires}}</span>
+                  </ng-template>
+                  <br>
+                  <span class="badge badge-pill badge-info" [ngStyle]="{'background-color': ass.conducteur_couleur } ">{{ass.conducteur}}</span>
+                  <br>
+                  <span id="comm{{i}}_{{ el.matricule_resource }}" class="text-xs text-gray-500">{{ass.commentaires}}</span>
+                  <br>
+<ng-container *ngIf="ass.chef_chantier===1; else autre">
+                  <span id="btn{{i}}{{ el.matricule_resource }}{{ass.code_chantier}}"
+                        class="badge badge-pill badge-success">
+                    <i class="fas fa-fw fa-chess-king" style="margin: 3px"></i>
+                  </span>
+                  </ng-container>
+                  <ng-container *ngIf="ass.grand_deplacement===1">
+                  <span id="btn_deplacement{{i}}{{ el.matricule_resource }}{{ass.code_chantier}}"
+                        class="badge badge-pill badge-success" style="margin-left: 5px;">
+                    <i class="fas fa-fw fa-car" style="margin: 3px"></i>
+                  </span>
+                  </ng-container>
+                </div>
+                <ng-template #absence>
+                  <hr *ngIf="el.semaine[i].indexOf(ass) != 0">
+                  <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold; color:red">{{ass.code_chantier}}</span>
+                  <br>
+                  <span class="text-xs" style="color: red">{{ass.nom_chantier}}</span>
+                  <br>
+                </ng-template>
+              </ng-container>
+            </div>
+
+            <hr *ngIf="findJournee1(el.semaine[i]) || findJournee2(el.semaine[i])">
+
+
+            <div *ngFor="let ass of el.semaine[i]">
+
+              <ng-container *ngIf="ass.journee ===2">
+                <div *ngIf="ass.commentaires!=='ABSENCE'; else absence">
+                  <hr *ngIf="el.semaine[i].indexOf(ass) != 0">
+                  <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold;" *ngIf="ass.code_chantier !== 'CC000000';else inconnu ">
+                  {{ass.code_chantier}}
+                </span>
+                  <ng-template #inconnu>
+                  <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold; background-color: #EFEF6DFF" >
+                  {{ass.code_chantier}}
+                </span>
+                  </ng-template>
+
+                  <br>
+                  <span class="text-xs" *ngIf="ass.nom_chantier !== 'Nouveau chantier';else inconnu_nom">{{ass.nom_chantier}}</span>
+
+                  <ng-template #inconnu_nom>
+                    <span class="text-xs">{{ass.commentaires}}</span>
+                  </ng-template>
+                  <br>
+                  <span class="badge badge-pill badge-info" [ngStyle]="{'background-color': ass.conducteur_couleur } ">{{ass.conducteur}}</span>
+                  <br>
+                  <span id="comm{{i}}_{{ el.matricule_resource }}" class="text-xs text-gray-500">{{ass.commentaires}}</span>
+                  <br>
+<ng-container *ngIf="ass.chef_chantier===1; else autre">
+                  <span id="btn{{i}}{{ el.matricule_resource }}{{ass.code_chantier}}"
+                        class="badge badge-pill badge-success">
+                    <i class="fas fa-fw fa-chess-king" style="margin: 3px"></i>
+                  </span>
+                  </ng-container>
+                  <ng-container *ngIf="ass.grand_deplacement===1">
+                  <span id="btn_deplacement{{i}}{{ el.matricule_resource }}{{ass.code_chantier}}"
+                        class="badge badge-pill badge-success" style="margin-left: 5px;">
+                    <i class="fas fa-fw fa-car" style="margin: 3px"></i>
+                  </span>
+                  </ng-container>
+                </div>
+                <ng-template #absence>
+                  <hr *ngIf="el.semaine[i].indexOf(ass) != 0">
+                  <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold; color:red">{{ass.code_chantier}}</span>
+                  <br>
+                  <span class="text-xs" style="color: red">{{ass.nom_chantier}}</span>
+                  <br>
+                </ng-template>
+              </ng-container>
+            </div>
+
+            <div *ngFor="let ass of el.semaine[i]">
+
+              <ng-container *ngIf="ass.journee ===0">
+                <div *ngIf="ass.commentaires!=='ABSENCE'; else absence">
+                  <hr *ngIf="el.semaine[i].indexOf(ass) != 0">
+                  <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold;" *ngIf="ass.code_chantier !== 'CC000000';else inconnu ">
+                  {{ass.code_chantier}}
+                </span>
+                  <ng-template #inconnu>
+                  <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold; background-color: #EFEF6DFF" >
+                  {{ass.code_chantier}}
+                </span>
+                  </ng-template>
+
+                  <br>
+                  <span class="text-xs" *ngIf="ass.nom_chantier !== 'Nouveau chantier';else inconnu_nom">{{ass.nom_chantier}}</span>
+
+                  <ng-template #inconnu_nom>
+                    <span class="text-xs">{{ass.commentaires}}</span>
+                  </ng-template>
+                  <br>
+                  <span class="badge badge-pill badge-info" [ngStyle]="{'background-color': ass.conducteur_couleur } ">{{ass.conducteur}}</span>
+                  <br>
+                  <span id="comm{{i}}_{{ el.matricule_resource }}" class="text-xs text-gray-500">{{ass.commentaires}}</span>
+                  <br>
+<ng-container *ngIf="ass.chef_chantier===1; else autre">
+                  <span id="btn{{i}}{{ el.matricule_resource }}{{ass.code_chantier}}"
+                        class="badge badge-pill badge-success">
+                    <i class="fas fa-fw fa-chess-king" style="margin: 3px"></i>
+                  </span>
+                  </ng-container>
+                  <ng-container *ngIf="ass.grand_deplacement===1">
+                  <span id="btn_deplacement{{i}}{{ el.matricule_resource }}{{ass.code_chantier}}"
+                        class="badge badge-pill badge-success" style="margin-left: 5px;">
+                    <i class="fas fa-fw fa-car" style="margin: 3px"></i>
+                  </span>
+                  </ng-container>
+                </div>
+                <ng-template #absence>
+                  <hr *ngIf="el.semaine[i].indexOf(ass) != 0">
+                  <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold; color:red">{{ass.code_chantier}}</span>
+                  <br>
+                  <span class="text-xs" style="color: red">{{ass.nom_chantier}}</span>
+                  <br>
+                </ng-template>
+              </ng-container>
+            </div>
+          </td>
+          <td *ngIf="samedi" style="text-align: center;">
+            <div *ngFor="let ass of el.semaine[5]">
+              <div *ngIf="ass.commentaires!=='ABSENCE'; else absence">
+                <hr *ngIf="el.semaine[5].indexOf(ass) != 0">
+                <span id="5_{{ el.matricule_resource }}" style="font-weight: bold;">{{ass.code_chantier}}</span>
+                <br>
+                <span class="text-xs">{{ass.nom_chantier}}</span>
+                <br>
+                <span class="badge badge-pill badge-info" [ngStyle]="{'background-color': ass.conducteur_couleur } ">{{ass.conducteur}}</span>
+                <span id="comm5_{{ el.matricule_resource }}" class="text-xs text-gray-500">{{ass.commentaires}}</span>
+                <br>
+<ng-container *ngIf="ass.chef_chantier===1; else autre">
+                  <span id="btn{{i}}{{ el.matricule_resource }}{{ass.code_chantier}}"
+                        class="badge badge-pill badge-success">
+                    <i class="fas fa-fw fa-chess-king" style="margin: 3px"></i>
+                  </span>
+                </ng-container>
+                <ng-container *ngIf="ass.grand_deplacement===1">
+                  <span id="btn_deplacement{{i}}{{ el.matricule_resource }}{{ass.code_chantier}}"
+                        class="badge badge-pill badge-success" style="margin-left: 5px;">
+                    <i class="fas fa-fw fa-car" style="margin: 3px"></i>
+                  </span>
+                </ng-container>
+              </div>
+              <ng-template #absence>
+                <hr *ngIf="el.semaine[5].indexOf(ass) != 0">
+                <span id="5_{{ el.matricule_resource }}" style="font-weight: bold; color:red">{{ass.code_chantier}}</span>
+                <br>
+                <span class="text-xs" style="color: red">{{ass.nom_chantier}}</span>
+                <br>
+              </ng-template>
+            </div>
+          </td>
+          <td *ngIf="canSpecial(null) || (canWrite(null) && conducteur )">
+            <button type="button" class="btn-circle btn-warning" (click)="modifierLigne(el.matricule_resource,(el.type_assignation == 'fantome'))">
+              <i class="fas fa-fw fa-pen"></i>
+            </button>
+            <button type="button" class="btn-circle btn-danger" (click)="afficherModaleSuppressionLigne(el.matricule_resource)" >
+              <i class="fas fa-fw fa-redo"></i>
+            </button>
+            <button type="button" style="margin-right: 3px;" class="btn-circle btn-info" (click)="initCopierLigne(el)"
+                    data-bs-toggle="modal" data-bs-target="#copierLigne">
+              <i class="fas fa-fw fa-clone"></i>
+            </button>
+          </td>
+        </ng-container>
+      </tr>
+      <!-- DEPOT TEST -->
+
+    <tr>
+        <td colspan="7" style="font-weight: bold">DEPOT</td>
+      </tr>
+      <tr *ngFor="let el of assignations"
+          [ngStyle]="{'background-color' : (el.type_assignation == 'fantome' ? 'yellow' : 'white')}">
+        <ng-container *ngIf="el.activite==='4.40-DEPOT' || el.type == 'DEPOT'">
+          <td id="nom_{{ el.matricule_resource }}" style="text-align: center; font-weight: bold;">{{el.Nom_matricule}}</td>
+          <td  style="text-align: center;" *ngFor="let i of [0,1,2,3,4]">
+            <div *ngFor="let ass of el.semaine[i]">
+
+              <ng-container *ngIf="ass.journee ===1">
+                <div *ngIf="ass.commentaires!=='ABSENCE'; else absence">
+                  <hr *ngIf="el.semaine[i].indexOf(ass) != 0">
+                  <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold;" *ngIf="ass.code_chantier !== 'CC000000';else inconnu ">
+                  {{ass.code_chantier}}
+                </span>
+                  <ng-template #inconnu>
+                  <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold; background-color: #EFEF6DFF" >
+                  {{ass.code_chantier}}
+                </span>
+                  </ng-template>
+
+                  <br>
+                  <span class="text-xs" *ngIf="ass.nom_chantier !== 'Nouveau chantier';else inconnu_nom">{{ass.nom_chantier}}</span>
+
+                  <ng-template #inconnu_nom>
+                    <span class="text-xs">{{ass.commentaires}}</span>
+                  </ng-template>
+                  <br>
+                  <span class="badge badge-pill badge-info" [ngStyle]="{'background-color': ass.conducteur_couleur } ">{{ass.conducteur}}</span>
+                  <br>
+                  <span id="comm{{i}}_{{ el.matricule_resource }}" class="text-xs text-gray-500">{{ass.commentaires}}</span>
+                  <br>
+<ng-container *ngIf="ass.chef_chantier===1; else autre">
+                  <span id="btn{{i}}{{ el.matricule_resource }}{{ass.code_chantier}}"
+                        class="badge badge-pill badge-success">
+                    <i class="fas fa-fw fa-chess-king" style="margin: 3px"></i>
+                  </span>
+                  </ng-container>
+                  <ng-container *ngIf="ass.grand_deplacement===1">
+                  <span id="btn_deplacement{{i}}{{ el.matricule_resource }}{{ass.code_chantier}}"
+                        class="badge badge-pill badge-success" style="margin-left: 5px;">
+                    <i class="fas fa-fw fa-car" style="margin: 3px"></i>
+                  </span>
+                  </ng-container>
+                </div>
+                <ng-template #absence>
+                  <hr *ngIf="el.semaine[i].indexOf(ass) != 0">
+                  <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold; color:red">{{ass.code_chantier}}</span>
+                  <br>
+                  <span class="text-xs" style="color: red">{{ass.nom_chantier}}</span>
+                  <br>
+                </ng-template>
+              </ng-container>
+            </div>
+
+            <hr *ngIf="findJournee1(el.semaine[i]) || findJournee2(el.semaine[i])">
+
+
+            <div *ngFor="let ass of el.semaine[i]">
+
+              <ng-container *ngIf="ass.journee ===2">
+                <div *ngIf="ass.commentaires!=='ABSENCE'; else absence">
+                  <hr *ngIf="el.semaine[i].indexOf(ass) != 0">
+                  <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold;" *ngIf="ass.code_chantier !== 'CC000000';else inconnu ">
+                  {{ass.code_chantier}}
+                </span>
+                  <ng-template #inconnu>
+                  <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold; background-color: #EFEF6DFF" >
+                  {{ass.code_chantier}}
+                </span>
+                  </ng-template>
+
+                  <br>
+                  <span class="text-xs" *ngIf="ass.nom_chantier !== 'Nouveau chantier';else inconnu_nom">{{ass.nom_chantier}}</span>
+
+                  <ng-template #inconnu_nom>
+                    <span class="text-xs">{{ass.commentaires}}</span>
+                  </ng-template>
+                  <br>
+                  <span class="badge badge-pill badge-info" [ngStyle]="{'background-color': ass.conducteur_couleur } ">{{ass.conducteur}}</span>
+                  <br>
+                  <span id="comm{{i}}_{{ el.matricule_resource }}" class="text-xs text-gray-500">{{ass.commentaires}}</span>
+                  <br>
+<ng-container *ngIf="ass.chef_chantier===1; else autre">
+                  <span id="btn{{i}}{{ el.matricule_resource }}{{ass.code_chantier}}"
+                        class="badge badge-pill badge-success">
+                    <i class="fas fa-fw fa-chess-king" style="margin: 3px"></i>
+                  </span>
+                  </ng-container>
+                  <ng-container *ngIf="ass.grand_deplacement===1">
+                  <span id="btn_deplacement{{i}}{{ el.matricule_resource }}{{ass.code_chantier}}"
+                        class="badge badge-pill badge-success" style="margin-left: 5px;">
+                    <i class="fas fa-fw fa-car" style="margin: 3px"></i>
+                  </span>
+                  </ng-container>
+                </div>
+                <ng-template #absence>
+                  <hr *ngIf="el.semaine[i].indexOf(ass) != 0">
+                  <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold; color:red">{{ass.code_chantier}}</span>
+                  <br>
+                  <span class="text-xs" style="color: red">{{ass.nom_chantier}}</span>
+                  <br>
+                </ng-template>
+              </ng-container>
+            </div>
+
+            <div *ngFor="let ass of el.semaine[i]">
+
+              <ng-container *ngIf="ass.journee ===0">
+                <div *ngIf="ass.commentaires!=='ABSENCE'; else absence">
+                  <hr *ngIf="el.semaine[i].indexOf(ass) != 0">
+                  <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold;" *ngIf="ass.code_chantier !== 'CC000000';else inconnu ">
+                  {{ass.code_chantier}}
+                </span>
+                  <ng-template #inconnu>
+                  <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold; background-color: #EFEF6DFF" >
+                  {{ass.code_chantier}}
+                </span>
+                  </ng-template>
+
+                  <br>
+                  <span class="text-xs" *ngIf="ass.nom_chantier !== 'Nouveau chantier';else inconnu_nom">{{ass.nom_chantier}}</span>
+
+                  <ng-template #inconnu_nom>
+                    <span class="text-xs">{{ass.commentaires}}</span>
+                  </ng-template>
+                  <br>
+                  <span class="badge badge-pill badge-info" [ngStyle]="{'background-color': ass.conducteur_couleur } ">{{ass.conducteur}}</span>
+                  <br>
+                  <span id="comm{{i}}_{{ el.matricule_resource }}" class="text-xs text-gray-500">{{ass.commentaires}}</span>
+                  <br>
+<ng-container *ngIf="ass.chef_chantier===1; else autre">
+                  <span id="btn{{i}}{{ el.matricule_resource }}{{ass.code_chantier}}"
+                        class="badge badge-pill badge-success">
+                    <i class="fas fa-fw fa-chess-king" style="margin: 3px"></i>
+                  </span>
+                  </ng-container>
+                  <ng-container *ngIf="ass.grand_deplacement===1">
+                  <span id="btn_deplacement{{i}}{{ el.matricule_resource }}{{ass.code_chantier}}"
+                        class="badge badge-pill badge-success" style="margin-left: 5px;">
+                    <i class="fas fa-fw fa-car" style="margin: 3px"></i>
+                  </span>
+                  </ng-container>
+                </div>
+                <ng-template #absence>
+                  <hr *ngIf="el.semaine[i].indexOf(ass) != 0">
+                  <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold; color:red">{{ass.code_chantier}}</span>
+                  <br>
+                  <span class="text-xs" style="color: red">{{ass.nom_chantier}}</span>
+                  <br>
+                </ng-template>
+              </ng-container>
+            </div>
+          </td>
+          <td *ngIf="samedi" style="text-align: center;">
+            <div *ngFor="let ass of el.semaine[5]">
+              <div *ngIf="ass.commentaires!=='ABSENCE'; else absence">
+                <hr *ngIf="el.semaine[5].indexOf(ass) != 0">
+                <span id="5_{{ el.matricule_resource }}" style="font-weight: bold;">{{ass.code_chantier}}</span>
+                <br>
+                <span class="text-xs">{{ass.nom_chantier}}</span>
+                <br>
+                <span class="badge badge-pill badge-info" [ngStyle]="{'background-color': ass.conducteur_couleur } ">{{ass.conducteur}}</span>
+                <span id="comm5_{{ el.matricule_resource }}" class="text-xs text-gray-500">{{ass.commentaires}}</span>
+
+                <br>
+<ng-container *ngIf="ass.chef_chantier===1; else autre">
+                  <span id="btn{{i}}{{ el.matricule_resource }}{{ass.code_chantier}}"
+                        class="badge badge-pill badge-success">
+                    <i class="fas fa-fw fa-chess-king" style="margin: 3px"></i>
+                  </span>
+                </ng-container>
+                <ng-container *ngIf="ass.grand_deplacement===1">
+                  <span id="btn_deplacement{{i}}{{ el.matricule_resource }}{{ass.code_chantier}}"
+                        class="badge badge-pill badge-success" style="margin-left: 5px;">
+                    <i class="fas fa-fw fa-car" style="margin: 3px"></i>
+                  </span>
+                </ng-container>
+              </div>
+              <ng-template #absence>
+                <hr *ngIf="el.semaine[5].indexOf(ass) != 0">
+                <span id="5_{{ el.matricule_resource }}" style="font-weight: bold; color:red">{{ass.code_chantier}}</span>
+                <br>
+                <span class="text-xs" style="color: red">{{ass.nom_chantier}}</span>
+                <br>
+              </ng-template>
+            </div>
+          </td>
+          <td *ngIf="canSpecial(null) || (canWrite(null) && conducteur )">
+            <button type="button" class="btn-circle btn-warning" (click)="modifierLigne(el.matricule_resource,(el.type_assignation == 'fantome'))">
+              <i class="fas fa-fw fa-pen"></i>
+            </button>
+            <button type="button" class="btn-circle btn-danger" (click)="afficherModaleSuppressionLigne(el.matricule_resource)" >
+              <i class="fas fa-fw fa-redo"></i>
+            </button>
+            <button type="button" style="margin-right: 3px;" class="btn-circle btn-info" (click)="initCopierLigne(el)"
+                    data-bs-toggle="modal" data-bs-target="#copierLigne">
+              <i class="fas fa-fw fa-clone"></i>
+            </button>
+          </td>
+        </ng-container>
+      </tr>
+      <tr>
+        <td colspan="7" style="font-weight: bold">Non actifs</td>
+      </tr>
+      <tr *ngFor="let el of assignations_non_actif">
+        <td id="nom_{{ el.matricule_resource }}" style="text-align: center; font-weight: bold;">{{el.Nom_matricule}}</td>
+        <td  style="text-align: center;" *ngFor="let i of [0,1,2,3,4]">
+          <div *ngFor="let ass of el.semaine[i]">
+            <hr *ngIf="el.semaine[i].indexOf(ass) != 0">
+            <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold;">{{ass.code_chantier}}</span>
+            <br>
+            <span class="text-xs">{{ass.nom_chantier}}</span>
+            <br>
+            <span id="comm{{i}}_{{ el.matricule_resource }}" class="text-xs text-gray-500">{{ass.commentaires}}</span>
+            <div *ngIf="ass.chef_chantier===1; else autre">
+                <span id="btn{{i}}{{ el.matricule_resource }}{{ass.code_chantier}}"
+                      class="badge badge-pill badge-success">
+                  <i class="fas fa-fw fa-chess-king" style="margin: 3px"></i>
+                </span>
+            </div>
+          </div>
+        </td>
+        <td *ngIf="samedi" style="text-align: center;">
+          <div *ngFor="let ass of el.semaine[5]">
+            <div *ngIf="ass.commentaires!=='ABSENCE'; else absence">
+              <hr *ngIf="el.semaine[5].indexOf(ass) != 0">
+              <span id="5_{{ el.matricule_resource }}" style="font-weight: bold;">{{ass.code_chantier}}</span>
+              <br>
+              <span class="text-xs">{{ass.nom_chantier}}</span>
+              <br>
+              <span id="comm5_{{ el.matricule_resource }}" class="text-xs text-gray-500">{{ass.commentaires}}</span>
+              <div *ngIf="ass.chef_chantier===1; else autre">
+                <span id="btn{{i}}{{ el.matricule_resource }}{{ass.code_chantier}}"
+                      class="badge badge-pill badge-success">
+                  <i class="fas fa-fw fa-chess-king" style="margin: 3px"></i>
+                </span>
+              </div>
+            </div>
+            <ng-template #absence>
+              <hr *ngIf="el.semaine[5].indexOf(ass) != 0">
+              <span id="5_{{ el.matricule_resource }}" style="font-weight: bold; color:red">{{ass.code_chantier}}</span>
+              <br>
+              <span class="text-xs" style="color: red">{{ass.nom_chantier}}</span>
+              <br>
+            </ng-template>
+          </div>
+        </td>
+        <td *ngIf="canSpecial(null) || (canWrite(null) && conducteur )">
+          <button type="button" class="btn-circle btn-warning" (click)="modifierLigne(el.matricule_resource,(el.type_assignation == 'fantome'))">
+            <i class="fas fa-fw fa-pen"></i>
+          </button>
+          <button type="button" class="btn-circle btn-danger" (click)="afficherModaleSuppressionLigne(el.matricule_resource)" >
+            <i class="fas fa-fw fa-redo"></i>
+          </button>
+          <button type="button" style="margin-right: 3px;" class="btn-circle btn-info" (click)="initCopierLigne(el)"
+                  data-bs-toggle="modal" data-bs-target="#copierLigne">
+            <i class="fas fa-fw fa-clone"></i>
+          </button>
+        </td>
+      </tr>
+
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Ajouter des attributions chantier-->
+<!-- <div class="modal fade bd-example-modal-xl" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Planning</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-5">
+            <div class="card shadow mb-4">
+              <div class="card-header">
+                <span class="h3 mb-0 text-gray-800">Quel chantier ?</span>
+              </div>
+              <div class="card-body table-responsive">
+                <input class="form-control" list="datalistOptions" id="chantier" placeholder="Chantier...">
+                <datalist id="datalistOptions">
+                  <option *ngFor="let chantier of chantiers" value='{{chantier.code_chantier}} / {{chantier.nom_chantier}}'>
+                </datalist>
+                <br>
+                <span>Si pas de chantier : </span>
+                <input class="form-control" list="datalistAbsences" id="absence" placeholder="Absence...">
+                <datalist id="datalistAbsences">
+                  <ng-container *ngFor="let abs of absences">
+                    <option  *ngIf="abs.type == null" value='{{abs.description}}'>
+                  </ng-container>
+                </datalist>
+              </div>
+            </div>
+          </div>
+          <div class="col-7">
+            <div class="card shadow mb-4">
+              <div class="card-header">
+                <span class="h3 mb-0 text-gray-800">Quel(s) jour(s) ?</span>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-6">
+                    <div>
+                      <input type="checkbox" id="case0" (click)="dayChecked('case0');couleurs()">
+                      <label for="case0" style="margin-left: 3px;">Lundi</label>
+                    </div>
+                    <div>
+                      <input type="checkbox" id="case1" (click)="dayChecked('case1');couleurs()">
+                      <label for="case1" style="margin-left: 3px;">Mardi</label>
+                    </div>
+                    <div>
+                      <input type="checkbox" id="case2" (click)="dayChecked('case2');couleurs()">
+                      <label for="case2" style="margin-left: 3px;">Mercredi</label>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div>
+                      <input type="checkbox" id="case3" (click)="dayChecked('case3');couleurs()">
+                      <label for="case3" style="margin-left: 3px;">Jeudi</label>
+                    </div>
+                    <div>
+                      <input type="checkbox" id="case4" (click)="dayChecked('case4');couleurs()">
+                      <label for="case4" style="margin-left: 3px;">Vendredi</label>
+                    </div>
+                    <div>
+                      <input type="checkbox" id="case5" (click)="dayChecked('case5');couleurs()">
+                      <label for="case5" style="margin-left: 3px;">Samedi</label>
+                    </div>
+                  </div>
+                </div>
+                <div style="text-align: center">
+                  <input type="checkbox" id="casesemaine" (click)="weekChecked();couleurs()">
+                  <label for="casesemaine" style="margin-left: 3px;">Toute la semaine</label>
+                </div>
+                <div style="font-weight: bold; text-align: center">OU</div>
+                <div class="row">
+                  <div class="col-6">
+                    <label for="date_debut">Date début :</label>
+                    <input class="form-control" type="date" id="date_debut" name="trip-start" min="{{dateStart | date : 'yyyy-MM-dd'}}" max="{{dateEnd | date : 'yyyy-MM-dd'}}">
+                  </div>
+                  <div class="col-6">
+                    <label for="date_fin">Date fin :</label>
+                    <input class="form-control" type="date" id="date_fin" name="trip-start" min="{{dateStart | date : 'yyyy-MM-dd'}}" >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-7">
+            <div class="card shadow mb-4">
+              <div class="card-header">
+                <span class="h3 mb-0 text-gray-800">Un commentaire ?</span>
+              </div>
+              <div class="card-body">
+                <textarea class="form-control" id="commentaires"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="col-5">
+            <div class="card shadow mb-4">
+              <div class="card-header">
+                <span class="h3 mb-0 text-gray-800">Quelle activité ?</span>
+              </div>
+              <div class="card-body table-responsive">
+                <input class="form-control" list="datalistActivite" id="activite" placeholder="Activité...">
+                <datalist id="datalistActivite">
+                  <option *ngFor="let activite of activites" value='{{activite.libelle}}'>
+                </datalist>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card shadow mb-4">
+          <div class="card-header">
+            <span class="h3 mb-0 text-gray-800">Quelle(s) personne(s) ?</span>
+          </div>
+          <div class="card-body">
+            <legend>Légende : </legend>
+            <table class="table" width="100%" style="text-align: center">
+              <tr>
+                <td class="bg-gradient-success">
+                  <span style="color: white; font-weight: bold">Disponible</span>
+                </td>
+                <td class="bg-gradient-danger">
+                  <span style="color: white; font-weight: bold">Absent</span>
+                </td>
+                <td class="bg-gradient-warning">
+                  <span style="color: white; font-weight: bold">Déjà sur chantier</span>
+                </td>
+                <td class="bg-gradient-info">
+                  <span style="color: white; font-weight: bold">Sélectionné</span>
+                </td>
+              </tr>
+
+            </table>
+            <input class="form-control" type="text" id="search" (keyup)="filter()" placeholder="Filtrer par nom">
+            <ul id="Menu">
+              <li style="list-style : none; padding: 5px 0;" *ngFor="let el of assignations">
+                <button  id="boutonName_{{el.matricule_resource_searchable}}" style="width: 100%;  " type="button" class="btn btn-success"
+                         data-bs-toggle="modal" (click)="changeCouleur(el.matricule_resource,el.Nom_matricule);">
+                  {{el.Nom_matricule}}
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+        <button type="button" class="btn btn-primary" (click)="modifierPlanning()">Valider les attributions chantier</button>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+<!-- Modal modifier la ligne assignation-->
+<!-- <div class="modal fade bd-example-modal-xl" id="modale" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Modifier la ligne</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="card-body table-responsive">
+          <table class="table table-bordered" id="myTableZ" cellspacing="0" *ngIf="pos!==false">
+            <thead>
+            <tr role="row">
+              <th class="sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1"
+                  aria-label="Name: activate to sort column descending" style="width: 57px;" aria-sort="ascending">
+                Name
+              </th>
+              <th scope="col">Lundi</th>
+              <th scope="col">Mardi</th>
+              <th scope="col">Mercredi</th>
+              <th scope="col">Jeudi</th>
+              <th scope="col">Vendredi</th>
+              <th scope="col" *ngIf="samedi">Samedi</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <tr>
+              <td id="nom" style="font-weight: bold;">
+                {{assignations[pos].Nom_matricule}}
+                <button id="deplacement{{assignations[pos].matricule_resource_searchable}}"
+                        class="btn-circle btn-sm btn-secondary" type="button"
+                        (click)="grandDeplacementSemaine(assignations[pos])">
+                  <i class="fas fa-fw fa-car"></i>
+                </button>
+                <button id="button{{assignations[pos].matricule_resource_searchable}}"
+                        class="btn-circle btn-sm btn-secondary" type="button"
+                        (click)="chefChantierSemaine(assignations[pos])" style="margin-left: 5px;">
+                  <i class="fas fa-fw fa-chess-king"></i>
+                </button>
+              </td>
+              <td *ngFor="let i of [0,1,2,3,4]">
+                <div id="{{i}}_modifierLigne" style="text-align: center" *ngFor="let ass of assignations[pos].semaine[i]">
+                  <hr *ngIf="assignations[pos].semaine[i].indexOf(ass)!==0">
+                  <div *ngIf="ass.commentaires!='ABSENCE';else absences" >
+                    <input class="form-control" list="datalistOptions"
+                           id="{{i}}_{{ass.code_chantier}}_{{assignations[pos].matricule_resource_searchable}}"
+                           value ="{{ass.code_chantier}}">
+                    <textarea class="form-control" id="{{i}}_comm{{ass.code_chantier}}_{{assignations[pos].matricule_resource_searchable}}">{{ass.commentaires}}</textarea>
+                    <div class ="row">
+                      <div class="col-6">
+                        <input  id="{{i}}_matin{{ass.code_chantier}}_{{assignations[pos].matricule_resource_searchable}}"
+                                type="checkbox" [checked]="ass.journee==1"
+                                (click)="journeeChecked(i+'_apresmidi'+ass.code_chantier+'_'+assignations[pos].matricule_resource)">
+                        <label for="{{i}}_matin{{ass.code_chantier}}_{{assignations[pos].matricule_resource_searchable}}"
+                               style="font-size:1vw;">AM</label>
+                      </div>
+                      <div class="col-6">
+                        <input  id="{{i}}_apresmidi{{ass.code_chantier}}_{{assignations[pos].matricule_resource_searchable}}"
+                                type="checkbox" [checked]="ass.journee == 2"
+                                (click)="journeeChecked(i+'_matin'+ass.code_chantier+'_'+assignations[pos].matricule_resource)">
+                        <label for="{{i}}_apresmidi{{ass.code_chantier}}_{{assignations[pos].matricule_resource_searchable}}"
+                               style="font-size:1vw;">PM</label>
+                      </div>
+                    </div>
+                    <ng-container *ngIf="ass.grand_deplacement===0; else autre_deplacement">
+                      <button id="deplacement{{i}}{{assignations[pos].matricule_resource_searchable}}{{ass.code_chantier}}"
+                              class="btn-circle btn-sm btn-secondary" type="button"
+                              (click)='grandDeplacement("deplacement"+i+assignations[pos].matricule_resource+ass.code_chantier,assignations[pos].matricule_resource)'>
+                        <i class="fas fa-fw fa-car"></i>
+                      </button>
+                    </ng-container>
+                    <ng-template #autre_deplacement>
+                      <button id="deplacement{{i}}{{assignations[pos].matricule_resource_searchable}}{{ass.code_chantier}}"
+                              class="btn-circle btn-sm btn-success" type="button"
+                              (click)='grandDeplacement("deplacement"+i+assignations[pos].matricule_resource+ass.code_chantier,assignations[pos].matricule_resource)'>
+                        <i class="fas fa-fw fa-car"></i>
+                      </button>
+                    </ng-template>
+                    <ng-container *ngIf="ass.chef_chantier===0; else autre">
+                      <button id="button{{i}}{{assignations[pos].matricule_resource_searchable}}{{ass.code_chantier}}"
+                              class="btn-circle btn-sm btn-secondary" type="button"
+                              (click)="chefChantier('button'+i+assignations[pos].matricule_resource+ass.code_chantier,assignations[pos].matricule_resource)" style="margin-left: 5px;">
+                        <i class="fas fa-fw fa-chess-king"></i>
+                      </button>
+                    </ng-container>
+                    <ng-template #autre>
+                      <button id="button{{i}}{{assignations[pos].matricule_resource_searchable}}{{ass.code_chantier}}"
+                              class="btn-circle btn-sm btn-success" type="button"
+                              (click)="chefChantier('button'+i+assignations[pos].matricule_resource+ass.code_chantier,assignations[pos].matricule_resource)" style="margin-left: 5px;">
+                        <i class="fas fa-fw fa-chess-king"></i>
+                      </button>
+                    </ng-template>
+                  </div>
+                  <ng-template #absences>
+                    <input class="form-control" list="datalistAbsences"
+                           id="ABS{{i}}_{{ass.code_chantier}}_{{assignations[pos].matricule_resource_searchable}}"
+                           value="{{ass.code_chantier}}">
+                    <div class="row">
+                      <div class="col-6">
+                        <input id="abs{{i}}_matin{{ass.code_chantier}}_{{assignations[pos].matricule_resource_searchable}}"
+                               type="checkbox" [checked]="ass.journee == 1"
+                               (click)="journeeChecked('abs'+i+'_apresmidi'+ass.code_chantier+'_'+assignations[pos].matricule_resource)" >
+                        <label for="abs{{i}}_matin{{ass.code_chantier}}_{{assignations[pos].matricule_resource_searchable}}"
+                               style="font-size:1vw;">AM</label>
+                      </div>
+                      <div class="col-6">
+                        <input id="abs{{i}}_apresmidi{{ass.code_chantier}}_{{assignations[pos].matricule_resource_searchable}}"
+                               type="checkbox" [checked]="ass.journee == 2"
+                               (click)="journeeChecked('abs'+i+'_matin'+ass.code_chantier+'_'+assignations[pos].matricule_resource)" >
+                        <label for="abs{{i}}_apresmidi{{ass.code_chantier}}_{{assignations[pos].matricule_resource_searchable}}"
+                               style="font-size:1vw;">PM</label>
+                      </div>
+                    </div>
+                  </ng-template>
+                </div>
+                <div style="text-align: center">
+                  <hr>
+                  <small>Nouveau chantier :</small>
+                  <input class="form-control" list="datalistOptions" id="newchantier{{i}}" placeholder="Chantier">
+                  <input class="form-control" list="datalistActivite" id="newactivite{{i}}" placeholder="Activité...">
+                  <textarea class="form-control" id="newcommentaire{{i}}"></textarea>
+                  <div class="row">
+                    <div class="col-6">
+                      <input type="checkbox" id="newmatin{{i}}"
+                             (click)="journeeChecked('newapresmidi'+i)" [checked]="i == 4" >
+                      <label for="newmatin{{i}}"
+                             style="font-size:1vw;">AM</label>
+                    </div>
+                    <div class="col-6">
+                      <input type="checkbox" id="newapresmidi{{i}}"
+                             (click)="journeeChecked('newmatin'+i)" >
+                      <label for="newapresmidi{{i}}"
+                             style="font-size:1vw;">PM</label>
+                    </div>
+                  </div>
+                  <button id="newdeplacement{{i}}"
+                          class="btn-circle btn-sm btn-secondary" type="button"
+                          (click)='grandDeplacement("newdeplacement"+i,false)'>
+                    <i class="fas fa-fw fa-car"></i>
+
+                  </button>
+
+                  <button id="newchefchantier{{i}}"
+                          class="btn-circle btn-sm btn-secondary" type="button"
+                          (click)='chefChantier("newchefchantier"+i,false)' style="margin-left: 5px;">
+                    <i class="fas fa-fw fa-chess-king"></i>
+                  </button>
+                </div>
+
+              </td>
+              <td *ngIf="samedi">
+                <div id="5_modifierLigne" style="text-align: center" *ngFor="let ass of assignations[pos].semaine[5]">
+                  <div *ngIf="ass.commentaires!='ABSENCE';else absences" >
+                    <hr *ngIf="assignations[pos].semaine[5].indexOf(ass)!==0">
+                    <input class="form-control" list="datalistOptions"
+                           id="5_{{ass.code_chantier}}_{{assignations[pos].matricule_resource_searchable}}"
+                           value ="{{ass.code_chantier}}">
+                    <textarea class="form-control" id="5_comm{{ass.code_chantier}}_{{assignations[pos].matricule_resource_searchable}}">{{ass.commentaires}}</textarea>
+                    <div class="row">
+                      <div class="col-6">
+                        <input id="5_matin{{ass.code_chantier}}_{{assignations[pos].matricule_resource_searchable}}"
+                               type="checkbox" [checked]="ass.journee == 1"
+                               (click)="journeeChecked('5_newapresmidi'+ass.code_chantier+'_'+assignations[pos].matricule_resource)">
+                        <label for="5_matin{{ass.code_chantier}}_{{assignations[pos].matricule_resource_searchable}}"
+                               style="font-size:1vw;">AM</label>
+                      </div>
+                      <div class="col-6">
+                        <input id="5_apresmidi{{ass.code_chantier}}_{{assignations[pos].matricule_resource_searchable}}"
+                               type="checkbox" [checked]="ass.journee == 2"
+                               (click)="journeeChecked('5_newmatin'+ass.code_chantier+'_'+assignations[pos].matricule_resource)">
+                        <label for="5_apresmidi{{ass.code_chantier}}_{{assignations[pos].matricule_resource_searchable}}"
+                               style="font-size:1vw;">PM</label>
+                      </div>
+                    </div>
+                      <ng-container *ngIf="ass.grand_deplacement===0; else autre_deplacement">
+                          <button id="deplacement5{{assignations[pos].matricule_resource_searchable}}{{ass.code_chantier}}"
+                                  class="btn-circle btn-sm btn-secondary" type="button"
+                                  (click)='grandDeplacement("deplacement5"+assignations[pos].matricule_resource+ass.code_chantier,assignations[pos].matricule_resource)'>
+                              <i class="fas fa-fw fa-car"></i>
+                          </button>
+                      </ng-container>
+                      <ng-template #autre_deplacement>
+                          <button id="deplacement5{{assignations[pos].matricule_resource_searchable}}{{ass.code_chantier}}"
+                                  class="btn-circle btn-sm btn-success" type="button"
+                                  (click)='grandDeplacement("deplacement5"+assignations[pos].matricule_resource+ass.code_chantier,assignations[pos].matricule_resource)'>
+                              <i class="fas fa-fw fa-car"></i>
+                          </button>
+                      </ng-template>
+                    <ng-container *ngIf="ass.chef_chantier===0; else autre">
+                      <button id="button5{{assignations[pos].matricule_resource_searchable}}{{ass.code_chantier}}"
+                              class="btn-circle btn-sm btn-secondary" type="button"
+                              (click)="chefChantier('button5'+assignations[pos].matricule_resource+ass.code_chantier,assignations[pos].matricule_resource)">
+                        <i class="fas fa-fw fa-chess-king"></i>
+                      </button>
+                    </ng-container>
+                    <ng-template #autre>
+                      <button id="button5{{assignations[pos].matricule_resource_searchable}}{{ass.code_chantier}}"
+                              class="btn-circle btn-sm btn-success" type="button"
+                              (click)="chefChantier('button5' + assignations[pos].matricule_resource + ass.code_chantier,assignations[pos].matricule_resource)">
+                        <i class="fas fa-fw fa-chess-king"></i>
+                      </button>
+                    </ng-template>
+                  </div>
+                  <ng-template #absences>
+                    <input class="form-control" list="datalistAbsences"
+                           id="ABS5_{{ass.code_chantier}}_{{assignations[pos].matricule_resource_searchable}}"
+                           value="{{ass.code_chantier}}">
+                    <div class="row">
+                      <div class="col-6">
+                        <input id="abs5matin_{{ass.code_chantier}}_{{assignations[pos].matricule_resource_searchable}}"
+                               type="checkbox" [checked]="ass.journee == 1"
+                               (click)="journeeChecked('abs_5apresmidi'+ass.code_chantier+'_'+assignations[pos].matricule_resource)">
+                        <label for="abs5matin_{{ass.code_chantier}}_{{assignations[pos].matricule_resource_searchable}}"
+                               style="font-size:1vw;">AM</label>
+                      </div>
+                      <div class="col-6">
+                        <input id="abs5_apresmidi{{ass.code_chantier}}_{{assignations[pos].matricule_resource_searchable}}"
+                               type="checkbox" [checked]="ass.journee == 2"
+                               (click)="journeeChecked('abs_5matin'+ass.code_chantier+'_'+assignations[pos].matricule_resource)">
+                        <label for="abs5_apresmidi{{ass.code_chantier}}_{{assignations[pos].matricule_resource_searchable}}"
+                               style="font-size:1vw;">PM</label>
+                      </div>
+                    </div>
+                  </ng-template>
+                </div>
+                <hr>
+                <div style="text-align: center;">
+                  <small>Nouveau chantier :</small>
+                  <input class="form-control" list="datalistOptions" id="newchantier5" placeholder="Chantier">
+                  <input class="form-control" list="datalistActivite" id="newactivite{{i}}" placeholder="Activité...">
+                  <textarea class="form-control" id="newcommentaire5"></textarea>
+                  <div class="row">
+                    <div class="col-6">
+                      <input type="checkbox" id="newmatin5"
+                             (click)="journeeChecked('newapresmidi5')">
+                      <label for="newmatin{{i}}"
+                             style="font-size:1vw;">AM</label>
+                    </div>
+                    <div class="col-6">
+                      <input type="checkbox" id="newapresmidi5"
+                             (click)="journeeChecked('newmatin5')" >
+                      <label for="newapresmidi5"
+                             style="font-size:1vw;">PM</label>
+                    </div>
+                  </div>
+
+                  <button id="newdeplacement5"
+                          class="btn-circle btn-sm btn-secondary" type="button"
+                          (click)="grandDeplacement('newdeplacement5',false)">
+                    <i class="fas fa-fw fa-car"></i>
+                  </button>
+
+                  <button id="newchefchantier5"
+                          class="btn-circle btn-sm btn-secondary" type="button"
+                          (click)="chefChantier('newchefchantier5',false)">
+                    <i class="fas fa-fw fa-chess-king"></i>
+                  </button>
+
+                </div>
+
+              </td>
+            </tr>
+
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+        <button type="button" class="btn btn-primary" (click)="validerChangements(false);">Valider les changements</button>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+<!-- Modal modifier la ligne assignation fantome-->
+<!-- <div class="modal fade bd-example-modal-xl" id="modale_fantome" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Modifier la ligne</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="card-body table-responsive">
+          <table class="table table-bordered" id="myTableZ" cellspacing="0" *ngIf="pos_fantome!==false">
+            <thead>
+            <tr role="row">
+              <th class="sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Name: activate to sort column descending" style="width: 57px;" aria-sort="ascending">
+                Name
+              </th>
+              <th scope="col">Lundi</th>
+              <th scope="col">Mardi</th>
+              <th scope="col">Mercredi</th>
+              <th scope="col">Jeudi</th>
+              <th scope="col">Vendredi</th>
+              <th scope="col" *ngIf="samedi">Samedi</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <tr>
+              <td style="font-weight: bold;">{{assignations[pos_fantome].Nom_matricule}}</td>
+              <td *ngFor="let i of [0,1,2,3,4]">
+                <div style="text-align: center" *ngFor="let ass of assignations[pos_fantome].semaine[i]">
+                  <hr *ngIf="assignations[pos_fantome].semaine[i].indexOf(ass)!==0">
+                  <input class="form-control" list="datalistOptions"
+                         id="{{i}}_{{ass.code_chantier}}_{{assignations[pos_fantome].matricule_resource_searchable}}_fantome"
+                         value ="{{ass.code_chantier}}">
+                  <br>
+                  <textarea class="form-control" id="{{i}}_comm{{ass.code_chantier}}_{{assignations[pos_fantome].matricule_resource_searchable}}_fantome">{{ass.commentaires}}</textarea>
+                  <div class="row">
+                    <div class="col-6">
+                      <input type="checkbox" id="{{i}}_matin_fantome{{ass.code_chantier}}_{{assignations[pos_fantome].matricule_resource_searchable}}"
+                             (click)="journeeChecked(i+'_apresmidi_fantome'+ass.code_chantier+'_'+assignations[pos_fantome].matricule_resource)"
+                             [checked]="ass.journee == 1">
+                      <label for="{{i}}_matin_fantome{{ass.code_chantier}}_{{assignations[pos_fantome].matricule_resource_searchable}}"
+                             style="font-size:1vw;">AM</label>
+                    </div>
+                    <div class="col-6">
+                      <input type="checkbox" id="{{i}}_apresmidi_fantome{{ass.code_chantier}}_{{assignations[pos_fantome].matricule_resource_searchable}}"
+                             (click)="journeeChecked(i+'_matin_fantome'+ass.code_chantier+'_'+assignations[pos_fantome].matricule_resource)"
+                             [checked]="ass.journee == 2">
+                      <label for="{{i}}_apresmidi_fantome{{ass.code_chantier}}_{{assignations[pos_fantome].matricule_resource_searchable}}"
+                             style="font-size:1vw;">PM</label>
+                    </div>
+                  </div>
+                </div>
+                <hr>
+                <small>Nouveau chantier :</small>
+                <input class="form-control" list="datalistOptions" id="newchantier_fantome{{i}}" placeholder="Chantier">
+                <input class="form-control" list="datalistActivite" id="newactivite_fantome{{i}}" placeholder="Activité...">
+                <textarea class="form-control" id="newcommentaire_fantome{{i}}"></textarea>
+                <div class="row">
+                  <div class="col-6">
+                    <input type="checkbox" id="newmatin_fantome{{i}}"
+                           (click)="journeeChecked('newapresmidi_fantome'+i)" >
+                    <label for="newmatin_fantome{{i}}"
+                           style="font-size:1vw;">AM</label>
+                  </div>
+                  <div class="col-6">
+                    <input type="checkbox" id="newapresmidi_fantome{{i}}"
+                           (click)="journeeChecked('newmatin_fantome'+i)" >
+                    <label for="newapresmidi_fantome{{i}}"
+                           style="font-size:1vw;">PM</label>
+                  </div>
+                </div>
+              </td>
+              <td *ngIf="samedi">
+                <div style="text-align: center" *ngFor="let ass of assignations[pos_fantome].semaine[5]">
+                  <hr *ngIf="assignations[pos_fantome].semaine[5].indexOf(ass)!==0">
+                  <input class="form-control" list="datalistOptions"
+                         id="5_{{ass.code_chantier}}_{{assignations[pos_fantome].matricule_resource_searchable}}_fantome"
+                         value ="{{ass.code_chantier}}">
+                  <br>
+                  <textarea class="form-control"
+                            id="5_comm{{ass.code_chantier}}_{{assignations[pos_fantome].matricule_resource_searchable}}_fantome">{{ass.commentaires}}</textarea>
+                  <div class="row">
+                    <div class="col-6">
+                      <input type="checkbox" id="5_matin_fantome{{ass.code_chantier}}_{{assignations[pos_fantome].matricule_resource_searchable}}"
+                             (click)="journeeChecked('5_apresmidi_fantome'+ass.code_chantier+'_'+assignations[pos_fantome].matricule_resource)"
+                             [checked]="ass.journee == 1">
+                      <label for="5_matin_fantome{{ass.code_chantier}}_{{assignations[pos_fantome].matricule_resource_searchable}}"
+                             style="font-size:1vw;">AM</label>
+                    </div>
+                    <div class="col-6">
+                      <input type="checkbox" id="5_apresmidi_fantome{{ass.code_chantier}}_{{assignations[pos_fantome].matricule_resource_searchable}}"
+                             (click)="journeeChecked('5_matin_fantome'+ass.code_chantier+'_'+assignations[pos_fantome].matricule_resource)"
+                             [checked]="ass.journee == 2">
+                      <label for="5_apresmidi_fantome{{ass.code_chantier}}_{{assignations[pos_fantome].matricule_resource_searchable}}"
+                             style="font-size:1vw;">PM</label>
+                    </div>
+                  </div>
+                </div>
+                <hr>
+                <small>Nouveau chantier :</small>
+                <input class="form-control" list="datalistOptions" id="newchantier_fantome5" placeholder="Chantier">
+                <input class="form-control" list="datalistActivite" id="newactivite_fantome5" placeholder="Activité...">
+                <textarea class="form-control" id="newcommentaire_fantome5"></textarea>
+                <div class="row">
+                  <div class="col-6">
+                    <input type="checkbox" id="newmatin_fantome5"
+                           (click)="journeeChecked('newapresmidi_fantome5')" >
+                    <label for="newmatin_fantome5"
+                           style="font-size:1vw;">AM</label>
+                  </div>
+                  <div class="col-6">
+                    <input type="checkbox" id="newapresmidi_fantome5"
+                           (click)="journeeChecked('newmatin_fantome5')" >
+                    <label for="newapresmidi_fantome5"
+                           style="font-size:1vw;">PM</label>
+                  </div>
+                </div>
+              </td>
+            </tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+        <button type="button" class="btn btn-primary" (click)="validerChangements(true);">Valider les changements</button>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+<!-- Modal copier la semiane precedente -->
+<!-- <div class="modal fade bd-example-modal-xl" id="copierSemainePrec" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Copier la semaine précédente ? </h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="card-body table-responsive">
+          <span>
+            <i class="fas fa-fw fa-frown"></i>
+            <i class="fas fa-fw fa-hand-paper"></i>
+            Attention!!
+            <br>Si vous validez, toutes les assignations chantiers de la semaine seront supprimées et remplacées par celle de la semaine précédente .
+            <br>Etes-vous bien sûr de poursuivre ?
+          </span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+        <button type="button" class="btn btn-primary" (click)="copierSemainePrec();">Valider</button>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+<!-- Modal supprimer la ligne assignation fantome-->
+<!-- <div class="modal fade bd-example-modal-xl" id="supprimerAssignationFantome" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="fas fa-fw fa-hand-paper"></i>Supprimer une ligne  </h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="card-body table-responsive">
+          <span>
+            Attention!!
+            <br>Etes-vous bien sûr de supprimer cette ligne ?
+          </span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+        <button type="button" class="btn btn-primary" (click)="supprimerAssignationFantome(id)">Valider</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade bd-example-modal-xl" id="copierLigne" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Copier une ligne  </h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="card-body table-responsive">
+
+          <span>
+            L'emploi du temps de qui souhaitez-vous dupliquer pour <span id="resource"></span> :
+            <input class="form-control" list="resdatalist" id="resourceAcopier" placeholder="Ressource...">
+            <datalist id="resdatalist">
+            <option *ngFor="let res of assignations" value='{{res.Nom_matricule}} '>
+            </datalist>
+
+          </span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+        <button type="button" class="btn btn-primary" (click)="copierLigne()">Valider</button>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+<!--Table pour impression-->
+<!-- <table class="table table-bordered" id="maTable"  cellspacing="0" style="text-align: center; display: none; border-color: black">
+  <thead>
+  <tr role="row">
+    <th>Nom</th>
+    <th scope="col" >Lundi</th>
+    <th scope="col">Mardi</th>
+    <th scope="col">Mercredi</th>
+    <th scope="col">Jeudi</th>
+    <th scope="col" >Vendredi</th>
+    <th scope="col" *ngIf="samediImpression">Samedi</th>
+  </tr>
+  </thead>
+
+  <tbody>
+  <tr *ngFor="let el of assignations_fantome" id="fantome">
+    <td id="nom_{{ el.matricule_resource_searchable }}">
+      {{el.Nom_matricule}}
+
+    </td>
+    <td *ngFor="let i of [0,1,2,3,4]">
+      <div *ngFor="let ass of el.semaine[i]">
+        <span>{{ass.code_chantier}}</span><br>
+        <span>{{ass.nom_chantier}}</span><br>
+        <span>Code pointage : {{ass.chantier_code_pointage}}</span><br>
+        <span>{{ass.conducteur}}</span><br>
+        <span>{{ass.commentaires}}</span><br>
+      </div>
+      <br>
+    </td>
+    <td *ngIf="samedi" style="text-align: center;">
+      <div *ngFor="let ass of el.semaine[5]">
+        <span>{{ass.code_chantier}}</span><br>
+        <span>{{ass.nom_chantier}}</span><br>
+        <span>Code pointage : {{ass.chantier_code_pointage}}</span><br>
+        <span>{{ass.conducteur}}</span><br>
+        <span>{{ass.commentaires}}</span><br>
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="7" style="font-weight: bold">
+      Salariés BATIDEKO
+    </td>
+  </tr>
+  <tr *ngFor="let el of assignations">
+    <ng-container *ngIf="el.type==='SALARIE' && el.activite!=='3.50-ATELIER' && el.activite!=='4.40-DEPOT'
+    && assignations.indexOf(el)<= assignations.length/2 +12">
+      <td>
+        {{el.Nom_matricule}}<br>
+
+        <span *ngFor="let attr of el.attributs" class="text-xs text-green-500">{{attr}}<br/></span>
+        <br *ngIf="el.tuteur != null">
+        <br *ngIf="el.tuteur != null">
+        <p *ngIf="el.tuteur != null" class="text-s text-green-500">Tuteur: {{ el.tuteur_nom }}</p>
+      </td>
+      <td *ngFor="let i of [0,1,2,3,4]">
+        <ng-container *ngFor="let ass of el.semaine[i]">
+          <ng-container *ngIf="ass.journee === 1">
+            <div *ngIf="ass.commentaires!=='ABSENCE'; else absence">
+              <div *ngIf="ass.chef_chantier===1; else autre">
+                <span>*{{ass.code_chantier}}*</span><br>
+                <span>{{ass.nom_chantier}}</span><br>
+                <span>Code pointage : {{ass.chantier_code_pointage}}</span><br>
+                <span>{{ass.conducteur}}</span><br>
+                <span>{{ass.commentaires}}</span><br>
+              </div>
+              <ng-template #autre>
+                <span>{{ass.code_chantier}}</span><br>
+                <span>{{ass.nom_chantier}}</span><br>
+                <span>Code pointage : {{ass.chantier_code_pointage}}</span><br>
+                <span>{{ass.conducteur}}</span><br>
+                <span>{{ass.commentaires}}</span><br>
+              </ng-template>
+            </div>
+            <ng-template #absence>
+              <span>{{ass.code_chantier}}</span><br>
+              <span>{{ass.nom_chantier}}</span><br>
+            </ng-template>
+
+            <span>------------------------</span><br>
+          </ng-container>
+        </ng-container>
+        <hr *ngIf="findJournee1(el.semaine[i]) || findJournee2(el.semaine[i])">
+        <ng-container *ngFor="let ass of el.semaine[i]">
+          <ng-container *ngIf="ass.journee === 2">
+            <span>------------------------</span><br>
+            <div *ngIf="ass.commentaires!=='ABSENCE'; else absence">
+              <div *ngIf="ass.chef_chantier===1; else autre">
+                <span>*{{ass.code_chantier}}*</span><br>
+                <span>{{ass.nom_chantier}}</span><br>
+                <span>Code pointage : {{ass.chantier_code_pointage}}</span><br>
+                <span>{{ass.conducteur}}</span><br>
+                <span>{{ass.commentaires}}</span><br>
+              </div>
+              <ng-template #autre>
+                <span>{{ass.code_chantier}}</span><br>
+                <span>{{ass.nom_chantier}}</span><br>
+                <span>Code pointage : {{ass.chantier_code_pointage}}</span><br>
+                <span>{{ass.conducteur}}</span><br>
+                <span>{{ass.commentaires}}</span><br>
+              </ng-template>
+            </div>
+            <ng-template #absence>
+              <span>{{ass.code_chantier}}</span><br>
+              <span>{{ass.nom_chantier}}</span><br>
+            </ng-template>
+          </ng-container>
+        </ng-container>
+
+        <ng-container *ngFor="let ass of el.semaine[i]">
+          <ng-container *ngIf="ass.journee === 0">
+            <div *ngIf="ass.commentaires!=='ABSENCE'; else absence">
+              <div *ngIf="ass.chef_chantier===1; else autre">
+                <span>*{{ass.code_chantier}}*</span><br>
+                <span>{{ass.nom_chantier}}</span><br>
+                <span>Code pointage : {{ass.chantier_code_pointage}}</span><br>
+                <span>{{ass.conducteur}}</span><br>
+                <span>{{ass.commentaires}}</span><br>
+              </div>
+              <ng-template #autre>
+                <span>{{ass.code_chantier}}</span><br>
+                <span>{{ass.nom_chantier}}</span><br>
+                <span>Code pointage : {{ass.chantier_code_pointage}}</span><br>
+                <span>{{ass.conducteur}}</span><br>
+                <span>{{ass.commentaires}}</span><br>
+              </ng-template>
+            </div>
+            <ng-template #absence>
+              <span>{{ass.code_chantier}}</span><br>
+              <span>{{ass.nom_chantier}}</span><br>
+            </ng-template>
+          </ng-container>
+        </ng-container>
+      </td>
+      <td *ngIf="samediImpression" style="text-align: center;">
+        <div *ngFor="let ass of el.semaine[5]">
+          <div *ngIf="ass.commentaires!=='ABSENCE'; else absence">
+            <hr *ngIf="el.semaine[5].indexOf(ass) != 0">
+            <div *ngIf="ass.chef_chantier===1; else autre">
+              <span>*{{ass.code_chantier}}*</span><br>
+              <span>{{ass.nom_chantier}}</span><br>
+              <span>Code pointage : {{ass.chantier_code_pointage}}</span><br>
+              <span>{{ass.conducteur}}</span><br>
+              <span>{{ass.commentaires}}</span><br>
+            </div>
+            <ng-template #autre>
+              <span>*{{ass.code_chantier}}*</span><br>
+              <span>{{ass.nom_chantier}}</span><br>
+              <span>Code pointage : {{ass.chantier_code_pointage}}</span><br>
+              <span>{{ass.conducteur}}</span><br>
+              <span>{{ass.commentaires}}</span><br>
+            </ng-template>
+
+          </div>
+          <ng-template #absence>
+            <span>{{ass.code_chantier}}</span><br>
+            <span>{{ass.nom_chantier}}</span><br>
+          </ng-template>
+        </div>
+      </td>
+    </ng-container>
+  </tr>
+  </tbody>
+</table>
+
+<table class="table table-bordered" id="maTable2"  cellspacing="0" style="text-align: center; display: none">
+  <thead>
+  <tr role="row">
+    <th>Nom</th>
+    <th scope="col" >Lundi</th>
+    <th scope="col">Mardi</th>
+    <th scope="col">Mercredi</th>
+    <th scope="col">Jeudi</th>
+    <th scope="col" >Vendredi</th>
+    <th scope="col" *ngIf="samediImpression">Samedi</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let el of assignations">
+    <ng-container *ngIf="el.type==='SALARIE' && el.activite!=='3.50-ATELIER' && el.activite!=='4.40-DEPOT'
+    && assignations.indexOf(el) > assignations.length/2 +12">
+      <td>
+        {{el.Nom_matricule}}
+
+        <br *ngIf="el.tuteur != null">
+        <br *ngIf="el.tuteur != null">
+        <p *ngIf="el.tuteur != null" class="text-s text-green-500">Tuteur: {{ el.tuteur_nom }}</p>
+      </td>
+      <td *ngFor="let i of [0,1,2,3,4]">
+        <ng-container *ngFor="let ass of el.semaine[i]">
+          <ng-container *ngIf="ass.journee === 1">
+            <div *ngIf="ass.commentaires!=='ABSENCE'; else absence">
+              <div *ngIf="ass.chef_chantier===1; else autre">
+                <span>*{{ass.code_chantier}}*</span><br>
+                <span>{{ass.nom_chantier}}</span><br>
+                <span>Code pointage : {{ass.chantier_code_pointage}}</span><br>
+                <span>{{ass.conducteur}}</span><br>
+                <span>{{ass.commentaires}}</span><br>
+              </div>
+              <ng-template #autre>
+                <span>{{ass.code_chantier}}</span><br>
+                <span>{{ass.nom_chantier}}</span><br>
+                <span>Code pointage : {{ass.chantier_code_pointage}}</span><br>
+                <span>{{ass.conducteur}}</span><br>
+                <span>{{ass.commentaires}}</span><br>
+              </ng-template>
+            </div>
+            <ng-template #absence>
+              <span>{{ass.code_chantier}}</span><br>
+              <span>{{ass.nom_chantier}}</span><br>
+            </ng-template>
+            <span>------------------------</span><br>
+          </ng-container>
+        </ng-container>
+        <ng-container *ngFor="let ass of el.semaine[i]">
+          <ng-container *ngIf="ass.journee === 2">
+            <span>------------------------</span><br>
+            <div *ngIf="ass.commentaires!=='ABSENCE'; else absence">
+              <div *ngIf="ass.chef_chantier===1; else autre">
+                <span>*{{ass.code_chantier}}*</span><br>
+                <span>{{ass.nom_chantier}}</span><br>
+                <span>Code pointage : {{ass.chantier_code_pointage}}</span><br>
+                <span>{{ass.conducteur}}</span><br>
+                <span>{{ass.commentaires}}</span><br>
+              </div>
+              <ng-template #autre>
+                <span>{{ass.code_chantier}}</span><br>
+                <span>{{ass.nom_chantier}}</span><br>
+                <span>Code pointage : {{ass.chantier_code_pointage}}</span><br>
+                <span>{{ass.conducteur}}</span><br>
+                <span>{{ass.commentaires}}</span><br>
+              </ng-template>
+            </div>
+            <ng-template #absence>
+              <span>{{ass.code_chantier}}</span><br>
+              <span>{{ass.nom_chantier}}</span><br>
+            </ng-template>
+          </ng-container>
+        </ng-container>
+        <ng-container *ngFor="let ass of el.semaine[i]">
+          <ng-container *ngIf="ass.journee === 0">
+            <div *ngIf="ass.commentaires!=='ABSENCE'; else absence">
+              <div *ngIf="ass.chef_chantier===1; else autre">
+                <span>*{{ass.code_chantier}}*</span><br>
+                <span>{{ass.nom_chantier}}</span><br>
+                <span>Code pointage : {{ass.chantier_code_pointage}}</span><br>
+                <span>{{ass.conducteur}}</span><br>
+                <span>{{ass.commentaires}}</span><br>
+              </div>
+              <ng-template #autre>
+                <span>{{ass.code_chantier}}</span><br>
+                <span>{{ass.nom_chantier}}</span><br>
+                <span>Code pointage : {{ass.chantier_code_pointage}}</span><br>
+                <span>{{ass.conducteur}}</span><br>
+                <span>{{ass.commentaires}}</span><br>
+              </ng-template>
+            </div>
+            <ng-template #absence>
+              <span>{{ass.code_chantier}}</span><br>
+              <span>{{ass.nom_chantier}}</span><br>
+            </ng-template>
+          </ng-container>
+        </ng-container>
+      </td>
+      <td *ngIf="samediImpression" style="text-align: center;">
+        <div *ngFor="let ass of el.semaine[5]">
+          <div *ngIf="ass.commentaires!=='ABSENCE'; else absence">
+            <hr *ngIf="el.semaine[5].indexOf(ass) != 0">
+            <div *ngIf="ass.chef_chantier===1; else autre">
+              <span>*{{ass.code_chantier}}*</span><br>
+              <span>{{ass.nom_chantier}}</span><br>
+              <span>Code pointage : {{ass.chantier_code_pointage}}</span><br>
+              <span>{{ass.conducteur}}</span><br>
+              <span>{{ass.commentaires}}</span><br>
+            </div>
+            <ng-template #autre>
+              <span>*{{ass.code_chantier}}*</span><br>
+              <span>{{ass.nom_chantier}}</span><br>
+              <span>Code pointage : {{ass.chantier_code_pointage}}</span><br>
+              <span>{{ass.conducteur}}</span><br>
+              <span>{{ass.commentaires}}</span><br>
+            </ng-template>
+
+          </div>
+          <ng-template #absence>
+            <span>{{ass.code_chantier}}</span><br>
+            <span>{{ass.nom_chantier}}</span><br>
+          </ng-template>
+        </div>
+      </td>
+    </ng-container>
+  </tr>
+  <tr>
+    <td colspan="7" style="font-weight: bold">Intérims, Stagiaires</td>
+  </tr>
+  <tr *ngFor="let el of assignations">
+    <ng-container *ngIf="el.type==='INTERIM' || el.type === 'STAGIAIRE'">
+      <td id="nom_{{ el.matricule_resource_searchable }}" style="text-align: center; font-weight: bold;">
+        {{el.Nom_matricule}}
+
+        <br *ngIf="el.tuteur != null">
+        <br *ngIf="el.tuteur != null">
+        <p *ngIf="el.tuteur != null" class="text-s text-green-500">Tuteur: {{ el.tuteur_nom }}</p>
+      </td>
+      <td  style="text-align: center;" *ngFor="let i of [0,1,2,3,4]">
+        <div *ngFor="let ass of el.semaine[i]">
+          <div *ngIf="ass.commentaires!=='ABSENCE'; else absence">
+            <hr *ngIf="el.semaine[i].indexOf(ass) != 0">
+            <div *ngIf="ass.chef_chantier===1; else autre">
+              <span>*{{ass.code_chantier}}*</span><br>
+              <span>{{ass.nom_chantier}}</span><br>
+              <span>{{ass.conducteur}}</span><br>
+              <span>{{ass.commentaires}}</span><br>
+            </div>
+            <ng-template #autre>
+              <span>{{ass.code_chantier}}</span><br>
+              <span>{{ass.nom_chantier}}</span><br>
+              <span>{{ass.conducteur}}</span><br>
+              <span>{{ass.commentaires}}</span><br>
+            </ng-template>
+
+          </div>
+          <ng-template #absence>
+            <span>{{ass.code_chantier}}</span><br>
+            <span>{{ass.nom_chantier}}</span><br>
+          </ng-template>
+
+        </div>
+      </td>
+      <td *ngIf="samediImpression" style="text-align: center;">
+        <div *ngFor="let ass of el.semaine[5]">
+          <div *ngIf="ass.commentaires!=='ABSENCE'; else absence">
+            <hr *ngIf="el.semaine[5].indexOf(ass) != 0">
+            <div *ngIf="ass.chef_chantier===1; else autre">
+              <span>*{{ass.code_chantier}}*</span><br>
+              <span>{{ass.nom_chantier}}</span><br>
+              <span>{{ass.conducteur}}</span><br>
+              <span>{{ass.commentaires}}</span><br>
+            </div>
+            <ng-template #autre>
+              <span>{{ass.code_chantier}}</span><br>
+              <span>{{ass.nom_chantier}}</span><br>
+              <span>{{ass.conducteur}}</span><br>
+              <span>{{ass.commentaires}}</span><br>
+            </ng-template>
+          </div>
+          <ng-template #absence>
+            <span>{{ass.code_chantier}}</span><br>
+            <span>{{ass.nom_chantier}}</span><br>
+          </ng-template>
+        </div>
+      </td>
+    </ng-container>
+  </tr>
+  <tr>
+    <td colspan="7" >
+      Sous Traitant
+    </td>
+  </tr>
+  <tr *ngFor="let el of assignations_st">
+    <td>
+      {{el.Nom_matricule}}
+    </td>
+    <td *ngFor="let i of [0,1,2,3,4]">
+      <ng-container *ngFor="let ass of el.semaine[i]">
+        <hr *ngIf="el.semaine[i].indexOf(ass) != 0">
+        <div *ngIf="ass.chef_chantier===1; else autre">
+          <span>*{{ass.code_chantier}}*</span><br>
+          <span>{{ass.nom_chantier}}</span><br>
+          <span>{{ass.conducteur}}</span><br>
+          <span>{{ass.commentaires}}</span><br>
+        </div>
+        <ng-template #autre>
+          <span>{{ass.code_chantier}}</span><br>
+          <span>{{ass.nom_chantier}}</span><br>
+          <span>{{ass.conducteur}}</span><br>
+          <span>{{ass.commentaires}}</span><br>
+        </ng-template>
+      </ng-container>
+    </td>
+    <td *ngIf="samediImpression" >
+      <div *ngFor="let ass of el.semaine[5]">
+        <hr *ngIf="el.semaine[5].indexOf(ass) != 0">
+        <div *ngIf="ass.chef_chantier===1; else autre">
+          <span>*{{ass.code_chantier}}*</span><br>
+          <span>{{ass.nom_chantier}}</span><br>
+          <span>{{ass.conducteur}}</span><br>
+          <span>{{ass.commentaires}}</span><br>
+        </div>
+        <ng-template #autre>
+          <span>{{ass.code_chantier}}</span><br>
+          <span>{{ass.nom_chantier}}</span><br>
+          <span>{{ass.conducteur}}</span><br>
+          <span>{{ass.commentaires}}</span><br>
+        </ng-template>
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="7" style="font-weight: bold">Atelier</td>
+  </tr>
+  <tr *ngFor="let el of assignations">
+    <ng-container *ngIf="el.activite==='3.50-ATELIER'">
+      <td>{{el.Nom_matricule}}</td>
+      <td  style="text-align: center;" *ngFor="let i of [0,1,2,3,4]">
+        <div *ngFor="let ass of el.semaine[i]">
+          <div *ngIf="ass.commentaires!=='ABSENCE'; else absence">
+            <hr *ngIf="el.semaine[i].indexOf(ass) != 0">
+            <div *ngIf="ass.chef_chantier===1; else autre">
+              <span>*{{ass.code_chantier}}*</span><br>
+              <span>{{ass.nom_chantier}}</span><br>
+              <span>Code pointage : {{ass.chantier_code_pointage}}</span><br>
+              <span>{{ass.conducteur}}</span><br>
+              <span>{{ass.commentaires}}</span><br>
+            </div>
+            <ng-template #autre>
+              <span>{{ass.code_chantier}}</span><br>
+              <span>{{ass.nom_chantier}}</span><br>
+              <span>Code pointage : {{ass.chantier_code_pointage}}</span><br>
+              <span>{{ass.conducteur}}</span><br>
+              <span>{{ass.commentaires}}</span><br>
+            </ng-template>
+          </div>
+          <ng-template #absence>
+            <span>{{ass.code_chantier}}</span><br>
+            <span>{{ass.nom_chantier}}</span><br>
+          </ng-template>
+
+        </div>
+      </td>
+      <td *ngIf="samediImpression">
+        <div *ngFor="let ass of el.semaine[5]">
+          <div *ngIf="ass.commentaires!=='ABSENCE'; else absence">
+            <hr *ngIf="el.semaine[5].indexOf(ass) != 0">
+            <div *ngIf="ass.chef_chantier===1; else autre">
+              <span>*{{ass.code_chantier}}*</span><br>
+              <span>{{ass.nom_chantier}}</span><br>
+              <span>Code pointage : {{ass.chantier_code_pointage}}</span><br>
+              <span>{{ass.conducteur}}</span><br>
+              <span>{{ass.commentaires}}</span><br>
+            </div>
+            <ng-template #autre>
+              <span>{{ass.code_chantier}}</span><br>
+              <span>{{ass.nom_chantier}}</span><br>
+              <span>Code pointage : {{ass.chantier_code_pointage}}</span><br>
+              <span>{{ass.conducteur}}</span><br>
+              <span>{{ass.commentaires}}</span><br>
+            </ng-template>
+          </div>
+          <ng-template #absence>
+            <span>{{ass.code_chantier}}</span><br>
+            <span>{{ass.nom_chantier}}</span><br>
+          </ng-template>
+        </div>
+      </td>
+    </ng-container>
+  </tr>
+  <tr>
+    <td colspan="7" style="font-weight: bold">Dépôt</td>
+  </tr>
+  <tr *ngFor="let el of assignations">
+    <ng-container *ngIf="el.activite==='4.40-DEPOT'">
+      <td>{{el.Nom_matricule}}</td>
+      <td  style="text-align: center;" *ngFor="let i of [0,1,2,3,4]">
+        <div *ngFor="let ass of el.semaine[i]">
+          <div *ngIf="ass.commentaires!=='ABSENCE'; else absence">
+            <hr *ngIf="el.semaine[i].indexOf(ass) != 0">
+            <div *ngIf="ass.chef_chantier===1; else autre">
+              <span>*{{ass.code_chantier}}*</span><br>
+              <span>{{ass.nom_chantier}}</span><br>
+              <span>Code pointage : {{ass.chantier_code_pointage}}</span><br>
+              <span>{{ass.conducteur}}</span><br>
+              <span>{{ass.commentaires}}</span><br>
+            </div>
+            <ng-template #autre>
+              <span>{{ass.code_chantier}}</span><br>
+              <span>{{ass.nom_chantier}}</span><br>
+              <span>Code pointage : {{ass.chantier_code_pointage}}</span><br>
+              <span>{{ass.conducteur}}</span><br>
+              <span>{{ass.commentaires}}</span><br>
+            </ng-template>
+          </div>
+          <ng-template #absence>
+            <span>{{ass.code_chantier}}</span><br>
+            <span>{{ass.nom_chantier}}</span><br>
+          </ng-template>
+
+        </div>
+      </td>
+      <td *ngIf="samediImpression">
+        <div *ngFor="let ass of el.semaine[5]">
+          <div *ngIf="ass.commentaires!=='ABSENCE'; else absence">
+            <hr *ngIf="el.semaine[5].indexOf(ass) != 0">
+            <div *ngIf="ass.chef_chantier===1; else autre">
+              <span>*{{ass.code_chantier}}*</span><br>
+              <span>{{ass.nom_chantier}}</span><br>
+              <span>Code pointage : {{ass.chantier_code_pointage}}</span><br>
+              <span>{{ass.conducteur}}</span><br>
+              <span>{{ass.commentaires}}</span><br>
+            </div>
+            <ng-template #autre>
+              <span>{{ass.code_chantier}}</span><br>
+              <span>{{ass.nom_chantier}}</span><br>
+              <span>Code pointage : {{ass.chantier_code_pointage}}</span><br>
+              <span>{{ass.conducteur}}</span><br>
+              <span>{{ass.commentaires}}</span><br>
+            </ng-template>
+          </div>
+          <ng-template #absence>
+            <span>{{ass.code_chantier}}</span><br>
+            <span>{{ass.nom_chantier}}</span><br>
+          </ng-template>
+        </div>
+      </td>
+    </ng-container>
+  </tr>
+  <tr>
+    <td colspan="7">RDV Chantier</td>
+  </tr>
+  <tr *ngFor="let el of rdv_chantier">
+    <td>{{el.Nom_matricule}}</td>
+    <td   *ngFor="let i of [0,1,2,3,4]">
+      <div *ngFor="let ass of el.semaine[i]">
+        <span>{{ass.nom_chantier}}</span><br>
+        <span>{{ass.heure}}</span><br>
+      </div>
+    </td>
+  </tr>
+  </tbody>
+</table> -->

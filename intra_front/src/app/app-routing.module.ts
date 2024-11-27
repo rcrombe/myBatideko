@@ -14,10 +14,11 @@ import { GestionGroupesComponent } from './dashboard/gestion-groupes/gestion-gro
 import { GestionResourcesComponent } from './dashboard/gestion-resources/gestion-resources.component';
 import { GestionAdministratifComponent } from './dashboard/gestion-administratif/gestion-administratif.component';
 
+import { PlanningComponent } from './dashboard/planning/planning.component';
+
 import { PointagesComponent } from './dashboard/pointages/pointages.component';
 import { Pointages2Component } from './dashboard/pointages2/pointages2.component';
 import { CongesComponent } from './dashboard/conges/conges.component';
-import { PlanningComponent } from './dashboard/planning/planning.component';
 import { GestionVehiculesComponent } from './dashboard/gestion-vehicules/gestion-vehicules.component';
 import { PlanningParChantierComponent } from './dashboard/planning-par-chantier/planning-par-chantier.component';
 import { PlanningSousTraitantComponent } from './dashboard/planning-sous-traitant/planning-sous-traitant.component';
@@ -140,6 +141,16 @@ const routes: Routes = [
           title: "Gestion de l'administratif",
           role: [1],
           module_id: 'A_GESTION_ADMINISTRATIF'
+        }
+      },
+      //Chantiers
+      {
+        path: 'planning',
+        component: PlanningComponent,
+        data:{
+          title: 'Planning',
+          role: [1,2,3,4,5],
+          module_id: 'M_CHANTIERS_PLANNING_G'
         }
       },
     ]

@@ -205,7 +205,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
 
                 if(SECURITY.canAccessRessource(user, 'r', 'M_CHANTIERS_PLANNING_G', token)) {
                     const request = require('sync-request');
-                    var res = request('GET', 'https://api.cuppens.fr/api/absences');
+                    var res = request('GET', 'https://api.batideko.fr/api/absences');
                     var json = res.getBody().toString();
                     var obj = JSON.parse(json);
                 }

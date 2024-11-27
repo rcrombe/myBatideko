@@ -87,11 +87,11 @@ export class DashboardComponent implements OnInit {
     });
 
     // Détecter le défilement pour afficher/masquer le bouton
-    window.addEventListener('scroll', () => {
-      const scrollPosition = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-      this.showScrollToTop = scrollPosition > 200; // Le bouton apparaît si le défilement dépasse 200px
-      console.log('Scroll position:', scrollPosition, 'Show button:', this.showScrollToTop);
-    });
+    // window.addEventListener('scroll', () => {
+    //   const scrollPosition = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    //   this.showScrollToTop = scrollPosition > 200; // Le bouton apparaît si le défilement dépasse 200px
+    //   console.log('Scroll position:', scrollPosition, 'Show button:', this.showScrollToTop);
+    // });
   }
 
   toggleMenu(menuKey: string): void {
