@@ -4,11 +4,10 @@ import { Constants } from '../constants';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { RouterLink, RouterOutlet, NavigationEnd } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 // import * as jQuery from 'jquery';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { Modal } from 'bootstrap';
-
-declare var $: any;
+import bootstrap, { Modal } from 'bootstrap';
 
 @Component({
   selector: 'app-dashboard',
@@ -36,7 +35,7 @@ export class DashboardComponent implements OnInit {
 
   public isTableauBordCollapsed: boolean = true;
 
-  constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private cst: Constants, private jwt: JwtHelperService) {
+  constructor(private route: ActivatedRoute, private router: Router,private toastr: ToastrService, private http: HttpClient, private cst: Constants, private jwt: JwtHelperService) {
     this.MODULE_ID = route.snapshot.data['module_id'];
 
     // Récupération du titre de la page
@@ -48,21 +47,22 @@ export class DashboardComponent implements OnInit {
     // Récupération des informations de l'utilisateur
     this.utilisateur = this.jwt.decodeToken(localStorage.getItem('token') ?? '');
 
-    // this.loadNotifications();
+    this.loadNotifications();
+    
   }
 
-  // public loadNotifications(): void {
-  //   this.http.get<Array<any>>(this.cst.apiUrl + 'notifications/navbar').subscribe(
-  //     (arr: Array<any>) => {
-  //       this.notifications = arr;
-  //     },
-  //   )
-  //   this.http.get<Array<any>>(this.cst.apiUrl + 'notifications/count').subscribe(
-  //     (arr: Array<any>) => {
-  //       this.notifications_count = arr[0].nb_notifications;
-  //     },
-  //   )
-  // }
+  public loadNotifications(): void {
+    this.http.get<Array<any>>(this.cst.apiUrl + 'notifications/navbar').subscribe(
+      (arr: Array<any>) => {
+        this.notifications = arr;
+      },
+    )
+    this.http.get<Array<any>>(this.cst.apiUrl + 'notifications/count').subscribe(
+      (arr: Array<any>) => {
+        this.notifications_count = arr[0].nb_notifications;
+      },
+    )
+  }
 
   public canRead(module: string | null): boolean {
     return this.cst.canAccess_Read(this.utilisateur, module === null ? this.MODULE_ID : module);
@@ -94,7 +94,8 @@ export class DashboardComponent implements OnInit {
     // });
   }
 
-  toggleMenu(menuKey: string): void {
+  toggleMenu(event: MouseEvent, menuKey: string): void {
+    event.preventDefault();
     this.menuStates[menuKey] = !this.menuStates[menuKey];
   }
 
@@ -118,7 +119,34 @@ export class DashboardComponent implements OnInit {
     this.router.navigate(['login']);
   }
 
-  public navigateTo(url: any) {
-    this.router.navigate([url]);
+  dropdownOpen = false;
+
+  toggleDropdown(event: Event): void {
+    event.preventDefault(); // Empêche la redirection due à href="#"
+    this.dropdownOpen = !this.dropdownOpen; // Alterne l'état du dropdown
+  }
+
+  alertsDropdownOpen = false;
+
+  toggleAlerts(event: Event): void {
+    event.preventDefault(); // Empêche la redirection due à href="#"
+    this.alertsDropdownOpen = !this.alertsDropdownOpen; // Alterne l'état du dropdown
+  }
+
+  navigateTo(url: string): void {
+    // Logique pour naviguer vers une URL spécifique
+    if (url) {
+      window.location.href = url; // Exemple simple, peut être adapté pour Angular Router
+    }
+  }
+
+  sidebarOpen = true;
+
+  toggleSidebar(): void {
+    
+    const sidebar = document.getElementById('accordionSidebar'); // Cible la sidebar par son ID
+    if (sidebar) {
+      sidebar.classList.toggle('toggled'); // Ajoute/Retire la classe 'toggled'
+    }
   }
 }

@@ -12,7 +12,8 @@ import localeFr from '@angular/common/locales/fr';
 import { LOCALE_ID } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
-import {MatProgressBarModule} from '@angular/material/progress-bar';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { Constants } from "./constants";
 import { AuthGuard } from "./guards/auth.guard";
@@ -132,14 +133,20 @@ export function tokenGetter() {
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    BaseChartDirective ,
+    BaseChartDirective,
     ReactiveFormsModule,
     HttpClientModule,
     NgProgressbar,
     BrowserAnimationsModule,
     NgxFileDropModule,
     MatProgressBarModule,
-    ToastrModule.forRoot(),
+    MatSnackBarModule,
+    ToastrModule.forRoot({
+      timeOut: 3000,
+      positionClass: 'toast-top-right',
+      preventDuplicates: true,
+      progressBar: true,
+    }),
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,

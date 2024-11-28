@@ -20,7 +20,7 @@
       <!-- Nav Item - Dashboard -->
       <li class="nav-item">
 
-        <a class="nav-link collapsed" href="#" (click)="toggleMenu('tableauBord')" aria-expanded="false"
+        <a class="nav-link collapsed" href="#" (click)="toggleMenu($event, 'tableauBord')" aria-expanded="false"
           [attr.aria-controls]="'tableauBord'">
           <i class="fas fa-fw fa-tachometer-alt"></i>
           <span>Tableau de bord</span>
@@ -39,7 +39,7 @@
           Travaux
         </div>
 
-        <a class="nav-link collapsed" href="#" (click)="toggleMenu('travaux')" aria-expanded="false"
+        <a class="nav-link collapsed" href="#" (click)="toggleMenu($event, 'travaux')" aria-expanded="false"
           [attr.aria-controls]="'travaux'">
           <i class="fas fa-fw fa-tools"></i>
           <span>Chantiers <strong> (WIP)</strong></span>
@@ -81,7 +81,7 @@
           Resources Humaines
         </div>
 
-        <a class="nav-link collapsed" href="#" (click)="toggleMenu('absences')" aria-expanded="false"
+        <a class="nav-link collapsed" href="#" (click)="toggleMenu($event, 'absences')" aria-expanded="false"
           [attr.aria-controls]="'absences'">
           <i class="fas fa-fw fa-clock"></i>
           <span>Absences<strong> (WIP)</strong></span>
@@ -98,7 +98,7 @@
 
         <ng-container
           *ngIf="canRead('M_POINTAGES_SAISIE') || canRead('M_POINTAGES_CTRL') || canRead('M_POINTAGES_SYNC') || canRead('M_POINTAGES_ARCHIVES') || canRead('M_POINTAGES_SYNTHESE') || canRead('M_POINTAGES_SYNC_QUEUE')  || canRead('M_POINTAGES_ATELIER')">
-          <a class="nav-link collapsed" href="#" (click)="toggleMenu('pointages')" aria-expanded="false"
+          <a class="nav-link collapsed" href="#" (click)="toggleMenu($event, 'pointages')" aria-expanded="false"
             [attr.aria-controls]="'pointages'">
             <i class="fas fa-fw fa-user-clock"></i>
             <span>Pointages<strong> (WIP)</strong></span>
@@ -164,7 +164,8 @@
 
       <!-- Sidebar Toggler (Sidebar) -->
       <div class="text-center d-none d-md-inline">
-        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+        <button class="rounded-circle border-0" id="sidebarToggle" (click)="toggleSidebar()">
+        </button>
       </div>
 
     </ul>
@@ -192,15 +193,15 @@
 
             <!-- Nav Item - Alerts -->
             <li class="nav-item dropdown no-arrow mx-1">
-              <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-bs-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
+              <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
+                (click)="toggleAlerts($event)" [attr.aria-expanded]="alertsDropdownOpen">
                 <i class="fas fa-bell fa-fw"></i>
                 <!-- Counter - Alerts -->
-                <span class="badge badge-danger badge-counter">{{notifications_count}}</span>
+                <span class="badge badge-danger badge-counter">{{ notifications_count }}</span>
               </a>
               <!-- Dropdown - Alerts -->
               <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                aria-labelledby="alertsDropdown">
+                [class.show]="alertsDropdownOpen" aria-labelledby="alertsDropdown">
                 <h6 class="dropdown-header">
                   Centre des alertes
                 </h6>
@@ -217,19 +218,23 @@
                     </div>
                   </a>
                 </ng-container>
-                <a class="dropdown-item text-center small text-gray-500" [routerLink]="['/notifications']"
-                  (click)="accessTo('Notifications')">Afficher toutes les alertes</a>
+                <a class="dropdown-item text-center small text-gray-500" [routerLink]="['/notifications']">
+                  Afficher toutes les alertes
+                </a>
               </div>
+            </li>
 
-              <!-- Nav Item - User Information -->
+            <!-- Nav Item - User Information -->
             <li class="nav-item dropdown no-arrow">
-              <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
-                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ utilisateur.prenom }} {{ utilisateur.nom
-                  }}</span>
+              <a class="nav-link dropdown-toggle" href="#" (click)="toggleDropdown($event)" role="button"
+                [attr.aria-expanded]="dropdownOpen">
+                <span class="mr-2 d-none d-lg-inline text-gray-600 small">
+                  {{ utilisateur.prenom }} {{ utilisateur.nom }}
+                </span>
               </a>
-              <!-- Dropdown - User Information -->
-              <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+
+              <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" [class.show]="dropdownOpen"
+                aria-labelledby="userDropdown">
                 <a class="dropdown-item" [routerLink]="['/profil']">
                   <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                   Profil

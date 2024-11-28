@@ -14,7 +14,7 @@ export class LoginComponent {
 
   public loginForm: FormGroup;
 
-  constructor(private router: Router, private toastr: ToastrService, private cst: Constants, private http: HttpClient) {
+  constructor(private router: Router, private toastr: ToastrService, private cst: Constants, private http: HttpClient, private constants: Constants) {
     this.loginForm = new FormGroup({
       login: new FormControl('', [Validators.required, Validators.minLength(3)]),
       motdepasse: new FormControl('', [Validators.required, Validators.minLength(3)])
@@ -31,16 +31,16 @@ export class LoginComponent {
       (response) => {
         if (response.token) {
           localStorage.setItem('token', response.token);
-          this.toastr.success('Vous êtes connecté !', this.cst.toastrTitle);
+          this.constants.showSuccess('Correctement connecté!', 'X');
           this.router.navigate(['']);
         } else {
-          this.toastr.error('Identifiants incorrects !', this.cst.toastrTitle);
+          this.constants.showError('Identifiants incorrects!', 'X');
           console.log(body);
           console.log(response);
         }
       },
       (err) => {
-        this.toastr.error('Erreur', this.cst.toastrTitle);
+        this.constants.showError('Erreur !', 'X');
       }
     );
   }  
