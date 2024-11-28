@@ -59,11 +59,11 @@ export class GestionAlertesComponent implements OnInit {
     this.http.post(this.cst.apiUrl + 'gestion_alertes/new', body).subscribe(
       prop => {
         if (prop) {
-          this.toastr.success('Alerte ajoutée !', this.cst.toastrTitle);
+          this.cst.showSuccess('Alerte ajoutée !', 'X');
           $('#ajoutAlerte').modal('hide');
           window.location.reload();
         } else {
-          this.toastr.error('Erreur !', this.cst.toastrTitle);
+          this.cst.showError('Erreur !', 'X');
         }
       }
     )
@@ -85,12 +85,12 @@ export class GestionAlertesComponent implements OnInit {
     this.http.delete(this.cst.apiUrl + 'gestion_alertes/remove/' + id).subscribe(
       remove => {
         if (remove) {
-          this.toastr.success('Alerte supprimée !', this.cst.toastrTitle);
+          this.cst.showSuccess('Alerte supprimée !', 'X');
           window.location.reload();
 
         } else {
 
-          this.toastr.error('Erreur !', this.cst.toastrTitle);
+          this.cst.showError('Erreur !', 'X');
         }
       }
     );

@@ -466,7 +466,7 @@ export class PlanningComponent implements OnInit {
       this.http.put(this.cst.apiUrl + 'planning/deverrouillage', { id_semaine: this.idSemaine }).subscribe(
         remove => {
           if (!remove) {
-            this.toastr.error('Erreur !', this.cst.toastrTitle);
+            this.cst.showError('Erreur !', 'X');
           }
           else {
             $("#verrou").toggleClass('btn-danger', false);
@@ -480,7 +480,7 @@ export class PlanningComponent implements OnInit {
       this.http.put(this.cst.apiUrl + 'planning/verrouillage', { id_semaine: this.idSemaine }).subscribe(
         remove => {
           if (!remove) {
-            this.toastr.error('Erreur !', this.cst.toastrTitle);
+            this.cst.showError('Erreur !', 'X');
           }
           else {
             $("#verrou").toggleClass('btn-success', false);
@@ -503,7 +503,7 @@ export class PlanningComponent implements OnInit {
 
     // Vérifier que `resourceAcopier` et `resource` ne sont pas undefined
     if (!resourceAcopier || !resource) {
-      this.toastr.error("Les ressources ne sont pas valides.", this.cst.toastrTitle);
+      this.cst.showError("Les ressources ne sont pas valides.", 'X');
       return;
     }
 
@@ -516,7 +516,7 @@ export class PlanningComponent implements OnInit {
       .indexOf(resource);
 
     if (indexACopier === -1) {
-      this.toastr.error("Ressource invalide !", this.cst.toastrTitle);
+      this.cst.showError("Ressource invalide !", 'X');
     } else {
       this.http
         .post(
@@ -531,7 +531,7 @@ export class PlanningComponent implements OnInit {
         )
         .subscribe((remove) => {
           if (!remove) {
-            this.toastr.error("Erreur !", this.cst.toastrTitle);
+            this.cst.showError("Erreur !", 'X');
           } else {
             $("#copierLigne").modal("hide");
             this.loadData();
@@ -639,7 +639,7 @@ export class PlanningComponent implements OnInit {
             let ass = val ? val.split('/')[0]?.trim() || '' : ''; // Gestion des valeurs undefined
 
             if (!this.chantierExist(ass) && ass !== '') {
-              this.toastr.error('Chantier inexistant', this.cst.toastrTitle);
+              this.cst.showError('Chantier inexistant', 'X');
               break;
             }
 
@@ -655,7 +655,7 @@ export class PlanningComponent implements OnInit {
             }`
           ).subscribe((remove) => {
             if (!remove) {
-              this.toastr.error('Erreur lors de la suppression !', this.cst.toastrTitle);
+              this.cst.showError('Erreur lors de la suppression !', 'X');
             }
           });
         }
@@ -677,7 +677,7 @@ export class PlanningComponent implements OnInit {
 
           this.http.post(`${this.cst.apiUrl}planning/creation/${url}`, body).subscribe((prop) => {
             if (!prop) {
-              this.toastr.error('Erreur lors de la création !', this.cst.toastrTitle);
+              this.cst.showError('Erreur lors de la création !', 'X');
             }
           });
         }
@@ -701,7 +701,7 @@ export class PlanningComponent implements OnInit {
     var success = false;
     //absence inexistante
     if (!this.absenceExist(absence) && $('#absence').val() !== '') {
-      this.toastr.error('Absence inexistante', this.cst.toastrTitle);
+      this.cst.showError('Absence inexistante', 'X');
     }
     //chantier inexistant
     else if (
@@ -710,13 +710,13 @@ export class PlanningComponent implements OnInit {
       ) &&
       $('#absence').val() === ''
     ) {
-      this.toastr.error('Chantier inexistant', this.cst.toastrTitle);
+      this.cst.showError('Chantier inexistant', 'X');
     }
     else if (!this.activiteExist($('#activite').val()) && $('#absence').val() === '' && $('#activite').val() !== '') {
-      this.toastr.error('Activité inexistante', this.cst.toastrTitle);
+      this.cst.showError('Activité inexistante', 'X');
     }
     else if (this.idCliques.length === 0) {
-      this.toastr.error('Pas de ressource renseignée', this.cst.toastrTitle);
+      this.cst.showError('Pas de ressource renseignée', 'X');
     }
     else {
       for (let i = 0; i < 6; i++) {
@@ -762,9 +762,9 @@ export class PlanningComponent implements OnInit {
                 prop => {
                   if (prop === 1) {
                     $('#exampleModalCenter').modal('hide');
-                    this.toastr.error('Chantier ajouté mais ' + body.nom + ' absent(e)', this.cst.toastrTitle);
+                    this.cst.showError('Chantier ajouté mais ' + body.nom + ' absent(e)', 'X');
                   } else if (prop === 2) {
-                    this.toastr.error('Assignation(s) déjà existente(s) pour :' + body.nom, this.cst.toastrTitle);
+                    this.cst.showError('Assignation(s) déjà existente(s) pour :' + body.nom, 'X');
                   } else {
                     $('#exampleModalCenter').modal('hide');
                   }
@@ -778,9 +778,9 @@ export class PlanningComponent implements OnInit {
       const dateDebutValue = $('#date_debut').val() as string | undefined;
       const dateFinValue = $('#date_fin').val() as string | undefined;
       if (!dateDebutValue || !dateFinValue) {
-        this.toastr.error('Veuillez renseigner les dates correctement', this.cst.toastrTitle);
+        this.cst.showError('Veuillez renseigner les dates correctement', 'X');
       } else if (dateDebutValue > dateFinValue) {
-        this.toastr.error('Période invalide', this.cst.toastrTitle);
+        this.cst.showError('Période invalide', 'X');
       } else if (dateDebutValue <= dateFinValue) {
         const dateDebut = new Date(dateDebutValue + " 00:00:00");
         const dateFin = new Date(dateFinValue + " 00:00:00");
@@ -797,7 +797,7 @@ export class PlanningComponent implements OnInit {
         }
 
         if (jour === -1) {
-          this.toastr.error('Période invalide', this.cst.toastrTitle);
+          this.cst.showError('Période invalide', 'X');
         } else {
           while (dateDebut.getTime() <= dateFin.getTime()) {
             while (jour < 5 && dateDebut.getTime() <= dateFin.getTime()) {
@@ -845,14 +845,14 @@ export class PlanningComponent implements OnInit {
                   this.http.post(this.cst.apiUrl + 'planning/creation', body).subscribe((prop) => {
                     if (prop === 1) {
                       $('#exampleModalCenter').modal('hide');
-                      this.toastr.error(
+                      this.cst.showError(
                         'Chantier ajouté mais ' + body.nom + ' absent(e)',
-                        this.cst.toastrTitle
+                        'X'
                       );
                     } else if (prop === 2) {
-                      this.toastr.error(
+                      this.cst.showError(
                         'Assignation(s) déjà existente(s) pour :' + body.nom,
-                        this.cst.toastrTitle
+                        'X'
                       );
                     } else {
                       $('#exampleModalCenter').modal('hide');
@@ -877,9 +877,9 @@ export class PlanningComponent implements OnInit {
       this.http.post(this.cst.apiUrl + 'absences/attribution_absence', body).subscribe(
         prop => {
           if (!prop) {
-            this.toastr.error('Erreur !', this.cst.toastrTitle);
+            this.cst.showError('Erreur !', 'X');
           } else {
-            this.toastr.success('Absence(s) ajoutée(s) avec succès !', this.cst.toastrTitle);
+            this.cst.showSuccess('Absence(s) ajoutée(s) avec succès !', 'X');
             $('#exampleModalCenter').modal('hide');
           }
         });
@@ -895,12 +895,12 @@ export class PlanningComponent implements OnInit {
     var type = ($('#newtype').val() == 'INTERIM/STAGIAIRE' ? 'INTERIM' : $('#newtype').val());
 
     if (matricule === '') {
-      this.toastr.error('Resource non renseignée !', this.cst.toastrTitle);
+      this.cst.showError('Resource non renseignée !', 'X');
       return; // Arrête l'exécution si le matricule est vide
     }
 
     if (type !== 'SALARIE' && type !== 'INTERIM' && type !== 'ATELIER' && type !== 'STAGIAIRE') {
-      this.toastr.error('Type mal renseigné !', this.cst.toastrTitle);
+      this.cst.showError('Type mal renseigné !', 'X');
       return; // Arrête l'exécution si le type est invalide
     }
 
@@ -923,7 +923,7 @@ export class PlanningComponent implements OnInit {
         : ''; // Valeur par défaut si undefined
 
       if (!this.chantierExist(code_chantier) && chantierValue !== '') {
-        this.toastr.error('Chantier inexistant', this.cst.toastrTitle);
+        this.cst.showError('Chantier inexistant', 'X');
       } else if (chantierValue !== '') {
         // Sécurisation de la valeur de `matricule`
         const matriculeValue = matricule ? String(matricule) : ''; // Convertir en chaîne ou utiliser une valeur par défaut
@@ -945,7 +945,7 @@ export class PlanningComponent implements OnInit {
 
         this.http.post(this.cst.apiUrl + 'planning/creation_fantome', body).subscribe((prop) => {
           if (!prop) {
-            this.toastr.error('Erreur !', this.cst.toastrTitle);
+            this.cst.showError('Erreur !', 'X');
           }
         });
       }
@@ -1180,7 +1180,7 @@ export class PlanningComponent implements OnInit {
 
         }
         else
-          this.toastr.error('Erreur !', this.cst.toastrTitle);
+          this.cst.showError('Erreur !', 'X');
       })
   }
 
@@ -1193,7 +1193,7 @@ export class PlanningComponent implements OnInit {
     this.http.delete(this.cst.apiUrl + 'assignation/suppression/' + matricule + '/' + this.idSemaine).subscribe(
       remove => {
         if (!remove)
-          this.toastr.error('Erreur !', this.cst.toastrTitle);
+          this.cst.showError('Erreur !', 'X');
       })
     this.loadData()
     $('#supprimerAssignationFantome').modal('hide');

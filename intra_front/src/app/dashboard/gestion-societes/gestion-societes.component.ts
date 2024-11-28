@@ -59,11 +59,11 @@ export class GestionSocietesComponent implements OnInit {
     this.http.post(this.cst.apiUrl + 'gestion_societes/new', body).subscribe(
       prop => {
         if (prop) {
-          this.toastr.success('Société ajoutée !', this.cst.toastrTitle);
+          this.cst.showSuccess('Société ajoutée !', 'X');
           $('#ajoutSociete').modal('hide');
           window.location.reload();
         } else {
-          this.toastr.error('Erreur !', this.cst.toastrTitle);
+          this.cst.showError('Erreur !', 'X');
         }
       }
     )
@@ -85,12 +85,12 @@ export class GestionSocietesComponent implements OnInit {
     this.http.delete(this.cst.apiUrl + 'gestion_societes/remove/' + id).subscribe(
       remove => {
         if (remove) {
-          this.toastr.success('Société supprimée !', this.cst.toastrTitle);
+          this.cst.showSuccess('Société supprimée !', 'X');
           window.location.reload();
 
         } else {
 
-          this.toastr.error('Erreur !', this.cst.toastrTitle);
+          this.cst.showError('Erreur !', 'X');
         }
       }
     );

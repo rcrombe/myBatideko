@@ -84,11 +84,11 @@ export class GestionGroupesComponent implements OnInit {
     this.http.post(this.cst.apiUrl + 'gestion_groupes/new', body).subscribe(
       prop => {
         if (prop) {
-          this.toastr.success('Groupe ajouté !', this.cst.toastrTitle);
+          this.cst.showSuccess('Groupe ajouté !', 'X');
           $('#ajoutGroupe').modal('hide');
           window.location.reload();
         } else {
-          this.toastr.error('Erreur !', this.cst.toastrTitle);
+          this.cst.showError('Erreur !', 'X');
         }
       }
     )
@@ -109,7 +109,7 @@ export class GestionGroupesComponent implements OnInit {
     if (this.selectedId !== null) {
       this.http.delete(this.cst.apiUrl + 'gestion_groupes/remove/' + this.selectedId).subscribe(
         (response) => {
-          this.toastr.success('Groupe supprimé !', this.cst.toastrTitle);
+          this.cst.showSuccess('Groupe supprimé !', 'X');
 
           const modalElement = document.getElementById('supprimeGroupe');
           if (modalElement) {
@@ -119,7 +119,7 @@ export class GestionGroupesComponent implements OnInit {
           window.location.reload(); // Recharge les données
         },
         (error) => {
-          this.toastr.error('Erreur lors de la suppression !', this.cst.toastrTitle);
+          this.cst.showError('Erreur lors de la suppression !', 'X');
         }
       );
     }
@@ -145,15 +145,15 @@ export class GestionGroupesComponent implements OnInit {
       this.http.post(this.cst.apiUrl + 'gestion_groupes/permissions', body).subscribe(
         prop => {
           if (prop) {
-            this.toastr.success('Permissions modifiées !', this.cst.toastrTitle);
+            this.cst.showSuccess('Permissions modifiée !', 'X');
             this.loadData();
           } else {
-            this.toastr.error('Erreur !', this.cst.toastrTitle);
+            this.cst.showError('Erreur !', 'X');
           }
         }
       );
     } else {
-      this.toastr.error('Aucun groupe sélectionné pour la mise à jour des permissions', this.cst.toastrTitle);
+      this.cst.showError('Aucun groupe sélectionné pour la mise à jour des permissions !', 'X');
     }
   }
 }

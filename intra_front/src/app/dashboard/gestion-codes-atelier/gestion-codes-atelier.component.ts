@@ -60,7 +60,7 @@ export class GestionCodesAtelierComponent implements OnInit {
     this.http.post(this.cst.apiUrl + 'gestion_codes_atelier/new', body).subscribe(
       prop => {
         if (!prop) {
-          this.toastr.error('Erreur !', this.cst.toastrTitle);
+          this.cst.showError('Erreur !', 'X');
         } else {
           this.loadData();
         }
@@ -90,7 +90,7 @@ export class GestionCodesAtelierComponent implements OnInit {
     this.http.put(this.cst.apiUrl + 'gestion_codes_atelier/edit', body).subscribe(
       prop => {
         if (!prop) {
-          this.toastr.error('Erreur !', this.cst.toastrTitle);
+          this.cst.showError('Erreur !', 'X');
         } else {
           window.location.reload();
           $('#modifierAction').modal('hide'); // Ferme le modal après modification
@@ -107,7 +107,7 @@ export class GestionCodesAtelierComponent implements OnInit {
     this.http.delete(this.cst.apiUrl + 'gestion_codes_atelier/remove/' + id).subscribe(
       prop => {
         if (!prop) {
-          this.toastr.error('Erreur !', this.cst.toastrTitle);
+          this.cst.showError('Erreur !', 'X');
         } else {
           $('#supprimerAction').modal('hide');
           window.location.reload();

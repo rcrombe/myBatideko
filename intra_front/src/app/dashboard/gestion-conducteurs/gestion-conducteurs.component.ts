@@ -83,7 +83,7 @@ export class GestionConducteursComponent implements OnInit {
     this.http.put(this.cst.apiUrl + 'conducteurs/modifColor', body).subscribe(
       prop => {
         if (!prop) {
-          this.toastr.error('Erreur !', this.cst.toastrTitle);
+          this.cst.showError('Erreur !', 'X');
         } else {
           window.location.reload();
           $('#modifierConducteur').modal('hide');
@@ -107,11 +107,11 @@ export class GestionConducteursComponent implements OnInit {
     this.http.put(this.cst.apiUrl + 'conducteurs/switchElectricien', body).subscribe(
       prop => {
         if (!prop) {
-          this.toastr.error('Erreur !', this.cst.toastrTitle);
+          this.cst.showError('Erreur !', 'X');
         } else {
           this.loadData();
 
-          this.toastr.success('Valeur modifiée !', this.cst.toastrTitle);
+          this.cst.showSuccess('Valeur modifiée !', 'X');
         }
       });
   }
@@ -135,12 +135,12 @@ export class GestionConducteursComponent implements OnInit {
     this.http.put(this.cst.apiUrl + 'conducteurs/redirigerPointages', body).subscribe(
       prop => {
         if (!prop) {
-          this.toastr.error('Erreur !', this.cst.toastrTitle);
+          this.cst.showError('Erreur !', 'X');
         } else {
           this.loadData();
           $('#redirigerPointages').modal('hide');
 
-          this.toastr.success('Les pointages ont bien été redirigés !', this.cst.toastrTitle);
+          this.cst.showSuccess('Les pointages ont bien été redirigés !', 'X');
         }
       });
   }

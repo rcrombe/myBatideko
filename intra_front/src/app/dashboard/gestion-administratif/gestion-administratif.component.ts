@@ -86,14 +86,14 @@ export class GestionAdministratifComponent implements OnInit {
     this.http.post(this.cst.apiUrl + 'gestion-administratif/creation', body).subscribe(
       prop => {
         if (prop) {
-          this.toastr.success('Personne ajoutée !', this.cst.toastrTitle);
+          this.cst.showSuccess('Personne ajoutée !', 'X');
           $('#ajoutPersonne').modal('hide');
           window.location.reload();
           var list = ['2', '3', '4', '5']
           if (list.indexOf(this.utilisateur.loglevel) !== -1)
             console.log('eheh')
         } else {
-          this.toastr.error('Erreur !', this.cst.toastrTitle);
+          this.cst.showError('Erreur !', 'X');
         }
       }
     )
@@ -115,12 +115,12 @@ export class GestionAdministratifComponent implements OnInit {
     this.http.delete(this.cst.apiUrl + 'gestion-administratif/' + id).subscribe(
       remove => {
         if (remove) {
-          this.toastr.success('Personne supprimée !', this.cst.toastrTitle);
+          this.cst.showSuccess('Personne supprimée !', 'X');
           this.loadData();
 
         } else {
 
-          this.toastr.error('Erreur !', this.cst.toastrTitle);
+          this.cst.showError('Erreur !', 'X');
         }
       }
     );
@@ -148,11 +148,11 @@ export class GestionAdministratifComponent implements OnInit {
     this.http.put(this.cst.apiUrl + 'gestion-administratif/edit', body).subscribe(
       prop => {
         if (prop) {
-          this.toastr.success('Personne modifiée !', this.cst.toastrTitle);
+          this.cst.showSuccess('Personne modifiée !', 'X');
           $('#modifierPersonne').modal('hide');
           this.loadData();
         } else {
-          this.toastr.error('Erreur !', this.cst.toastrTitle);
+          this.cst.showError('Erreur !', 'X');
         }
       }
     );
@@ -180,11 +180,11 @@ export class GestionAdministratifComponent implements OnInit {
     this.http.put(this.cst.apiUrl + 'resources/societe', body).subscribe(
       prop => {
         if (prop) {
-          this.toastr.success('Ressource modifiée !', this.cst.toastrTitle);
+          this.cst.showSuccess('Ressource modifiée !', 'X');
           $('#modifierSociete').modal('hide');
           this.loadData();
         } else {
-          this.toastr.error('Erreur !', this.cst.toastrTitle);
+          this.cst.showError('Erreur !', 'X');
         }
       }
     );

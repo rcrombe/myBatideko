@@ -58,10 +58,10 @@ export class GestionResourcesComponent implements OnInit {
       this.http.put(this.cst.apiUrl + 'resources/actif', body).subscribe(
         prop => {
           if (prop) {
-            this.toastr.success('Utilisateur modifié !', this.cst.toastrTitle);
+            this.cst.showSuccess('Utilisateur modifié !','X');
             this.loadData();
           } else {
-            this.toastr.error('Erreur !', this.cst.toastrTitle);
+            this.cst.showError('Erreur !', 'X');
           }
         }
       )
@@ -74,10 +74,10 @@ export class GestionResourcesComponent implements OnInit {
       this.http.put(this.cst.apiUrl + 'resources/actif', body).subscribe(
         prop => {
           if (prop) {
-            this.toastr.success('Utilisateur modifié !', this.cst.toastrTitle);
+            this.cst.showSuccess('Utilisateur modifié !','X');
             this.loadData();
           } else {
-            this.toastr.error('Erreur !', this.cst.toastrTitle);
+            this.cst.showError('Erreur !', 'X');
           }
         }
       )
@@ -108,7 +108,7 @@ export class GestionResourcesComponent implements OnInit {
           this.http.put(this.cst.apiUrl + 'gestion-resources/inserer', body).subscribe(
             prop => {
               if (!prop) {
-                this.toastr.error('Erreur !', this.cst.toastrTitle);
+                this.cst.showError('Erreur !', 'X');
               }
             })
         }
@@ -120,7 +120,7 @@ export class GestionResourcesComponent implements OnInit {
           this.http.put(this.cst.apiUrl + 'gestion-resources/suppression', body).subscribe(
             prop => {
               if (!prop) {
-                this.toastr.error('Erreur !', this.cst.toastrTitle);
+                this.cst.showError('Erreur !', 'X');
               }
             })
         }
@@ -182,11 +182,11 @@ export class GestionResourcesComponent implements OnInit {
     this.http.put(this.cst.apiUrl + 'resources/tuteur', body).subscribe(
       prop => {
         if (prop) {
-          this.toastr.success('Ressource modifiée !', this.cst.toastrTitle);
+          this.cst.showSuccess('Ressource modifiée !', 'X');
           $('#modifierTuteur').modal('hide');
           this.loadData();
         } else {
-          this.toastr.error('Erreur !', this.cst.toastrTitle);
+          this.cst.showError('Erreur !', 'X');
         }
       }
     );
@@ -215,11 +215,11 @@ export class GestionResourcesComponent implements OnInit {
     this.http.put(this.cst.apiUrl + 'resources/idPointage', body).subscribe(
       prop => {
         if (prop) {
-          this.toastr.success('Ressource modifiée !', this.cst.toastrTitle);
+          this.cst.showSuccess('Ressource modifiée !', 'X');
           $('#modifierIdPointage').modal('hide');
           this.loadData();
         } else {
-          this.toastr.error('Erreur !', this.cst.toastrTitle);
+          this.cst.showError('Erreur !', 'X');
         }
       }
     );
@@ -249,11 +249,11 @@ export class GestionResourcesComponent implements OnInit {
     this.http.put(this.cst.apiUrl + 'resources/societe', body).subscribe(
       prop => {
         if (prop) {
-          this.toastr.success('Ressource modifiée !', this.cst.toastrTitle);
+          this.cst.showSuccess('Ressource modifiée !', 'X');
           $('#modifierSociete').modal('hide');
           this.loadData();
         } else {
-          this.toastr.error('Erreur !', this.cst.toastrTitle);
+          this.cst.showError('Erreur !', 'X');
         }
       }
     );

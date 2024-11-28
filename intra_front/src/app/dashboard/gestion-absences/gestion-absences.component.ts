@@ -70,7 +70,7 @@ export class GestionAbsencesComponent implements OnInit {
   public ajouterAbsence() {
     const newCode = $("#newCode").val() as string | undefined;
     if (!newCode || newCode.trim() === '') {
-      this.toastr.error('Code chantier requis !', this.cst.toastrTitle);
+      this.cst.showError('Erreur !', 'X');
       return;
     }
 
@@ -84,9 +84,10 @@ export class GestionAbsencesComponent implements OnInit {
     this.http.post(this.cst.apiUrl + 'absences/creation_absence', body).subscribe(
       prop => {
         if (!prop) {
-          this.toastr.error('Erreur !', this.cst.toastrTitle);
+          this.cst.showError('Code chantier requis!', 'X');
         } else {
           this.initAjoutAbsence();
+          this.cst.showSuccess('Nouvelle absence ajoutée!', 'X');
           this.loadData();
         }
       }
@@ -125,7 +126,7 @@ export class GestionAbsencesComponent implements OnInit {
     this.http.put(this.cst.apiUrl + 'absences/modifColor', body).subscribe(
       prop => {
         if (!prop) {
-          this.toastr.error('Erreur !', this.cst.toastrTitle);
+          this.cst.showError('Erreur !', 'X');
         } else {
           window.location.reload();
           $("#modifierAbsence").modal('hide');
@@ -140,7 +141,7 @@ export class GestionAbsencesComponent implements OnInit {
     this.http.delete(this.cst.apiUrl + 'absences/supression/' + code_absence + '/' + type + '/' + this.utilisateur.id).subscribe(
       prop => {
         if (!prop) {
-          this.toastr.error('Erreur !', this.cst.toastrTitle);
+          this.cst.showError('Erreur !', 'X');
         } else {
           $('#supprimerAbsence').modal('hide');
           this.loadData()

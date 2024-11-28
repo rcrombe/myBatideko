@@ -105,13 +105,13 @@ export class GestionVehiculesComponent implements OnInit {
 
 
     if ($("#immatriculation").val() === '')
-      this.toastr.error('Immatriculation requise ! ', this.cst.toastrTitle);
+      this.cst.showError('Immatriculation requise ! ', 'X');
     else if (immat !== -1)
-      this.toastr.error('Immatriculation déjà existente ! ', this.cst.toastrTitle);
+      this.cst.showError('Immatriculation déjà existente ! ', 'X');
     else if ($("#nb_places").val() == '')
-      this.toastr.error('Nombre de places du véhicule requis ! ', this.cst.toastrTitle);
+      this.cst.showError('Nombre de places du véhicule requis ! ', 'X');
     else if (indexNBplaces === -1)
-      this.toastr.error('Nombre de places incorrect ! ', this.cst.toastrTitle);
+      this.cst.showError('Nombre de places incorrect ! ', 'X');
     else {
       matricule_resource = (pos === -1 ? null : this.chauffeurs[pos].matricule_resource)
       controle_technique = ($("#controle_technique").val() === '' ? null : $("#controle_technique").val())
@@ -145,11 +145,11 @@ export class GestionVehiculesComponent implements OnInit {
       this.http.post(this.cst.apiUrl + 'gestion_vehicules/creation', body).subscribe(
         prop => {
           if (prop) {
-            this.toastr.success('Vehicule ajouté !', this.cst.toastrTitle);
+            this.cst.showSuccess('Vehicule ajouté !', 'X');
             $('#ajoutVehicule').modal('hide');
             window.location.reload();
           } else {
-            this.toastr.error('Erreur !', this.cst.toastrTitle);
+            this.cst.showError('Erreur !', 'X');
           }
         }
       )
@@ -196,10 +196,10 @@ export class GestionVehiculesComponent implements OnInit {
     this.http.put(this.cst.apiUrl + 'gestion_vehicules/vendu', body).subscribe(
       prop => {
         if (prop) {
-          this.toastr.success('Vehicule vendu !', this.cst.toastrTitle);
+          this.cst.showSuccess('Vehicule vendu !', 'X');
           window.location.reload();
         } else {
-          this.toastr.error('Erreur !', this.cst.toastrTitle);
+          this.cst.showError('Erreur !', 'X');
         }
       }
     )
@@ -247,10 +247,10 @@ export class GestionVehiculesComponent implements OnInit {
     var pos = this.chauffeurs.map(e => e.Nom).indexOf($("#modifierchauffeur").val() as string);
 
     if (pos === -1 && $("#modifierchauffeur").val()) {
-      this.toastr.error('Resource non valide!', this.cst.toastrTitle);
+      this.cst.showError('Resource non valide!', 'X');
       return;
     } else if (!['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'].includes($("#modifiernb_places").val() as string)) {
-      this.toastr.error('Nombre de places non valide!', this.cst.toastrTitle);
+      this.cst.showError('Nombre de places non valide!', 'X');
       return;
     } else {
       const chauffeur = pos === -1 ? null : this.chauffeurs[pos].matricule_resource;
@@ -278,11 +278,11 @@ export class GestionVehiculesComponent implements OnInit {
       this.http.put(this.cst.apiUrl + 'gestion_vehicules/modifier', body).subscribe(
         prop => {
           if (prop) {
-            this.toastr.success('Véhicule modifié !', this.cst.toastrTitle);
+            this.cst.showSuccess('Véhicule modifié !', 'X');
             $('#modifierVehicule').modal('hide');
             window.location.reload();
           } else {
-            this.toastr.error('Erreur !', this.cst.toastrTitle);
+            this.cst.showError('Erreur !', 'X');
           }
         }
       );
@@ -297,10 +297,10 @@ export class GestionVehiculesComponent implements OnInit {
       this.http.put(this.cst.apiUrl + 'gestion_vehicules/dispo', body).subscribe(
         prop => {
           if (prop) {
-            this.toastr.success('Vehicule modifié !', this.cst.toastrTitle);
+            this.cst.showSuccess('Vehicule modifié !', 'X');
             this.loadData();
           } else {
-            this.toastr.error('Erreur !', this.cst.toastrTitle);
+            this.cst.showError('Erreur !', 'X');
           }
         }
       )
@@ -313,10 +313,10 @@ export class GestionVehiculesComponent implements OnInit {
       this.http.put(this.cst.apiUrl + 'gestion_vehicules/dispo', body).subscribe(
         prop => {
           if (prop) {
-            this.toastr.success('Vehicule modifié !', this.cst.toastrTitle);
+            this.cst.showSuccess('Vehicule modifié !', 'X');
             this.loadData();
           } else {
-            this.toastr.error('Erreur !', this.cst.toastrTitle);
+            this.cst.showError('Erreur !', 'X');
           }
         }
       )
@@ -332,10 +332,10 @@ export class GestionVehiculesComponent implements OnInit {
       this.http.put(this.cst.apiUrl + 'gestion_vehicules/bureaux', body).subscribe(
         prop => {
           if (prop) {
-            this.toastr.success('Vehicule modifié !', this.cst.toastrTitle);
+            this.cst.showSuccess('Vehicule modifié !', 'X');
             this.loadData();
           } else {
-            this.toastr.error('Erreur !', this.cst.toastrTitle);
+            this.cst.showError('Erreur !', 'X');
           }
         }
       )
@@ -348,10 +348,10 @@ export class GestionVehiculesComponent implements OnInit {
       this.http.put(this.cst.apiUrl + 'gestion_vehicules/bureaux', body).subscribe(
         prop => {
           if (prop) {
-            this.toastr.success('Vehicule modifié !', this.cst.toastrTitle);
+            this.cst.showSuccess('Vehicule modifié !', 'X');
             this.loadData();
           } else {
-            this.toastr.error('Erreur !', this.cst.toastrTitle);
+            this.cst.showError('Erreur !', 'X');
           }
         }
       )
@@ -367,10 +367,10 @@ export class GestionVehiculesComponent implements OnInit {
       this.http.put(this.cst.apiUrl + 'gestion_vehicules/vendu', body).subscribe(
         prop => {
           if (prop) {
-            this.toastr.success('Vehicule modifié !', this.cst.toastrTitle);
+            this.cst.showSuccess('Vehicule modifié !', 'X');
             this.loadData();
           } else {
-            this.toastr.error('Erreur !', this.cst.toastrTitle);
+            this.cst.showError('Erreur !', 'X');
           }
         }
       )
@@ -383,10 +383,10 @@ export class GestionVehiculesComponent implements OnInit {
       this.http.put(this.cst.apiUrl + 'gestion_vehicules/vendu', body).subscribe(
         prop => {
           if (prop) {
-            this.toastr.success('Vehicule modifié !', this.cst.toastrTitle);
+            this.cst.showSuccess('Vehicule modifié !', 'X');
             this.loadData();
           } else {
-            this.toastr.error('Erreur !', this.cst.toastrTitle);
+            this.cst.showError('Erreur !', 'X');
           }
         }
       )

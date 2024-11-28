@@ -90,7 +90,7 @@ export class HistoriqueComponent implements OnInit {
     this.http.put(this.cst.apiUrl + 'historique/loglevel', body).subscribe(
       (token: any) => {
         if (token) {
-          this.toastr.success('Niveau des actions enregistrées modifié avec success ', this.cst.toastrTitle);
+          this.cst.showSuccess('Niveau des actions enregistrées modifié avec success ', 'X');
           localStorage.setItem('token', token);
         }
       }
@@ -112,7 +112,7 @@ export class HistoriqueComponent implements OnInit {
     if ($("#action").val() === '')
       action = 'rien'
     if (date_debut === '' || date_fin === '')
-      this.toastr.error('Dates requises ! ', this.cst.toastrTitle);
+      this.cst.showError('Dates requises ! ', 'X');
     else {
       this.http.get<Array<any>>(this.cst.apiUrl + 'historique/' + (index == -1 && $("#resource").val() !== 'NULL' ? 'rien' :
         ($("#resource").val() === 'NULL' ? 'NULL' : this.utilisateurs[index].id)

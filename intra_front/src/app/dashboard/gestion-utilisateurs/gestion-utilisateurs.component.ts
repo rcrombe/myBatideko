@@ -99,7 +99,7 @@ export class GestionUtilisateursComponent implements OnInit {
     this.http.post(this.cst.apiUrl + 'register', body).subscribe(
       () => {
         // Affiche un message de succès
-        this.toastr.success('Utilisateur ajouté avec succès', this.cst.toastrTitle);
+        this.cst.showSuccess('Utilisateur ajouté avec succès', 'X');
 
         // Ferme la modale
         this.modaleAjoutUtilisateur.hide();
@@ -109,7 +109,7 @@ export class GestionUtilisateursComponent implements OnInit {
       },
       error => {
         // Gère les erreurs et affiche un message d'erreur
-        this.toastr.error('Erreur lors de l\'ajout de l\'utilisateur', error.message);
+        this.cst.showError('Erreur lors de l\'ajout de l\'utilisateur : ' + error.message, 'X');
         console.error('Erreur :', error);
       }
     );
@@ -125,11 +125,11 @@ export class GestionUtilisateursComponent implements OnInit {
 
     this.http.post(this.cst.apiUrl + 'utilisateurs/alertes', body).subscribe(
       () => {
-        this.toastr.success('Alertes modifiées !', this.cst.toastrTitle);
+        this.cst.showSuccess('Alertes modifiées !', 'X');
         this.loadData();
       },
       error => {
-        this.toastr.error('Erreur lors de la modification des alertes', error.message);
+        this.cst.showError('Erreur lors de la modification des alertes : ' + error.message, 'X');
       }
     );
   }
@@ -145,12 +145,12 @@ export class GestionUtilisateursComponent implements OnInit {
     if (id) {
       this.http.delete(this.cst.apiUrl + `users/${id}`).subscribe(
         () => {
-          this.toastr.success('Utilisateur supprimé !', this.cst.toastrTitle);
+          this.cst.showSuccess('Utilisateur supprimé !', 'X');
           this.modaleSupprimeUtilisateur.hide();
           this.loadData();
         },
         error => {
-          this.toastr.error('Erreur lors de la suppression', error.message);
+          this.cst.showError('Erreur lors de la suppression : ' + error.message, 'X');
         }
       );
     }
@@ -178,12 +178,12 @@ export class GestionUtilisateursComponent implements OnInit {
 
     this.http.put(this.cst.apiUrl + 'users/edit', body).subscribe(
       () => {
-        this.toastr.success('Utilisateur modifié !', this.cst.toastrTitle);
+        this.cst.showSuccess('Utilisateur modifié !', 'X');
         this.modaleModifierUtilisateur.hide();
         this.loadData();
       },
       error => {
-        this.toastr.error('Erreur lors de la modification', error.message);
+        this.cst.showError('Erreur lors de la modification : ' + error.message, 'X');
       }
     );
   }
@@ -215,7 +215,7 @@ export class GestionUtilisateursComponent implements OnInit {
       this.http.put(this.cst.apiUrl + 'users/_change', body).subscribe(
         () => {
           // Affiche un message de succès
-          this.toastr.success('Mot de passe modifié avec succès !', this.cst.toastrTitle);
+          this.cst.showSuccess('Mot de passe modifié avec succès !', 'X');
 
           // Ferme la modale
           this.modaleModifierPassword.hide();
@@ -225,7 +225,7 @@ export class GestionUtilisateursComponent implements OnInit {
         },
         error => {
           // Gère les erreurs et affiche un message d'erreur
-          this.toastr.error('Erreur lors de la modification du mot de passe', error.message);
+          this.cst.showError('Erreur lors de la modification du mot de passe : ' + error.message, 'X');
         }
       );
     } else {

@@ -70,7 +70,7 @@ export class GestionModulesComponent implements OnInit {
       this.http.post(this.cst.apiUrl + 'gestion_modules/new', body).subscribe(
         (response: any) => {
           if (response) {
-            this.toastr.success('Module ajouté avec succès !', this.cst.toastrTitle);
+            this.cst.showSuccess('Module ajouté avec succès !', 'X');
 
             // Fermez la modale
             const modalElement = document.getElementById('ajoutModule');
@@ -82,16 +82,16 @@ export class GestionModulesComponent implements OnInit {
             // Recharger complètement la page
             window.location.reload();
           } else {
-            this.toastr.error('Erreur lors de l’ajout du module.', this.cst.toastrTitle);
+            this.cst.showError('Erreur lors de l\'ajout du module !', 'X');
           }
         },
         (error) => {
           console.error('Erreur serveur :', error);
-          this.toastr.error('Erreur serveur !', this.cst.toastrTitle);
+          this.cst.showError('Erreur serveur !', 'X');
         }
       );
     } else {
-      this.toastr.error('Veuillez remplir tous les champs requis.');
+      this.cst.showError('Veuillez remplir tout les champs requis !', 'X');
     }
   }
 
@@ -124,7 +124,7 @@ export class GestionModulesComponent implements OnInit {
   public supprimerModule() {
     this.http.delete(this.cst.apiUrl + 'gestion_modules/remove/' + this.moduleIdToDelete).subscribe(
       response => {
-        this.toastr.success('Module supprimé avec succès !');
+        this.cst.showSuccess('Module supprimé avec succès !', 'X');
         this.loadData(); // Rechargez les données
 
         // Fermez la modale après la suppression
@@ -135,7 +135,7 @@ export class GestionModulesComponent implements OnInit {
         }
       },
       error => {
-        this.toastr.error('Erreur lors de la suppression du module.');
+        this.cst.showError('Erreur lors de la suppression du module !', 'X');
         console.error(error);
       }
     );
@@ -150,11 +150,11 @@ export class GestionModulesComponent implements OnInit {
     this.http.post(this.cst.apiUrl + 'gestion_modules/toggle', body).subscribe(
       (res: any) => {
         if (res.affectedRows == 1) {
-          this.toastr.success((body.status == 1 ? "Activation" : "Désactivation") + ' du module');
+          this.cst.showSuccess((body.status == 1 ? "Activation" : "Désactivation") + ' du module', 'X');
           this.loadData();
         }
         else {
-          this.toastr.error("Erreur lors de l'exécution de la requête : " + res)
+          this.cst.showError('Erreur lors de l\'exécution de la requête : '+ res +' !', 'X');
         }
       }
     );
