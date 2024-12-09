@@ -1,5 +1,5 @@
-module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey, bcrypt, request,log,printLogLevel,printSemaines,
-                           getNBsemaine,getDate,sendMail) {
+module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey, bcrypt, request, log, printLogLevel, printSemaines,
+    getNBsemaine, getDate, sendMail) {
 
     //Informations sur les assignations
     app.get('/api/assignations/:date', function (req, res) {
@@ -11,7 +11,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'r', 'M_CHANTIERS_PLANNING_G', token)) {
+                if (SECURITY.canAccessRessource(user, 'r', 'M_CHANTIERS_PLANNING_G', token)) {
                     bdd.query(
                         '(\n' +
                         '\tSELECT grand_deplacement,journee,resources.nature,assignation_code_nature,immatriculation,resources.Activite,\n' +
@@ -85,12 +85,15 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                                             res.json(false)
                                         } else {
                                             var tuteurs = [];
+                                            console.log("En dehors du for");
                                             for (var i = 0; i < results.length; i++) {
+                                                console.log("Dans le for");
                                                 if (results[i].tuteur != null && results[i].Actif == 1) {
+                                                    console.log("Dans le if du for de la requête " + results);
                                                     const p = (e) => e.tuteur == results[i].tuteur;
                                                     var idx = -1;
 
-                                                    if(tuteurs.findIndex(p) == -1){
+                                                    if (tuteurs.findIndex(p) == -1) {
                                                         const obj = {
                                                             tuteur: results[i].tuteur,
                                                             apprentis: []
@@ -100,9 +103,9 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
 
                                                         tuteurs.push(obj);
                                                     }
-                                                    else{
+                                                    else {
                                                         const predicat = (e) => e == results[i].Nom;
-                                                        if(tuteurs[tuteurs.findIndex(p)].apprentis.findIndex(predicat) == -1)
+                                                        if (tuteurs[tuteurs.findIndex(p)].apprentis.findIndex(predicat) == -1)
                                                             tuteurs[tuteurs.findIndex(p)].apprentis.push(results[i].Nom);
                                                     }
 
@@ -113,17 +116,19 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                                                     }
                                                 } else {
                                                     results[i].tuteur_nom = null;
+                                                    console.log("Dans le else du for " + results[i]);
                                                 }
                                             }
 
-                                            for(var i = 0; i < results.length; i++){
+                                            for (var i = 0; i < results.length; i++) {
                                                 const p = (e) => e.tuteur == results[i].matricule_resource;
                                                 var idx = tuteurs.findIndex(p);
 
-                                                if(idx != -1){
+                                                if (idx != -1) {
                                                     results[i].apprentis = tuteurs[idx].apprentis;
                                                 }
                                             }
+                                            console.log(results);
                                             res.json(results);
                                         }
                                         //res.json(results);
@@ -148,7 +153,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'r', 'M_CHANTIERS_PLANNING_G', token)) {
+                if (SECURITY.canAccessRessource(user, 'r', 'M_CHANTIERS_PLANNING_G', token)) {
                     bdd.query('SELECT code_ressource ,code_attribut, libelle  FROM attributs_ressource ' +
                         'INNER JOIN attributs ON attributs.code= attributs_ressource.code_attribut WHERE valeur = 1',
                         function (error, results, fields) {
@@ -175,10 +180,10 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'r', 'M_DASHBOARD', token)) {
+                if (SECURITY.canAccessRessource(user, 'r', 'M_DASHBOARD', token)) {
                     var annee = req.params.annee;
 
-                    bdd.query('SELECT * FROM `semaines` WHERE YEAR(date_start) = ? OR ? = YEAR(date_end)', [annee,annee],
+                    bdd.query('SELECT * FROM `semaines` WHERE YEAR(date_start) = ? OR ? = YEAR(date_end)', [annee, annee],
                         function (error, results, fields) {
                             if (error) {
                                 log("Erreur : " + error, 'Planning Chantiers', user.id)
@@ -203,7 +208,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'r', 'M_CHANTIERS_PLANNING_G', token)) {
+                if (SECURITY.canAccessRessource(user, 'r', 'M_CHANTIERS_PLANNING_G', token)) {
                     const request = require('sync-request');
                     var res = request('GET', 'https://api.batideko.fr/api/absences');
                     var json = res.getBody().toString();
@@ -215,7 +220,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
         });
     });
 
-    app.get('/api/codes_nature', function (req,res) {
+    app.get('/api/codes_nature', function (req, res) {
         jsonWebToken.verify(req.headers.authorization.split(' ')[1], webTokenKey, function (err, decode) {
             if (err) {
                 log("Erreur : " + err, 'Planning Chantiers', null);
@@ -224,7 +229,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'r', 'M_CHANTIERS_PLANNING_G', token)) {
+                if (SECURITY.canAccessRessource(user, 'r', 'M_CHANTIERS_PLANNING_G', token)) {
                     bdd.query('SELECT * FROM codes_nature ORDER BY code ASC ', function (error, results, fields) {
                         if (error) {
                             log("Erreur : " + error, 'Planning Chantiers', user.id)
@@ -249,7 +254,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'r', 'M_CHANTIERS_PLANNING_G', token)) {
+                if (SECURITY.canAccessRessource(user, 'r', 'M_CHANTIERS_PLANNING_G', token)) {
                     bdd.query('SELECT code FROM activites  ORDER BY code ASC ', function (error, results, fields) {
                         if (error) {
                             log("Erreur : " + error, 'Planning Chantiers', user.id)
@@ -274,7 +279,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'r', 'M_CHANTIERS_PLANNING_G', token)) {
+                if (SECURITY.canAccessRessource(user, 'r', 'M_CHANTIERS_PLANNING_G', token)) {
                     bdd.query('SELECT code_chantier, nom_chantier FROM chantiers ' +
                         'WHERE Actif=1 AND (code_chantier LIKE "CC%" OR code_chantier LIKE "CA%" OR  ' +
                         'code_chantier = "_ATELIER" or code_chantier = "_BUREAUX" or code_chantier = "_TRAVAUX_EPI" or ' +
@@ -305,7 +310,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'r', 'M_CHANTIERS_PLANNING_G', token)) {
+                if (SECURITY.canAccessRessource(user, 'r', 'M_CHANTIERS_PLANNING_G', token)) {
                     bdd.query('SELECT semaines.id, semaines.nb_semaine, semaines.date_start, semaines.date_end, ' +
                         'chantiers.code_chantier, chantiers.nom_chantier, chantiers.Conducteur, chantiers.zone, ' +
                         'chantiers.adresse, chantiers.Ville, chantiers.code_postal, chantiers.adresse2  ' +
@@ -340,7 +345,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'w', 'M_CHANTIERS_PLANNING_G', token)) {
+                if (SECURITY.canAccessRessource(user, 'w', 'M_CHANTIERS_PLANNING_G', token)) {
                     bdd.query('SELECT id_assignation_fantome FROM assignations_fantome ' +
                         'WHERE id_semaine = ? AND matricule_resource=? AND code_chantier=? AND jour= ? ',
                         [req.body.semaine, req.body.matricule_resource, req.body.code_chantier, req.body.jour],
@@ -353,7 +358,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                                 bdd.query('INSERT INTO assignations_fantome (matricule_resource, code_chantier, ' +
                                     'jour,id_semaine,nom,journee,commentaires,type) VALUES (?, ?, ?,?,?,?,?,?)',
                                     [req.body.matricule_resource, req.body.code_chantier, req.body.jour, req.body.semaine,
-                                        req.body.nom, req.body.journee, req.body.commentaires, req.body.type],
+                                    req.body.nom, req.body.journee, req.body.commentaires, req.body.type],
                                     function (error, results2, fields) {
                                         if (error) {
                                             log("Erreur LA : " + error, 'Planning Chantiers', user.id)
@@ -388,7 +393,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'w', 'M_CHANTIERS_PLANNING_G', token)) {
+                if (SECURITY.canAccessRessource(user, 'w', 'M_CHANTIERS_PLANNING_G', token)) {
                     var journee = (req.body.journee ? req.body.journee : 0)
                     bdd.query('SELECT id_assignation FROM assignations ' +
                         'WHERE id_semaine = ? AND matricule_resource=? AND code_chantier=? AND jour= ? ',
@@ -403,7 +408,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                                     'jour,id_semaine, commentaires, chef_chantier,activite,journee,grand_deplacement) ' +
                                     'VALUES (?,?,?,?,?,?,?,?,?)',
                                     [req.body.matricule_resource, req.body.code_chantier, req.body.jour,
-                                        req.body.semaine, req.body.comm, req.body.chef_chantier, req.body.activite, journee,req.body.grand_deplacement],
+                                    req.body.semaine, req.body.comm, req.body.chef_chantier, req.body.activite, journee, req.body.grand_deplacement],
                                     function (error, results2, fields) {
                                         if (error) {
                                             log("Erreur : " + error, 'Planning Chantiers', user.id)
@@ -439,7 +444,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'special', 'M_CHANTIERS_PLANNING_G', token)) {
+                if (SECURITY.canAccessRessource(user, 'special', 'M_CHANTIERS_PLANNING_G', token)) {
                     bdd.query("UPDATE semaines SET verrouillee = 1 WHERE id= ? ", [req.body.id_semaine],
                         function (error, results, fields) {
                             if (error) {
@@ -466,7 +471,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'special', 'M_CHANTIERS_PLANNING_G', token)) {
+                if (SECURITY.canAccessRessource(user, 'special', 'M_CHANTIERS_PLANNING_G', token)) {
                     bdd.query("UPDATE semaines SET verrouillee = 0 WHERE id= ? ", [req.body.id_semaine],
                         function (error, results, fields) {
                             if (error) {
@@ -495,7 +500,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'w', 'M_CHANTIERS_PLANNING_G', token)) {
+                if (SECURITY.canAccessRessource(user, 'w', 'M_CHANTIERS_PLANNING_G', token)) {
                     if (req.body.comm === 'ABSENCE') {
 
 
@@ -596,7 +601,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'w', 'M_CHANTIERS_PLANNING_G', token)) {
+                if (SECURITY.canAccessRessource(user, 'w', 'M_CHANTIERS_PLANNING_G', token)) {
                     var re = "UPDATE assignations_fantome SET ";
                     var args = [];
 
@@ -655,7 +660,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
             const token = req.headers.authorization.split(' ')[1];
             const user = jsonWebToken.decode(token);
 
-            if(SECURITY.canAccessRessource(user, 'w', 'M_CHANTIERS_PLANNING_G', token)) {
+            if (SECURITY.canAccessRessource(user, 'w', 'M_CHANTIERS_PLANNING_G', token)) {
 
                 if (req.params.comm === 'ABSENCE' && SECURITY.canAccessRessource(user, 'w', 'M_ABSENCE', token)) {
                     bdd.query('DELETE FROM assignations_absence WHERE matricule_resource=? AND code_absence=? AND jour=? AND id_semaine=?',
@@ -755,7 +760,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'w', 'M_CHANTIERS_PLANNING_G', token)) {
+                if (SECURITY.canAccessRessource(user, 'w', 'M_CHANTIERS_PLANNING_G', token)) {
 
                     bdd.query('DELETE FROM assignations WHERE assignations.matricule_resource=? ' +
                         'AND assignations.jour=? AND assignations.id_semaine=?',
@@ -794,7 +799,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'w', 'M_CHANTIERS_PLANNING_G', token)) {
+                if (SECURITY.canAccessRessource(user, 'w', 'M_CHANTIERS_PLANNING_G', token)) {
                     bdd.query('SELECT chef_chantier FROM assignations ' +
                         'WHERE matricule_resource= ? AND code_chantier=? AND id_semaine= ? AND jour = ?',
                         [req.body.matricule, req.body.chantier, req.body.semaine, req.body.jour],
@@ -846,7 +851,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'w', 'M_CHANTIERS_PLANNING_G', token)) {
+                if (SECURITY.canAccessRessource(user, 'w', 'M_CHANTIERS_PLANNING_G', token)) {
 
                     var re = "UPDATE assignations SET ";
                     var args = [];
@@ -888,7 +893,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'w', 'M_CHANTIERS_PLANNING_G', token)) {
+                if (SECURITY.canAccessRessource(user, 'w', 'M_CHANTIERS_PLANNING_G', token)) {
                     bdd.query('DELETE FROM assignations WHERE id_semaine=?', [req.params.semaine], function (error, results, fields) {
                         if (error) {
                             log("Erreur : " + error, 'Planning Chantiers', user.id)
@@ -915,7 +920,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'w', 'M_CHANTIERS_PLANNING_G', token)) {
+                if (SECURITY.canAccessRessource(user, 'w', 'M_CHANTIERS_PLANNING_G', token)) {
                     bdd.query("SELECT matricule_resource FROM resources WHERE matricule_resource =? AND \"Type\" != 'ADMINISTRATIF' AND Actif = 1",
                         [req.params.matricule], function (error, results, fields) {
                             if (error) {
@@ -963,7 +968,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
         });
     });
 
-    app.post('/api/copier_semaine/:semaineAcopier/:semaine', function(req, res){
+    app.post('/api/copier_semaine/:semaineAcopier/:semaine', function (req, res) {
         jsonWebToken.verify(req.headers.authorization.split(' ')[1], webTokenKey, function (err, decode) {
             if (err) {
                 log("Erreur : " + err, 'Planning Chantiers', null);
@@ -973,7 +978,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'w', 'M_CHANTIERS_PLANNING_G', token)) {
+                if (SECURITY.canAccessRessource(user, 'w', 'M_CHANTIERS_PLANNING_G', token)) {
                     var semaineAcopier = req.params.semaineAcopier;
                     var semaine = req.params.semaine;
 
@@ -1007,7 +1012,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                                             'id_semaine,chef_chantier, commentaires,activite,journee) ' +
                                             'VALUES (?, ?, ?,?,?, ?,?,?)',
                                             [body.matricule_resource, body.chantier, body.jour, body.semaine, body.chef_chantier,
-                                                body.commentaires, body.activite, body.journee],
+                                            body.commentaires, body.activite, body.journee],
                                             function (error2, results2, fields2) {
                                                 if (error2) {
                                                     log("Erreur : " + error2, 'Planning Chantiers', user.id)
@@ -1032,7 +1037,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
     })
 
 
-    app.post('/api/planning/copier_ligne/:semaine/:resourceAcopier/:resource', function(req, res){
+    app.post('/api/planning/copier_ligne/:semaine/:resourceAcopier/:resource', function (req, res) {
         jsonWebToken.verify(req.headers.authorization.split(' ')[1], webTokenKey, function (err, decode) {
             if (err) {
                 log("Erreur : " + err, 'Planning Chantiers', null);
@@ -1042,7 +1047,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'w', 'M_CHANTIERS_PLANNING_G', token)) {
+                if (SECURITY.canAccessRessource(user, 'w', 'M_CHANTIERS_PLANNING_G', token)) {
                     var resourceAcopier = req.params.resourceAcopier;
                     var resource = req.params.resource;
                     var semaine = req.params.semaine;
@@ -1099,7 +1104,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                                                                 if (!absent) {
                                                                     bdd.query(q,
                                                                         [body.matricule_resource, body.chantier, body.jour, body.semaine, body.nom,
-                                                                            body.commentaires, body.activite, body.journee, body.type],
+                                                                        body.commentaires, body.activite, body.journee, body.type],
                                                                         function (error2, results2, fields2) {
                                                                             if (error2) {
                                                                                 log("Erreur : " + error2, 'Planning Chantiers', user.id)
@@ -1133,7 +1138,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                                                             if (!absent) {
                                                                 bdd.query(q,
                                                                     [body.matricule_resource, body.chantier, body.jour, body.semaine, body.chef_chantier,
-                                                                        body.commentaires, body.activite, body.journee],
+                                                                    body.commentaires, body.activite, body.journee],
                                                                     function (error2, results2, fields2) {
                                                                         if (error2) {
                                                                             log("Erreur : " + error2, 'Planning Chantiers', user.id)
