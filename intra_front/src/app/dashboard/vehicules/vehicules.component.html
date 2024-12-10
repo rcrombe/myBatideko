@@ -1,1 +1,536 @@
-<p>vehicules works!</p>
+
+
+<!-- Week Calendar  -->
+<div class="card shadow mb-4">
+    <div class="card-header">
+      <div class="row">
+        <div class="col-12" style= "text-align: center;">
+          <button type="button" class="btn btn-primary" style="margin-right: 40px;" (click)="semainePrecedente()">
+            <i class="fas fa-fw fa-arrow-left"></i>
+          </button>
+          <span class="h3 mb-0 text-gray-800">Semaine {{semaine}}</span>
+          <button type="button" class="btn btn-primary" style="margin-left: 40px;" (click)="semaineSuivante()">
+            <i class="fas fa-fw fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12" style= "text-align: center;">
+          <span id="date_planning" class="mb-0 text-gray-800" >Du {{dateStart}} au {{dateEnd}}</span>
+        </div>
+      </div>
+    </div>
+  
+    <div class="card-body table-responsive">
+      <div class="row " style ="margin-bottom: 10px;">
+        <div class="col-4">
+          <button type="button" class="btn btn-primary"(click)="imprimer()" >
+            Imprimer
+          </button>
+          <input class="form-control" type="text" id="myInput" (keyup)="myFunction()" placeholder="Filtrer" style="margin-top: 10px">
+        </div>
+        <div class="col-4">
+        </div>
+        <div class="col-4" style="text-align: right;"  *ngIf="canWrite(null)">
+          <button type="button" class="btn btn-primary float-right" data-bs-toggle="modal" data-bs-target="#attributionVehicule" (click)="initInput()">
+            Attribuer des chauffeurs et/ou passagers
+          </button>
+          <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#copierSemainePrec" style="margin-top: 10px">
+            Copier la semaine précédente
+          </button>
+        </div>
+      </div>
+  
+      <div title="" class="visible" id="tooltip" data-bs-toggle="tooltip" data-bs-placement="bottom" style="white-space: pre-line;" data-bs-html = "true">
+        <h2 *ngIf="resources_non_traitees!==0; else ok" class="text-danger">
+          Encore {{resources_non_traitees}} attribution<span *ngIf="resources_non_traitees>1">s</span> véhicule non traitée<span *ngIf="resources_non_traitees>1">s</span>
+        </h2>
+      </div>
+  
+      <h2 *ngIf="nb_mismatch>0" class="text-danger" (click)="showDetails()">
+        Il y a {{nb_mismatch}} incohérence<span *ngIf="nb_mismatch>1">s</span> dans le planning
+      </h2>
+  
+      <ng-template #ok>
+        <h2>Tout le monde a un véhicule pour cette semaine</h2>
+      </ng-template>
+  
+      <table class="table table-bordered" id="myTable" width="100%" cellspacing="0" style="text-align: center">
+        <thead>
+        <tr role="row">
+          <th>Véhicule</th>
+          <th scope="col">Lundi</th>
+          <th scope="col">Mardi</th>
+          <th scope="col">Mercredi</th>
+          <th scope="col">Jeudi</th>
+          <th scope="col">Vendredi</th>
+          <th scope="col" *ngIf="samedi">Samedi</th>
+          <th scope="col"  *ngIf="canWrite(null)">Actions</th>
+        </tr>
+        </thead>
+  
+        <tbody>
+        <ng-container *ngFor="let vehicule of assignations_vehicules">
+  
+          <tr [ngStyle]="{'background-color': vehicule.dispo==0 ? 'lightgrey' : 'white'  }">
+            <td id="nom_{{ vehicule.immatriculation }}">
+              <span style=" font-weight: bold;">{{vehicule.immatriculation}}</span><br>
+              <span >{{vehicule.type}}</span><br>
+              <span class="text-s text-gray-500">{{vehicule.flocage}}</span><br>
+              <span class="text-s "
+                    [ngStyle]="{'color' : vehicule.domicile==1 ? 'blue' : '#6e707e'}">{{vehicule.chauffeurAttitre}}</span>
+            </td>
+            <td *ngFor="let i of [0,1,2,3,4]">
+              <div *ngFor="let ass of vehicule.semaine[i] ">
+                <span style=" font-weight: bold;" *ngIf="ass.chauffeur; else passager">{{ass.nom}}</span><br>
+                <ng-template #passager>
+                  <span>{{ass.nom}}</span>
+                </ng-template>
+              </div>
+            </td>
+            <td *ngIf="samedi">
+              <div *ngFor="let ass of vehicule.semaine[5] ">
+                <span style=" font-weight: bold;" *ngIf="ass.chauffeur; else passager">{{ass.nom}}</span><br>
+                <ng-template #passager>
+                  <span>{{ass.nom}}</span>
+                </ng-template>
+              </div>
+            </td>
+            <td  *ngIf="canWrite(null)">
+              <button type="button" class="btn-circle btn-warning" data-bs-toggle="modal" data-bs-target="#modificationVehicule"
+                      (click)="modifierLigne(vehicule.immatriculation)">
+                <i class="fas fa-fw fa-pen"></i>
+              </button>
+              <button type="button" style="margin-right: 3px;" class="btn-circle btn-info" (click)="initCopierLigne(vehicule.immatriculation)"
+                      data-bs-toggle="modal" data-bs-target="#copierLigne">
+                <i class="fas fa-fw fa-clone"></i>
+              </button>
+              <button type="button" class="btn-circle btn-danger" data-bs-toggle="modal" data-bs-target="#supprimerLigneVehicule"
+                      (click)="ModaleSuppression(vehicule.immatriculation)" >
+                <i class="fas fa-fw fa-redo"></i>
+              </button>
+            </td>
+          </tr>
+        </ng-container>
+  
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  <div class="modal fade bd-example-modal-xl" id="supprimerLigneVehicule" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="fas fa-fw fa-hand-paper"></i>Supprimer une ligne  </h5>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="card-body table-responsive">
+            <span>
+              Attention!!
+              <br>Etes-vous bien sûr de supprimer cette ligne ?
+            </span>
+            <br>
+            <span id="matriculeAsupprimer"></span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+          <button type="button" class="btn btn-primary" (click)="supprimerAttributionVehicule()">Valider</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal fade bd-example-modal-xl" id="attributionVehicule" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Attributions Véhicules</h5>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="card shadow mb-4">
+            <div class="card-header">
+              <span class="h3 mb-0 text-gray-800">Filtres</span>
+            </div>
+            <div class="card-body table-responsive">
+              <input class="form-control" list="datalistOptions" id="chantier" placeholder="Chantier..." (keyup)="remplirPlanningSemaine()">
+              <datalist id="datalistOptions">
+                <option *ngFor="let chantier of planning_chantiers" value='{{chantier.code_chantier}} / {{chantier.nom_chantier}}'>
+              </datalist>
+              <br>
+              <table class="table table-bordered" id="myTable" width="100%" cellspacing="0">
+                <thead>
+                <tr role="row">
+                  <th scope="col">Lundi</th>
+                  <th scope="col">Mardi</th>
+                  <th scope="col">Mercredi</th>
+                  <th scope="col">Jeudi</th>
+                  <th scope="col">Vendredi</th>
+                  <th>Samedi</th>
+                </tr>
+                </thead>
+  
+                <tbody>
+                <tr>
+                  <ng-container *ngFor="let i of [0,1,2,3,4,5]">
+                    <td id="jour{{i}}">
+                      <div *ngFor="let jour of planning[i]">
+                        <span *ngIf="jour.vehicle_assigned" class="text-xs" style="color: darkgreen;">{{jour.nom}}</span>
+                        <span *ngIf="!jour.vehicle_assigned && !jour.selected" class="text-xs" (click)="personClicked(jour)">{{jour.nom}}</span>
+                        <span *ngIf="jour.selected && !jour.vehicle_assigned" class="text-xs" style="color: darkorange;" (click)="personClicked(jour)">{{jour.nom}}</span>
+                        <br>
+                      </div>
+                    </td>
+                  </ng-container>
+                </tr>
+                </tbody>
+              </table>
+              <br>
+              <input class="form-control" list="datalistResources" id="poseur" placeholder="Poseur..." (keyup)="remplirPlanningPoseur()">
+              <datalist id="datalistResources">
+                <option *ngFor="let res of resources" value={{res.Nom}}>
+              </datalist>
+              <br>
+              <table class="table table-bordered" id="myTable" width="100%" cellspacing="0">
+                <thead>
+                <tr role="row">
+                  <th scope="col">Lundi</th>
+                  <th scope="col">Mardi</th>
+                  <th scope="col">Mercredi</th>
+                  <th scope="col">Jeudi</th>
+                  <th scope="col">Vendredi</th>
+                  <th>Samedi</th>
+                </tr>
+                </thead>
+  
+                <tbody>
+                <tr>
+                  <ng-container *ngFor="let i of [0,1,2,3,4,5]">
+                    <td id="jour{{i}}">
+                      <div *ngFor="let jour of planning_chauffeur[i]">
+                        <span class="text-xs">{{jour.code_chantier}}</span>
+                        <br>
+                      </div>
+                    </td>
+                  </ng-container>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+  
+          <div class="card shadow mb-4">
+            <div class="card-header">
+              <span class="h3 mb-0 text-gray-800">Les attributions</span>
+            </div>
+            <div class="card-body">
+  
+              <div class="row">
+                <div class="col-6" style="text-align: center">
+                  <h3>Véhicule ?</h3>
+                  <input class="form-control" list="datalistVehicules" id="vehicule" placeholder="Véhicule..." (click)="remplirVehicule()" (change)="remplirVehicule()" (keyup.enter)="remplirVehicule()">
+                  <datalist id="datalistVehicules">
+                    <option *ngFor="let veh of vehicules" value="{{veh.immatriculation}} , {{veh.type}} , {{veh.nbr_passagers}} , {{veh.nom_resource}}" >
+                  </datalist>
+                </div>
+                <div class="col-6" style="text-align: center">
+                  <div id="chauffeurArea">
+                    <h3 >Chauffeur</h3>
+                    <input class="form-control" list="datalistResources" id="chauffeur" placeholder="Chauffeur..." (keyup)="remplirChauffeur()">
+                  </div>
+                  <h3>Passagers</h3>
+                  <ng-container *ngFor="let i of passagers">
+                    <input class="form-control" list="datalistResources" id="passager{{i.numero}}"
+                           placeholder="Passager..." value="{{i.passager}}" style="margin-bottom: 5px">
+                  </ng-container>
+  
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6" style="text-align: center">
+                  <input type="checkbox" id="casesemaine" (click)="casesSemaine()" checked>
+                  <label for="casesemaine">Toute la semaine</label>
+                </div>
+                <div class="col-6" style="text-align: center">
+                </div>
+              </div>
+              <div class="row" style="display: none" id="casesSemaine">
+                <div class="col-6">
+                  <div class="row">
+                    <div class="col-6">
+                      <div>
+                        <input type="checkbox" id="case0">
+                        <label for="case0" style="margin-left: 3px;">Lundi</label>
+                      </div>
+                      <div>
+                        <input type="checkbox" id="case1">
+                        <label for="case1" style="margin-left: 3px;">Mardi</label>
+                      </div>
+                      <div>
+                        <input type="checkbox" id="case2">
+                        <label for="case2" style="margin-left: 3px;">Mercredi</label>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div>
+                        <input type="checkbox" id="case3">
+                        <label for="case3" style="margin-left: 3px;">Jeudi</label>
+                      </div>
+                      <div>
+                        <input type="checkbox" id="case4" >
+                        <label for="case4" style="margin-left: 3px;">Vendredi</label>
+                      </div>
+                      <div>
+                        <input type="checkbox" id="case5">
+                        <label for="case5" style="margin-left: 3px;">Samedi</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+  
+            </div>
+          </div>
+  
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+          <button type="button" class="btn btn-primary" (click)="attribuerVehicule()">Valider les attributions véhicule</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal fade bd-example-modal-xl" id="modificationVehicule" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Attributions Véhicules</h5>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <table class="table table-bordered" id="myTable" width="100%" cellspacing="0">
+            <thead>
+            <tr role="row">
+              <th scope="col">Véhicule</th>
+              <th scope="col">Lundi</th>
+              <th scope="col">Mardi</th>
+              <th scope="col">Mercredi</th>
+              <th scope="col">Jeudi</th>
+              <th scope="col">Vendredi</th>
+              <th scope="col">Samedi</th>
+            </tr>
+            </thead>
+  
+            <tbody>
+            <tr>
+              <td id="vehiculeAmodifier">
+                <span style=" font-weight: bold;" id="immatriculationAmodifier"></span><br>
+                <span id="typeAmodifier"></span><br>
+                <span class="text-s text-gray-500" id="flocageAmodifier"></span>
+              </td>
+              <td *ngFor="let i of [0,1,2,3,4]">
+                <div>
+                  <div id="chauffeurAreaLigne_{{i}}">
+                    Chauffeur :
+                    <input class="form-control" type="text" id="{{i}}chauffeurAmodifier" list="datalistResources"><br>
+                  </div>
+                  Passagers :
+                  <input *ngFor="let j of [0,1,2,3,4,5,6,7,8,9]" style="display: none;margin-bottom: 5px"
+                         class="form-control" type="text" id="{{i}}passager{{j}}Amodifier" list="datalistResources"><br>
+                </div>
+              </td>
+              <td>
+                <div>
+                  <div id="chauffeurAreaLigne_5">
+                    Chauffeur :
+                    <input class="form-control" type="text" id="5chauffeurAmodifier" list="datalistResources"><br>
+                  </div>
+                  Passagers :
+                  <input *ngFor="let j of [0,1,2,3,4,5,6,7,8,9]" style="display: none;margin-bottom: 5px"
+                         class="form-control" type="text" id="5passager{{j}}Amodifier" list="datalistResources"><br>
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+  
+  
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+          <button type="button" class="btn btn-primary" (click)="modifierAttributionsVehicule()">Valider les attributions véhicule</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal fade bd-example-modal-xl" id="copierSemainePrec" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Copier la semaine précédente ? </h5>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="card-body table-responsive">
+            <span>
+              <i class="fas fa-fw fa-frown"></i>
+              <i class="fas fa-fw fa-hand-paper"></i>
+              Attention!!
+              <br>Si vous validez, toutes les assignations chantiers de la semaine seront supprimées et remplacées par celle de la semaine précédente .
+              <br>Etes-vous bien sûr de poursuivre ?
+            </span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+          <button type="button" class="btn btn-primary" (click)="copierSemainePrec();">Valider</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal fade bd-example-modal-xl" id="mismatchDetails" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Incohérences </h5>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="card-body table-responsive">
+            <table>
+              <tr>
+                <th style="width: 20%;">Lundi</th>
+                <th style="width: 20%;">Mardi</th>
+                <th style="width: 20%;">Mercredi</th>
+                <th style="width: 20%;">Jeudi</th>
+                <th style="width: 20%;">Vendredi</th>
+              </tr>
+              <tr>
+                <td style="width: 20%;">
+                  <ng-container *ngFor="let r of chantiers_mismatch[0]">
+                    <span>{{ r.immatriculation }}  : {{ r.nom }}</span>
+                    <br>
+                  </ng-container>
+                </td>
+                <td style="width: 20%;">
+                  <ng-container *ngFor="let r of chantiers_mismatch[1]">
+                    <span>{{ r.immatriculation }}  : {{ r.nom }}</span>
+                    <br>
+                  </ng-container>
+                </td>
+                <td style="width: 20%;">
+                  <ng-container *ngFor="let r of chantiers_mismatch[2]">
+                    <span>{{ r.immatriculation }}  : {{ r.nom }}</span>
+                    <br>
+                  </ng-container>
+                </td>
+                <td style="width: 20%;">
+                  <ng-container *ngFor="let r of chantiers_mismatch[3]">
+                    <span>{{ r.immatriculation }}  : {{ r.nom }}</span>
+                    <br>
+                  </ng-container>
+                </td>
+                <td style="width: 20%;">
+                  <ng-container *ngFor="let r of chantiers_mismatch[4]">
+                    <span>{{ r.immatriculation }}  : {{ r.nom }}</span>
+                    <br>
+                  </ng-container>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <table class="table table-bordered" id="tableImpression" width="100%" cellspacing="0" style="text-align: center; display:none">
+    <thead>
+    <tr role="row">
+      <th>Véhicule</th>
+      <th scope="col">Lundi</th>
+      <th scope="col">Mardi</th>
+      <th scope="col">Mercredi</th>
+      <th scope="col">Jeudi</th>
+      <th scope="col">Vendredi</th>
+      <th scope="col" *ngIf="samedi">Samedi</th>
+    </tr>
+    </thead>
+  
+    <tbody>
+    <tr *ngFor="let vehicule of assignations_vehicules">
+      <td id="nom_{{ vehicule.immatriculation }}">
+        <span style=" font-weight: bold;">{{vehicule.immatriculation}}</span><br>
+        <span >{{vehicule.type}}</span><br>
+        <span class="text-s text-gray-500">{{vehicule.flocage}}</span><br>
+        <span>{{ vehicule.chauffeurAttitre }}</span>
+      </td>
+      <td *ngFor="let i of [0,1,2,3,4]">
+        <div *ngFor="let ass of vehicule.semaine[i] ">
+          <span *ngIf="ass.chauffeur; else passager">*{{ass.nom}}*</span><br>
+          <ng-template #passager>
+            <span>{{ass.nom}}</span>
+          </ng-template>
+        </div>
+      </td>
+      <td *ngIf="samedi">
+        <div *ngFor="let ass of vehicule.semaine[5] ">
+          <span *ngIf="ass.chauffeur; else passager">*{{ass.nom}}*</span><br>
+          <ng-template #passager>
+            <span>{{ass.nom}}</span>
+          </ng-template>
+        </div>
+      </td>
+    </tr>
+  
+    </tbody>
+  </table>
+  
+  
+  <!-- Modal copier la semiane precedente -->
+  <div class="modal fade bd-example-modal-xl" id="copierLigne" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Copier la semaine précédente ? </h5>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="card-body table-responsive">
+            <span>
+              <i class="fas fa-fw fa-frown"></i>
+              <i class="fas fa-fw fa-hand-paper"></i>
+              Attention!!
+              <br>Si vous validez, toutes les assignations de ce véhicule seront remplacées par celles de la semaine précédente.
+              <br>Etes-vous bien sûr de poursuivre ?
+            </span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+          <button type="button" class="btn btn-primary" (click)="copierLigneSemainePrec();">Valider</button>
+        </div>
+      </div>
+    </div>
+  </div>  

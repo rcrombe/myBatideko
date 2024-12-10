@@ -85,11 +85,9 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                                             res.json(false)
                                         } else {
                                             var tuteurs = [];
-                                            console.log("En dehors du for");
                                             for (var i = 0; i < results.length; i++) {
                                                 console.log("Dans le for");
                                                 if (results[i].tuteur != null && results[i].Actif == 1) {
-                                                    console.log("Dans le if du for de la requête " + results);
                                                     const p = (e) => e.tuteur == results[i].tuteur;
                                                     var idx = -1;
 
@@ -116,7 +114,6 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                                                     }
                                                 } else {
                                                     results[i].tuteur_nom = null;
-                                                    console.log("Dans le else du for " + results[i]);
                                                 }
                                             }
 
@@ -131,10 +128,8 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                                             console.log(results);
                                             res.json(results);
                                         }
-                                        //res.json(results);
                                     });
                             }
-                            //res.json(results);
                         });
                 }
                 else

@@ -6,6 +6,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { HomeComponent } from './dashboard/home/home.component';
 import { HomeMoisComponent } from './dashboard/home-mois/home-mois.component';
 import { HomeAnneeComponent } from './dashboard/home-annee/home-annee.component';
+import { VehiculesComponent } from './dashboard/vehicules/vehicules.component';
 
 import { AdministrationComponent } from './dashboard/administration/administration.component';
 import { GestionUtilisateursComponent } from './dashboard/gestion-utilisateurs/gestion-utilisateurs.component';
@@ -30,7 +31,6 @@ import { PlanningAtelierComponent } from './dashboard/planning-atelier/planning-
 import { PointagesComponent } from './dashboard/pointages/pointages.component';
 import { Pointages2Component } from './dashboard/pointages2/pointages2.component';
 import { CongesComponent } from './dashboard/conges/conges.component';
-import { VehiculesComponent } from './dashboard/vehicules/vehicules.component';
 import { AbsencesComponent } from './dashboard/absences/absences.component';
 import { GestionPointagesComponent } from './dashboard/gestion-pointages/gestion-pointages.component';
 import { RendezvousChantierComponent } from './dashboard/rendezvous-chantier/rendezvous-chantier.component';
@@ -88,7 +88,17 @@ const routes: Routes = [
           module_id: 'M_DASHBOARD'
         }
       },
+      {
+        path: 'vehicules',
+        component: VehiculesComponent,
+        data: {
+          title: 'Vehicules',
+          role: [1,2,3,4,5],
+          module_id: 'M_VEHICULES'
+        }
+      },
 
+      //Administration
       {
         path: 'administration',
         component: AdministrationComponent,
