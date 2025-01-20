@@ -127,7 +127,7 @@ export class GestionResourcesComponent implements OnInit {
       }
     }
     $("#gestionAttributs").modal('hide');
-    this.loadData();
+    window.location.reload();
   }
 
   public myFunction(tableau: string, inputId: string | null): void {

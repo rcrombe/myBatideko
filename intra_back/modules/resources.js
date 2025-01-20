@@ -1,5 +1,5 @@
-module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey, bcrypt, request,log, printLogLevel,printSemaines,
-                           getNBsemaine,getDate) {
+module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey, bcrypt, request, log, printLogLevel, printSemaines,
+    getNBsemaine, getDate) {
 
     //Liste des resources
     app.get('/api/resources', function (req, res) {
@@ -29,12 +29,13 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'r', 'A_GESTION_RESSOURCES', token)) {
-                    bdd.query('SELECT resources.*, societes.nom as nom_societe FROM resources\n' +
-                        'LEFT JOIN attributs_ressource ON attributs_ressource.code_ressource=resources.matricule_resource \n' +
-                        'LEFT JOIN attributs on attributs.code=code_attribut \n' +
-                        'LEFT JOIN societes ON societes.id = resources.societe\n' +
-                        'ORDER BY Nom ASC ',
+                if (SECURITY.canAccessRessource(user, 'r', 'A_GESTION_RESSOURCES', token)) {
+                    bdd.query(`SELECT resources.*, societes.nom as nom_societe, attributs_ressource.valeur, attributs.code as code_attribut, attributs.libelle
+                     FROM resources
+                     LEFT JOIN attributs_ressource ON attributs_ressource.code_ressource = resources.matricule_resource
+                     LEFT JOIN attributs ON attributs.code = attributs_ressource.code_attribut
+                     LEFT JOIN societes ON societes.id = resources.societe
+                     ORDER BY resources.Nom ASC`,
                         function (error, results, fields) {
                             if (error) {
                                 log("Erreur : " + error, 'Resources', user.id)
@@ -55,7 +56,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                                             Type: res.Type,
                                             tuteur: res.tuteur,
                                             societe: res.societe,
-                                            nom_societe: res.societe === null ? 'Aucune':res.nom_societe,
+                                            nom_societe: res.societe === null ? 'Aucune' : res.nom_societe,
                                             id_mytime: res.id_mytime,
                                             code_pointage: res.code_pointage,
                                             password_mytime: res.password_mytime,
@@ -95,7 +96,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'r', 'A_GESTION_RESSOURCES', token)) {
+                if (SECURITY.canAccessRessource(user, 'r', 'A_GESTION_RESSOURCES', token)) {
                     bdd.query('SELECT * FROM attributs ',
                         function (error, results, fields) {
                             if (error) {
@@ -122,7 +123,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'w', 'A_GESTION_RESSOURCES', token)) {
+                if (SECURITY.canAccessRessource(user, 'w', 'A_GESTION_RESSOURCES', token)) {
                     bdd.query('SELECT * FROM resources ' +
                         'LEFT JOIN attributs_ressource ON code_ressource=matricule_resource ' +
                         'LEFT JOIN attributs on attributs.code=code_attribut ' +
@@ -174,7 +175,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'w', 'A_GESTION_RESSOURCES', token)) {
+                if (SECURITY.canAccessRessource(user, 'w', 'A_GESTION_RESSOURCES', token)) {
                     bdd.query('UPDATE attributs_ressource SET valeur = 0 WHERE code_ressource = ? AND code_attribut = ? ',
                         [req.body.code_ressource, req.body.code_attribut],
                         function (error, results, fields) {
@@ -202,7 +203,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
             else {
                 const user = jsonWebToken.decode(req.headers.authorization.split(' ')[1]);
                 bdd.query('SELECT * FROM resources LEFT JOIN vehicules ON matricule_resource= chauffeur ' +
-                    'WHERE resources.type="SALARIE" OR resources.type="STAGIAIRE" ORDER BY resources.Nom ASC' ,
+                    'WHERE resources.type="SALARIE" OR resources.type="STAGIAIRE" ORDER BY resources.Nom ASC',
                     function (error, results, fields) {
                         if (error) {
                             log("Erreur : " + error, 'Resources', user.id)
@@ -225,7 +226,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
             else {
                 const user = jsonWebToken.decode(req.headers.authorization.split(' ')[1]);
                 bdd.query('SELECT * FROM resources LEFT JOIN vehicules ON matricule_resource= chauffeur ' +
-                    'WHERE (resources.type="SALARIE" OR resources.type="STAGIAIRE") AND Actif=1 ORDER BY resources.Nom ASC' ,
+                    'WHERE (resources.type="SALARIE" OR resources.type="STAGIAIRE") AND Actif=1 ORDER BY resources.Nom ASC',
                     function (error, results, fields) {
                         if (error) {
                             log("Erreur : " + error, 'Resources', user.id)
@@ -249,7 +250,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'w', 'A_GESTION_RESSOURCES', token)) {
+                if (SECURITY.canAccessRessource(user, 'w', 'A_GESTION_RESSOURCES', token)) {
                     var re = "UPDATE resources SET ";
                     var args = [];
 
@@ -286,17 +287,17 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'w', 'A_GESTION_RESSOURCES', token)) {
+                if (SECURITY.canAccessRessource(user, 'w', 'A_GESTION_RESSOURCES', token)) {
 
-                    if(req.body._data_ != ''){
+                    if (req.body._data_ != '') {
 
                         var re;
                         var args = [];
 
-                        if(req.body._data_ == '_NONE'){
+                        if (req.body._data_ == '_NONE') {
                             re = "UPDATE resources SET tuteur = NULL WHERE matricule_resource = ?";
                             args.push(req.body.id);
-                        } else{
+                        } else {
                             re = "UPDATE resources SET tuteur = ? WHERE matricule_resource = ?";
                             args.push(req.body._data_);
                             args.push(req.body.id);
@@ -332,17 +333,17 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'w', 'A_GESTION_RESSOURCES', token)) {
+                if (SECURITY.canAccessRessource(user, 'w', 'A_GESTION_RESSOURCES', token)) {
 
-                    if(req.body._data_ != ''){
+                    if (req.body._data_ != '') {
 
                         var re;
                         var args = [];
 
-                        if(req.body._data_ == '_NONE'){
+                        if (req.body._data_ == '_NONE') {
                             re = "UPDATE resources SET id_mytime = NULL WHERE matricule_resource = ?";
                             args.push(req.body.id);
-                        } else{
+                        } else {
                             re = "UPDATE resources SET id_mytime = ? WHERE matricule_resource = ?";
                             args.push(req.body._data_);
                             args.push(req.body.id);
@@ -379,17 +380,17 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'w', 'A_GESTION_RESSOURCES', token)) {
+                if (SECURITY.canAccessRessource(user, 'w', 'A_GESTION_RESSOURCES', token)) {
 
-                    if(req.body._data_ != ''){
+                    if (req.body._data_ != '') {
 
                         var re;
                         var args = [];
 
-                        if(req.body._data_ == '0' || req.body._data_ == '_NONE'){
+                        if (req.body._data_ == '0' || req.body._data_ == '_NONE') {
                             re = "UPDATE resources SET societe = NULL WHERE matricule_resource = ?";
                             args.push(req.body.id);
-                        } else{
+                        } else {
                             re = "UPDATE resources SET societe = ? WHERE matricule_resource = ?";
                             args.push(req.body._data_);
                             args.push(req.body.id);
