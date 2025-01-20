@@ -17,7 +17,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                         '\tSELECT grand_deplacement,journee,resources.nature,assignation_code_nature,immatriculation,resources.Activite,\n' +
                         '\tresources.Actif,semaines.id,semaines.verrouillee,\n' +
                         '\tresources.matricule_resource,nom_chantier,Conducteur,code_chantier,chantier_code_pointage,jour,commentaires,chef_chantier,\n' +
-                        '\ttype_assignation,date_start,date_end,resources.Nom,resources.Type,nb_semaine, resources.tuteur\n' +
+                        '\ttype_assignation,date_start,date_end,resources.Nom,resources.Type,nb_semaine, resources.tuteur, id_assignation\n' +
                         '\tFROM semaines, \n' +
                         '\t(\n' +
                         '\t\t(\n' +
@@ -25,7 +25,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                         '\t\t\tassignations.matricule_resource,id_semaine,\n' +
                         '\t\t\tchantiers.nom_chantier,chantiers.Conducteur,chantiers.code_pointage as chantier_code_pointage,\n' +
                         '\t\t\tassignations.code_chantier,assignations.jour,assignations.commentaires,assignations.chef_chantier, \n' +
-                        '\t\t\t"chantier" AS type_assignation FROM semaines, assignations \n' +
+                        '\t\t\t"chantier" AS type_assignation, assignations.id_assignation AS id_assignation FROM semaines, assignations \n' +
                         '\t\t\tLEFT JOIN chantiers ON chantiers.code_chantier=assignations.code_chantier  \n' +
                         '\t\t\tWHERE (semaines.id=assignations.id_semaine OR assignations.id_semaine IS NULL) \n' +
                         '\t\t\tAND ? BETWEEN date_start AND date_end\n' +
@@ -35,7 +35,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                         '\t\t\tSELECT NULL as grand_deplacement,assignations_absence.journee,NULL AS assignation_code_nature,\n' +
                         '\t\t\tassignations_absence.matricule_resource,id_semaine,\n' +
                         '\t\t\tabsences.description,"rien" AS Conducteur, "nada" AS chantier_code_pointage,assignations_absence.code_absence,assignations_absence.jour,\n' +
-                        '\t\t\t"ABSENCE" AS commentaires,0 AS chef_chantier,"absence" AS type_assignation FROM semaines, assignations_absence \n' +
+                        '\t\t\t"ABSENCE" AS commentaires,0 AS chef_chantier,"absence" AS type_assignation, assignations_absence.id AS id_assignation FROM semaines, assignations_absence \n' +
                         '\t\t\tLEFT JOIN absences ON absences.code_absence=assignations_absence.code_absence \n' +
                         '\t\t\tWHERE (semaines.id=assignations_absence.id_semaine OR assignations_absence.id_semaine IS NULL) \n' +
                         '\t\t\tAND ? BETWEEN date_start AND date_end\n' +
@@ -54,14 +54,14 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                         '\tSELECT NULL as grand_deplacement,journee,assignation_code_nature,NULL AS nature,NULL AS immatriculation ,\n' +
                         '\tActivite,1 AS Actif,semaines.id,semaines.verrouillee,\n' +
                         '\tmatricule_resource,nom_chantier,Conducteur,code_chantier,chantier_code_pointage,jour,commentaires,chef_chantier,\n' +
-                        '\ttype_assignation,date_start,date_end,Nom,Type, nb_semaine, NULL AS tuteur FROM semaines,\n' +
+                        '\ttype_assignation,date_start,date_end,Nom,Type, nb_semaine, NULL AS tuteur, id_assignation_fantome FROM semaines,\n' +
                         '\t(\n' +
                         '\t\tSELECT assignations_fantome.journee, assignations_fantome.activite AS assignation_code_nature,\n' +
                         '\t\tassignations_fantome.matricule_resource,\n' +
                         '\t\tid_semaine,chantiers.nom_chantier,chantiers.Conducteur,\n' +
                         '\t\tassignations_fantome.code_chantier,chantiers.code_pointage as chantier_code_pointage,assignations_fantome.jour,assignations_fantome.commentaires,\n' +
                         '\t\t0 AS chef_chantier, "fantome" AS type_assignation, assignations_fantome.type AS Type, \n' +
-                        '\t\tassignations_fantome.nom AS Nom,"3.05-POSEUR" AS Activite, 1 AS Actif \n' +
+                        '\t\tassignations_fantome.nom AS Nom,"3.05-POSEUR" AS Activite, 1 AS Actif, assignations_fantome.id_assignation_fantome AS id_assignation_fantome \n' +
                         '\t\tFROM semaines, assignations_fantome \n' +
                         '\t\tLEFT JOIN chantiers ON chantiers.code_chantier=assignations_fantome.code_chantier \n' +
                         '\t\tWHERE (semaines.id=assignations_fantome.id_semaine OR assignations_fantome.id_semaine IS NULL) \n' +
@@ -76,6 +76,11 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                                 log("Erreur : " + error, 'Planning Chantiers', user.id)
                                 res.json(false)
                             } else {
+                                // console.log(req.params.date);
+                                // results.forEach((row) => {
+                                //     console.log(`date_start: ${row.date_start}, date_end: ${row.date_end}`);
+                                // });
+                                // console.log("Résultats de la première requête : ", results[0]);
                                 bdd.query(
                                     'SELECT * FROM resources',
                                     [req.params.date, req.params.date, req.params.date, req.params.date, req.params.date],
@@ -84,9 +89,9 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                                             log("Erreur : " + error, 'Planning Chantiers', user.id)
                                             res.json(false)
                                         } else {
+                                            // console.log("Résultats de la seconde requête : ", resources);
                                             var tuteurs = [];
                                             for (var i = 0; i < results.length; i++) {
-                                                console.log("Dans le for");
                                                 if (results[i].tuteur != null && results[i].Actif == 1) {
                                                     const p = (e) => e.tuteur == results[i].tuteur;
                                                     var idx = -1;
@@ -116,7 +121,6 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                                                     results[i].tuteur_nom = null;
                                                 }
                                             }
-
                                             for (var i = 0; i < results.length; i++) {
                                                 const p = (e) => e.tuteur == results[i].matricule_resource;
                                                 var idx = tuteurs.findIndex(p);
@@ -125,7 +129,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                                                     results[i].apprentis = tuteurs[idx].apprentis;
                                                 }
                                             }
-                                            console.log(results);
+                                            // console.log("Résultats finaux à envoyer : ", results);  
                                             res.json(results);
                                         }
                                     });
@@ -1058,13 +1062,13 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                                 table = 'assignations_fantome';
                                 console.log("ASSIGNATION FANTOME");
                             }
-
                             bdd.query('DELETE FROM ' + table + ' WHERE  id_semaine = ? AND matricule_resource = ?  ',
                                 [semaine, resource], function (error, results, fields) {
                                     if (error) {
                                         log("Erreur : " + error, 'Planning Chantiers', user.id)
                                         res.json(false)
                                     } else {
+                                        console.log("Entrée dans premire query SELECT");
                                         bdd.query('SELECT * FROM assignations WHERE id_semaine = ? AND matricule_resource = ? ;' +
                                             'SELECT code_absence, jour, matricule_resource FROM assignations_absence ' +
                                             'WHERE id_semaine = ? AND matricule_resource =? ',
@@ -1073,6 +1077,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                                                     log("Erreur : " + error, 'Planning Chantiers', user.id)
                                                     res.json(false)
                                                 } else {
+                                                    console.log("Entrée dans le else");
                                                     if (table == 'assignations_fantome') {
                                                         if (fantome.length > 0) {
                                                             for (let ass of results[0]) {

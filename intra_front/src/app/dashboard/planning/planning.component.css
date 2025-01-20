@@ -5,3 +5,9 @@ input {
 .text-s{
     font-size: 0.8em;
 }
+
+hr{
+    height: 3px;
+    background-color: black;
+    border: none;
+}

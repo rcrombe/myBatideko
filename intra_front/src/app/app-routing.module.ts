@@ -6,7 +6,6 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { HomeComponent } from './dashboard/home/home.component';
 import { HomeMoisComponent } from './dashboard/home-mois/home-mois.component';
 import { HomeAnneeComponent } from './dashboard/home-annee/home-annee.component';
-import { VehiculesComponent } from './dashboard/vehicules/vehicules.component';
 
 import { AdministrationComponent } from './dashboard/administration/administration.component';
 import { GestionUtilisateursComponent } from './dashboard/gestion-utilisateurs/gestion-utilisateurs.component';
@@ -27,6 +26,7 @@ import { PlanningParChantierComponent } from './dashboard/planning-par-chantier/
 import { PlanningSousTraitantComponent } from './dashboard/planning-sous-traitant/planning-sous-traitant.component';
 import { PlanningAbsencesViewerComponent } from './dashboard/planning-absences-viewer/planning-absences-viewer.component';
 import { PlanningAtelierComponent } from './dashboard/planning-atelier/planning-atelier.component';
+import { VehiculesComponent } from './dashboard/vehicules/vehicules.component';
 
 import { PointagesComponent } from './dashboard/pointages/pointages.component';
 import { Pointages2Component } from './dashboard/pointages2/pointages2.component';

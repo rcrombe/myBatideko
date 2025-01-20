@@ -32,7 +32,11 @@ intra_back/package-lock.json
 intra_back/package.json
 intra_back/.cache
 
-.dotnet
+.dotnet/
+.config/
+.gk/
+.idea/
+.java/
 
 package-lock.json
 package.json
