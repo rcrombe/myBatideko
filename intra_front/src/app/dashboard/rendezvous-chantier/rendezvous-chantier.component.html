@@ -1,1 +1,225 @@
-<p>rendezvous-chantier works!</p>
+<!-- Week Calendar  -->
+<div class="card shadow mb-4">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-12" style= "text-align: center;">
+                <button type="button" class="btn btn-primary" style="margin-right: 40px;" (click)="semainePrecedente()">
+                    <i class="fas fa-fw fa-arrow-left"></i>
+                </button>
+                <select id="weekSelector" class="form-control" (change)="weekSelected()" style="max-width : 20%; display: inline; font-size: large; font-weight: bold; text-align-last: center;">
+                    <ng-container *ngFor="let semaine of semaines">
+                        <option value="{{ semaine.id }}" [attr.selected]="semaine.id == idSemaine ? true : null">Semaine {{semaine.nb_semaine}} {{semaine.date_start | date : 'yyyy' }}</option>
+                    </ng-container>
+                </select>
+                <button type="button" class="btn btn-primary" style="margin-left: 40px;" (click)="semaineSuivante()">
+                    <i class="fas fa-fw fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12" style= "text-align: center;">
+                <span class="mb-0 text-gray-800">Du {{dateStart}} au {{dateEnd}}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body table-responsive">
+        <div class="row " style ="margin-bottom: 10px;">
+            <div class="col-2">
+                <input class="form-control" type="text" id="parChantier" (keyup)="myFunctionC()" placeholder="Filtrer">
+            </div>
+            <div class="col-7">
+            </div>
+            <div class="col-3">
+            </div>
+        </div>
+        <table class="table table-bordered" id="myTable" width="100%" cellspacing="0" style="text-align: center">
+            <thead>
+            <tr role="row">
+                <th>Nom</th>
+                <th scope="col" >Lundi</th>
+                <th scope="col">Mardi</th>
+                <th scope="col">Mercredi</th>
+                <th scope="col">Jeudi</th>
+                <th scope="col" >Vendredi</th>
+                <th scope="col" *ngIf="samedi">Samedi</th>
+                <th scope="col"  *ngIf="canWrite(null)">Actions</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr *ngFor="let el of rdv_chantier">
+                <td id="nom_{{ el.matricule_resource }}" style="text-align: center; font-weight: bold;">{{el.Nom_matricule}}</td>
+                <td  style="text-align: center;" *ngFor="let i of [0,1,2,3,4]">
+                    <div *ngFor="let ass of el.semaine[i]">
+                        <hr *ngIf="el.semaine[i].indexOf(ass)!==0">
+                        <span [ngStyle]="{'text-decoration': ass.annule===1 ? 'line-through' : 'blink'}">
+                                {{ass.nom_chantier}}</span><br>
+                        <span [ngStyle]="{'text-decoration': ass.annule===1 ? 'line-through' : 'blink'}">
+                                {{ass.heure}}</span><br>
+                        <span>{{ass.commentaires}}</span>
+
+                    </div>
+                </td>
+                <td *ngIf="samedi" style="text-align: center;">
+                    <div *ngFor="let ass of el.semaine[5]">
+                        <hr *ngIf="el.semaine[5].indexOf(ass)!==0">
+                        <span>{{ass.nom_chantier}}</span>
+                        <br>
+                        <span>{{ass.heure}}</span>
+                        <br>
+                        <span>{{ass.commentaires}}</span>
+                    </div>
+                </td>
+                <td  *ngIf="canWrite(null)">
+                    <button type="button" class="btn-circle btn-warning" data-bs-toggle="modal"
+                            data-bs-target="#modificationLigne" (click)="initModifierLigne(el.matricule_resource)">
+                        <i class="fas fa-fw fa-pen"></i>
+                    </button>
+                    <button type="button" style="margin-right: 3px;" class="btn-circle btn-info" (click)="initCopierLigne(el.matricule_resource)"
+                            data-bs-toggle="modal" data-bs-target="#copierLigne">
+                        <i class="fas fa-fw fa-clone"></i>
+                    </button>
+                    <button type="button" class="btn-circle btn-danger" data-bs-toggle="modal"
+                            data-bs-target="#suppressionRendezVous" (click)="initSuppression(el.matricule_resource)">
+                        <i class="fas fa-fw fa-redo"></i>
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade bd-example-modal-xl" id="suppressionRendezVous" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-fw fa-hand-paper"></i>Supprimer les rendez-vous de la semaine  </h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="card-body table-responsive">
+          <span>
+            Attention!!
+              <br>Etes-vous bien sûr de supprimer les rendez-vous de
+              <span id="nomAsupprimer"></span>
+              <span id="idAsupprimer" style="display: none"></span>
+              ?
+          </span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                <button type="button" class="btn btn-primary" (click)="supprimerRendezVous()">Valider</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade bd-example-modal-xl" id="modificationLigne" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Modifier la ligne</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="card-body table-responsive">
+                    <table class="table table-bordered" id="myTableZ" width="100%" cellspacing="0" style="text-align: center">
+                        <thead>
+                        <tr role="row">
+                            <th class="sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 57px;" >
+                                Name
+                            </th>
+                            <th scope="col">Lundi</th>
+                            <th scope="col">Mardi</th>
+                            <th scope="col">Mercredi</th>
+                            <th scope="col">Jeudi</th>
+                            <th scope="col">Vendredi</th>
+                            <th scope="col">Samedi</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        <tr *ngIf="pos!==-1">
+                            <td id="nom" style="font-weight: bold;">
+                                {{rdv_chantier[pos].Nom_matricule}}
+                            </td>
+                            <td *ngFor="let i of [0,1,2,3,4,5]">
+                                <div *ngFor="let ass of rdv_chantier[pos].semaine[i]">
+                                    <hr *ngIf="rdv_chantier[pos].semaine[i].indexOf(ass)!==0">
+                                    <input class="form-control" list="datalistChantiers"
+                                           id="chantier{{i}}{{ass.code_chantier}}" value ="{{ass.code_chantier}}">
+                                    <datalist id="datalistChantiers">
+                                        <option *ngFor="let code of chantiers" value='{{code.code_chantier}} / {{code.nom_chantier}}'>
+                                    </datalist>
+                                    <br>
+                                    <input class="form-control" type="time" id="heure{{i}}{{ass.code_chantier}}"
+                                           min="00:00" max="23:59" value='{{ass.heure}}'required>
+                                    <textarea class="form-control" id="commentaires{{i}}{{ass.code_chantier}}">{{ass.commentaires}}</textarea>
+                                    <input type="checkbox" id="annule{{i}}{{ass.code_chantier}}" [checked]="ass.annule===1">
+                                    <label for="annule{{i}}{{ass.code_chantier}}" style="font-size:1vw;">Annulé</label>
+                                </div>
+                                <div>
+                                    <label>Nouveau rendez-vous chantier: </label>
+                                    <input class="form-control" list="datalistChantiers" id="newChantier{{i}}" placeholder="Chantier...">
+                                    <br>
+                                    <datalist id="datalistChantiers">
+                                        <option *ngFor="let code of chantiers" value='{{code.code_chantier}} / {{code.nom_chantier}}'>
+                                    </datalist>
+                                    <input class="form-control" type="time" id="newHeure{{i}}"
+                                           min="00:00" max="23:59" required>
+                                    <textarea class="form-control" id="newcommentaires{{i}}"></textarea>
+                                    <input type="checkbox" id="newannule{{i}}">
+                                    <label for="newannule{{i}}" style="font-size:1vw;">Annulé</label>
+                                </div>
+                            </td>
+                        </tr>
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                <button type="button" class="btn btn-primary" (click)="validerModificationLigne();">Valider les changements</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal copier la semiane precedente -->
+<div class="modal fade bd-example-modal-xl" id="copierLigne" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Copier la semaine précédente ? </h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="card-body table-responsive">
+          <span>
+            <i class="fas fa-fw fa-frown"></i>
+            <i class="fas fa-fw fa-hand-paper"></i>
+            Attention!!
+            <br>Si vous validez, tous les rendez-vous chantier de la personne seront remplacés par ceux de la semaine précédente.
+            <br>Etes-vous bien sûr de poursuivre ?
+          </span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                <button type="button" class="btn btn-primary" (click)="copierSemainePrec();">Valider</button>
+            </div>
+        </div>
+    </div>
+</div>

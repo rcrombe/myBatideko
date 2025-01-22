@@ -27,13 +27,13 @@ import { PlanningSousTraitantComponent } from './dashboard/planning-sous-traitan
 import { PlanningAbsencesViewerComponent } from './dashboard/planning-absences-viewer/planning-absences-viewer.component';
 import { PlanningAtelierComponent } from './dashboard/planning-atelier/planning-atelier.component';
 import { VehiculesComponent } from './dashboard/vehicules/vehicules.component';
+import { RendezvousChantierComponent } from './dashboard/rendezvous-chantier/rendezvous-chantier.component';
 
 import { PointagesComponent } from './dashboard/pointages/pointages.component';
 import { Pointages2Component } from './dashboard/pointages2/pointages2.component';
 import { CongesComponent } from './dashboard/conges/conges.component';
 import { AbsencesComponent } from './dashboard/absences/absences.component';
 import { GestionPointagesComponent } from './dashboard/gestion-pointages/gestion-pointages.component';
-import { RendezvousChantierComponent } from './dashboard/rendezvous-chantier/rendezvous-chantier.component';
 import { FichePaieComponent } from './dashboard/fiche-paie/fiche-paie.component';
 import { GestionSynchronisationComponent } from './dashboard/gestion-synchronisation/gestion-synchronisation.component';
 import { Pointages3Component } from './dashboard/pointages3/pointages3.component';
@@ -234,6 +234,15 @@ const routes: Routes = [
           title: 'Planning sous-traitant',
           role: [1,2,3,4,5],
           module_id: 'M_CHANTIERS_PLANNING_ST'
+        }
+      },
+      {
+        path: 'rendezvous-chantier',
+        component: RendezvousChantierComponent,
+        data: {
+          title: 'PLanning rendez-vous chantier',
+          role: [1,2,3,4,5],
+          module_id: 'M_CHANTIERS_PLANNING_RDV'
         }
       },
     ]
