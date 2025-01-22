@@ -1,1 +1,182 @@
-<p>planning-par-chantier works!</p>
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 id="planning" class="h3 mb-0 text-gray-800" >Planning par chantier</h1>
+  </div>
+  
+  <!-- Week Calendar  -->
+  
+  <div class="card shadow mb-4">
+    <div class="card-header">
+      <div class="row">
+        <div class="col-12" style= "text-align: center;">
+          <button type="button" class="btn btn-primary" style="margin-right: 40px;" (click)="semainePrecedente()">
+            <i class="fas fa-fw fa-arrow-left"></i>
+          </button>
+          <span class="h3 mb-0 text-gray-800">Semaine {{semaine}} </span>
+          <button type="button" class="btn btn-primary" style="margin-left: 40px;" (click)="semaineSuivante()">
+            <i class="fas fa-fw fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12" style= "text-align: center;">
+          <span class="mb-0 text-gray-800" id="date_planning">Du {{dateStart}} au {{dateEnd}}</span>
+        </div>
+      </div>
+    </div>
+  
+    <div class="card-body table-responsive">
+      <div class="row " style ="margin-bottom: 10px;">
+        <div class="col-4">
+          <input type="checkbox" id="salaries_cuppens" (click)="salarie_cuppens()" checked>
+          <label for="salaries_cuppens" style="margin-left: 3px;">Salariés CUPPENS</label>
+        </div>
+        <div class="col-4">
+          <input type="checkbox" id="interims" (click)="interimaires()" checked>
+          <label for="interims" style="margin-left: 3px;">Interim, CDD, Stagiaires</label>
+        </div>
+        <div class="col-4">
+          <input type="checkbox" id="sous_traitant" (click)="sous_traitants()" checked>
+          <label for="sous_traitant" style="margin-left: 3px;">Sous-traitant</label>
+        </div>
+      </div>
+      <div class="row " style ="margin-bottom: 10px;">
+        <div class="col-2">
+          <input class="form-control" type="text" id="parChantier" (keyup)="myFunctionC()" placeholder="Filtrer">
+        </div>
+        <div class="col-7">
+        </div>
+        <div class="col-3" style="text-align: right;">
+          <button type="button" class="btn btn-primary"(click)="imprimer()">
+            Imprimer
+          </button>
+        </div>
+      </div>
+  
+  
+  
+      <table class="table table-bordered" id="myTable" width="100%" cellspacing="0">
+        <thead>
+        <tr role="row">
+          <th class="sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Name: activate to sort column descending" style="width: 57px;" aria-sort="ascending">
+            Chantiers
+          </th>
+          <th scope="col">Lundi</th>
+          <th scope="col">Mardi</th>
+          <th scope="col">Mercredi</th>
+          <th scope="col">Jeudi</th>
+          <th scope="col">Vendredi</th>
+          <th *ngIf="samedi">Samedi</th>
+        </tr>
+        </thead>
+  
+        <tbody>
+        <tr *ngFor="let chantier of chantiers">
+          <td id="nom" style="text-align: center;"><span style="font-weight: bold;">{{chantier.code_chantier}}</span>
+            <br>{{chantier.nom_chantier}}
+            <br><span class="badge badge-pill badge-info">{{chantier.conducteur}}</span>
+          </td>
+          <td id="0_" style="text-align: center;" *ngFor="let i of [0,1,2,3,4]">
+            <div  *ngFor="let el of chantier.semaine[i]">
+              <span *ngIf="el.chef_chantier=== 1 " style="font-weight: bold">
+                {{el.nom}}
+              </span>
+              <span *ngIf="el.chef_chantier=== 0 ">
+                {{el.nom}}
+              </span>
+              <span *ngIf="el.chef_chantier=== 'FANTOME' " style="background-color:yellow">
+                {{el.nom}}
+              </span>
+              <span *ngIf="el.chef_chantier=== 'ST' ">
+                *{{el.nom}}*
+              </span>
+              <br>
+            </div>
+          </td>
+          <td *ngIf="samedi">
+            <div  *ngFor="let el of chantier.semaine[5]">
+              <span *ngIf="el.chef_chantier=== 1 " style="font-weight: bold">
+                {{el.nom}}
+              </span>
+              <span *ngIf="el.chef_chantier=== 0 ">
+                {{el.nom}}
+              </span>
+              <span *ngIf="el.chef_chantier=== 'FANTOME' " style="background-color:yellow">
+                {{el.nom}}
+              </span>
+              <span *ngIf="el.chef_chantier=== 'ST' ">
+                *{{el.nom}}*
+              </span>
+              <br>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  
+  <table class="table table-bordered" id="TableImprimer" width="100%" cellspacing="0" style="display: none">
+    <thead>
+    <tr role="row">
+      <th class="sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Name: activate to sort column descending" style="width: 57px;" aria-sort="ascending">
+        Chantiers
+      </th>
+      <th scope="col">Lundi</th>
+      <th scope="col">Mardi</th>
+      <th scope="col">Mercredi</th>
+      <th scope="col">Jeudi</th>
+      <th scope="col">Vendredi</th>
+      <th *ngIf="samedi">Samedi</th>
+    </tr>
+    </thead>
+  
+    <tbody>
+    <tr *ngFor="let chantier of chantiers">
+      <td id="nom" style="text-align: center;"><span style="font-weight: bold;">{{chantier.code_chantier}}</span><br>{{chantier.nom_chantier}}
+        <br><span class="badge badge-pill badge-info">{{chantier.conducteur}}</span></td>
+      <td id="0_" style="text-align: center;" *ngFor="let i of [0,1,2,3,4]">
+        <div  *ngFor="let el of chantier.semaine[i]">
+              <span *ngIf="el.chef_chantier=== 1 " style="font-weight: bold">
+                *{{el.nom}}*
+              </span>
+          <span *ngIf="el.chef_chantier=== 0 ">
+                {{el.nom}}
+              </span>
+          <span *ngIf="el.chef_chantier=== 'FANTOME' " style="background-color:yellow">
+                {{el.nom}}
+              </span>
+          <span *ngIf="el.chef_chantier=== 'ST' ">
+                *{{el.nom}}*
+              </span>
+          <br>
+        </div>
+      </td>
+      <td *ngIf="samedi">
+        <div  *ngFor="let el of chantier.semaine[5]">
+              <span *ngIf="el.chef_chantier=== 1 " style="font-weight: bold">
+                *{{el.nom}}*
+              </span>
+          <span *ngIf="el.chef_chantier=== 0 ">
+                {{el.nom}}
+              </span>
+          <span *ngIf="el.chef_chantier=== 'FANTOME' " style="background-color:yellow">
+                {{el.nom}}
+              </span>
+          <span *ngIf="el.chef_chantier=== 'ST' ">
+                *{{el.nom}}*
+              </span>
+          <br>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  
+  
+  
+  
+  
+  
+  
+  

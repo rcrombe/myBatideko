@@ -46,17 +46,19 @@ import { ArchivesPointagesComponent } from './dashboard/archives-pointages/archi
 import { CongesComponent } from './dashboard/conges/conges.component';
 import { FichePaieComponent } from './dashboard/fiche-paie/fiche-paie.component';
 
+import { PlanningComponent } from './dashboard/planning/planning.component';
+import { PlanningAbsencesViewerComponent } from './dashboard/planning-absences-viewer/planning-absences-viewer.component';
+import { PlanningAtelierComponent } from './dashboard/planning-atelier/planning-atelier.component';
+import { PlanningParChantierComponent } from './dashboard/planning-par-chantier/planning-par-chantier.component';
+import { PlanningSousTraitantComponent } from './dashboard/planning-sous-traitant/planning-sous-traitant.component';
+import { RendezvousChantierComponent } from './dashboard/rendezvous-chantier/rendezvous-chantier.component';
+
 import { HistoriqueComponent } from './dashboard/historique/historique.component';
 import { HistoriqueChantiersComponent } from './dashboard/historique-chantiers/historique-chantiers.component';
 import { HomeAnneeComponent } from './dashboard/home-annee/home-annee.component';
 import { HomeMoisComponent } from './dashboard/home-mois/home-mois.component';
 import { NotificationsComponent } from './dashboard/notifications/notifications.component';
 import { PermissionsComponent } from './dashboard/permissions/permissions.component';
-import { PlanningComponent } from './dashboard/planning/planning.component';
-import { PlanningAbsencesViewerComponent } from './dashboard/planning-absences-viewer/planning-absences-viewer.component';
-import { PlanningAtelierComponent } from './dashboard/planning-atelier/planning-atelier.component';
-import { PlanningParChantierComponent } from './dashboard/planning-par-chantier/planning-par-chantier.component';
-import { PlanningSousTraitantComponent } from './dashboard/planning-sous-traitant/planning-sous-traitant.component';
 import { PointagesComponent } from './dashboard/pointages/pointages.component';
 import { PointagesAtelierComponent } from './dashboard/pointages-atelier/pointages-atelier.component';
 import { PointagesAtelier2Component } from './dashboard/pointages-atelier2/pointages-atelier2.component';
@@ -66,7 +68,6 @@ import { PointagesSyntheseChantiersComponent } from './dashboard/pointages-synth
 import { Pointages2Component } from './dashboard/pointages2/pointages2.component';
 import { Pointages3Component } from './dashboard/pointages3/pointages3.component';
 import { PrintLayoutComponent } from './dashboard/print-layout/print-layout.component';
-import { RendezvousChantierComponent } from './dashboard/rendezvous-chantier/rendezvous-chantier.component';
 import { VehiculesComponent } from './dashboard/vehicules/vehicules.component';
 import { ZonesComponent } from './dashboard/zones/zones.component';
 import { LoginComponent } from './login/login.component';

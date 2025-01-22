@@ -98,7 +98,7 @@ const routes: Routes = [
         }
       },
 
-      //Administration
+////////////////////////Administration/////////////////////////////////////////////////////////////////////
       {
         path: 'administration',
         component: AdministrationComponent,
@@ -217,7 +217,7 @@ const routes: Routes = [
         }
       },
 
-      //Chantiers
+//////////////////////////////Chantiers/////////////////////////////////////////////////
       {
         path: 'planning',
         component: PlanningComponent,
@@ -245,6 +245,15 @@ const routes: Routes = [
           module_id: 'M_CHANTIERS_PLANNING_RDV'
         }
       },
+      {
+        path: 'planning-par-chantier',
+        component: PlanningParChantierComponent,
+        data:{
+          title: 'Planning par chantier',
+          role: [1,2,3,4,5],
+          module_id: 'M_CHANTIERS_VUE'
+        }
+      }
     ]
   }
 ];
