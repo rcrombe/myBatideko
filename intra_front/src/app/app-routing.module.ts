@@ -227,6 +227,15 @@ const routes: Routes = [
           module_id: 'M_CHANTIERS_PLANNING_G'
         }
       },
+      {
+        path: 'planning-sous-traitant',
+        component: PlanningSousTraitantComponent,
+        data: {
+          title: 'Planning sous-traitant',
+          role: [1,2,3,4,5],
+          module_id: 'M_CHANTIERS_PLANNING_ST'
+        }
+      },
     ]
   }
 ];

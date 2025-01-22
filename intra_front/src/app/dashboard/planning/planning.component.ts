@@ -589,7 +589,7 @@ export class PlanningComponent implements OnInit {
       semaine: [[], [], [], [], [], []],
       attributs: [],
       type_assignation: resource.type_assignation,
-      id_assignation: resource.id_assignation, 
+      id_assignation: resource.id_assignation,
     });
   }
 
@@ -736,9 +736,9 @@ export class PlanningComponent implements OnInit {
     if (!!isFantome) {
       console.log("isFantome")
       this.pos_fantome = this.assignations
-          .map((e: { matricule_resource: any }) => e.matricule_resource)
-          .indexOf(this.id) !== -1;
-      
+        .map((e: { matricule_resource: any }) => e.matricule_resource)
+        .indexOf(this.id) !== -1;
+
       console.log("pos_fantome: " + this.pos_fantome);
     } else {
       console.log("isChantier")
@@ -1497,7 +1497,7 @@ export class PlanningComponent implements OnInit {
       }
     }
   }
-  public chefChantierSemaine(assignation: {matricule_resource: any; matricule_resource_searchable: any; semaine: any[];}) {
+  public chefChantierSemaine(assignation: { matricule_resource: any; matricule_resource_searchable: any; semaine: any[]; }) {
     console.log("Test du bouton");
     var matricule_resource = assignation.matricule_resource;
     var matricule_resource_searchable =
@@ -1577,7 +1577,7 @@ export class PlanningComponent implements OnInit {
       for (let k = 0; k < 6; k++) {
         if (td[k]) {
           let txtValue = td[k].textContent || td[k].innerText || ''; // Valeur sécurisée
-          if (txtValue.toUpperCase().indexOf(filter) > -1) { 
+          if (txtValue.toUpperCase().indexOf(filter) > -1) {
             success = true;
             break; // Arrêtez la boucle dès qu'une correspondance est trouvée
           }

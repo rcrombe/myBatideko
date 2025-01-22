@@ -1,1 +1,512 @@
-<p>planning-sous-traitant works!</p>
+<!-- Week Calendar  -->
+<div class="card shadow mb-4">
+  <div class="card-header">
+    <div class="row">
+      <div class="col-12" style="text-align: center;">
+        <button type="button" class="btn btn-primary" style="margin-right: 40px;" (click)="semainePrecedente()">
+          <i class="fas fa-fw fa-arrow-left"></i>
+        </button>
+        <select id="weekSelector" class="form-control" (change)="weekSelected()"
+          style="max-width : 20%; display: inline; font-size: large; font-weight: bold; text-align-last: center;">
+          <ng-container *ngFor="let semaine of semaines">
+            <option value="{{ semaine.id }}" [attr.selected]="semaine.id == idSemaine ? true : null">Semaine
+              {{semaine.nb_semaine}} {{semaine.date_start | date : 'yyyy' }}</option>
+          </ng-container>
+        </select>
+        <button type="button" class="btn btn-primary" style="margin-left: 40px;" (click)="semaineSuivante()">
+          <i class="fas fa-fw fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12" style="text-align: center;">
+        <span class="mb-0 text-gray-800">Du {{dateStart}} au {{dateEnd}}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-body table-responsive">
+    <div class="row " style="margin-bottom: 10px;">
+      <div class="col-2">
+        <input class="form-control" type="text" id="parChantier" (keyup)="myFunctionC()" placeholder="Filtrer">
+      </div>
+      <div class="col-7">
+      </div>
+      <div class="col-3" style="text-align: right;" *ngIf="canSpecial(null)  || (canWrite(null) && conducteur )">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalCenter"
+          (click)="initInput()">
+          Attribuer des chantiers
+        </button>
+      </div>
+    </div>
+    <div style="text-align: right;margin-bottom: 10px">
+      <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#copierSemainePrec"
+        *ngIf="canSpecial(null)">
+        Copier la semaine précédente
+      </button>
+    </div>
+
+    <table class="table table-bordered" id="myTable" width="100%" cellspacing="0" style="text-align: center"
+      ng-change="console.log('test')">
+      <thead>
+        <tr role="row">
+          <th>Nom</th>
+          <th scope="col">Lundi</th>
+          <th scope="col">Mardi</th>
+          <th scope="col">Mercredi</th>
+          <th scope="col">Jeudi</th>
+          <th scope="col">Vendredi</th>
+          <th scope="col" *ngIf="samedi">Samedi</th>
+          <th scope="col" *ngIf="canSpecial(null)  || (canWrite(null) && conducteur )">Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngIf="canSpecial(null)  || (canWrite(null) && conducteur )">
+          <td>
+            <form class="user">
+              <div class="form-group">
+                <input id="newnom" autocomplete="on" type="text" class="form-control" placeholder="Nom">
+              </div>
+            </form>
+          </td>
+          <td *ngFor="let i of [0,1,2,3,4]">
+            <input class="form-control" list="datalistOptions" id="newchantier_{{i}}" placeholder="Chantier...">
+            <input class="form-control" list="datalistActivite" id="newactivite_{{i}}" placeholder="Activité...">
+          </td>
+          <td *ngIf="samedi">
+            <input class="form-control" list="datalistOptions" id="newchantier_5" placeholder="Chantier...">
+            <input class="form-control" list="datalistActivite" id="newactivite_5" placeholder="Activité...">
+          </td>
+          <td>
+            <button type="button" class="btn-circle btn-success" (click)="ajouterLigne()">
+              <i class="fas fa-fw fa-plus"></i>
+            </button>
+          </td>
+        </tr>
+
+        <tr *ngFor="let el of assignations_fantome" style="background-color: #efef6d">
+          <td id="nom_{{ el.matricule_resource }}"
+            style="text-align: center; font-weight: bold; background-color: #efef6d;">{{el.Nom_matricule}}</td>
+          <td style="text-align: center; background-color: #efef6d" *ngFor="let i of [0,1,2,3,4]">
+            <div *ngFor="let ass of el.semaine[i]">
+              <hr *ngIf="el.semaine[i].indexOf(ass) != 0">
+              <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold;">{{ass.code_chantier}}</span>
+              <br>
+              <span class="text-xs">{{ass.nom_chantier}}</span>
+              <br>
+              <span class="badge badge-pill badge-info"
+                [ngStyle]="{'background-color': ass.conducteur_couleur } ">{{ass.conducteur}}</span>
+              <span id="comm{{i}}_{{ el.matricule_resource }}" class="text-xs text-gray-500">{{ass.commentaires}}</span>
+              <span class="badge badge-pill badge-info">{{el.conducteur}}</span>
+            </div>
+          </td>
+          <td *ngIf="samedi" style="text-align: center; background-color: #efef6d">
+            <div *ngFor="let ass of el.semaine[5]">
+              <hr *ngIf="el.semaine[5].indexOf(ass) != 0">
+              <span id="5_{{ el.matricule_resource }}" style="font-weight: bold;">{{ass.code_chantier}}</span>
+              <br>
+              <span class="text-xs">{{ass.nom_chantier}}</span>
+              <br>
+              <span class="badge badge-pill badge-info"
+                [ngStyle]="{'background-color': ass.conducteur_couleur } ">{{ass.conducteur}}</span>
+              <span id="comm5_{{ el.matricule_resource }}" class="text-xs text-gray-500">{{ass.commentaires}}</span>
+            </div>
+          </td>
+          <td *ngIf="canSpecial(null)  || (canWrite(null) && conducteur )" style="background-color: #efef6d">
+            <button type="button" style="margin-right: 3px;" class="btn-circle btn-warning"
+              (click)="modifierLigne(el.matricule_resource, true)">
+              <i class="fas fa-fw fa-pen"></i>
+            </button>
+            <button type="button" class="btn-circle btn-danger"
+              (click)="afficherModaleSuppressionFantome(el.matricule_resource)">
+              <i class="fas fa-fw fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+
+        <tr *ngFor="let el of assignations">
+          <td id="nom_{{ el.matricule_resource }}" style="text-align: center; font-weight: bold;">{{el.Nom_matricule}}
+          </td>
+          <td style="text-align: center;" *ngFor="let i of [0,1,2,3,4]">
+            <div *ngFor="let ass of el.semaine[i]">
+              <div *ngIf="ass.commentaires!=='ABSENCE'; else absence">
+                <hr *ngIf="el.semaine[i].indexOf(ass) != 0">
+                <span id="{{i}}_{{ el.matricule_resource }}" style="font-weight: bold;">{{ass.code_chantier}}</span>
+                <br>
+                <span class="badge badge-pill badge-info"
+                  [ngStyle]="{'background-color': ass.conducteur_couleur } ">{{ass.conducteur}}</span>
+                <br>
+                <span class="text-xs">{{ass.nom_chantier}}</span>
+                <br>
+                <span id="comm{{i}}_{{ el.matricule_resource }}"
+                  class="text-xs text-gray-500">{{ass.commentaires}}</span>
+              </div>
+              <ng-template #absence>
+                <hr *ngIf="el.semaine[i].indexOf(ass) != 0">
+                <span id="{{i}}_{{ el.matricule_resource }}"
+                  style="font-weight: bold; color:red">{{ass.code_chantier}}</span>
+                <br>
+                <span class="text-xs" style="color: red">{{ass.nom_chantier}}</span>
+                <br>
+              </ng-template>
+
+            </div>
+          </td>
+          <td *ngIf="samedi" style="text-align: center;">
+            <div *ngFor="let ass of el.semaine[5]">
+              <div *ngIf="ass.commentaires!=='ABSENCE'; else absence">
+                <hr *ngIf="el.semaine[5].indexOf(ass) != 0">
+                <span id="5_{{ el.matricule_resource }}" style="font-weight: bold;">{{ass.code_chantier}}</span>
+                <br>
+                <span class="badge badge-pill badge-info"
+                  [ngStyle]="{'background-color': ass.conducteur_couleur } ">{{ass.conducteur}}</span>
+                <br>
+                <span class="text-xs">{{ass.nom_chantier}}</span>
+                <br>
+                <span id="comm5_{{ el.matricule_resource }}" class="text-xs text-gray-500">{{ass.commentaires}}</span>
+
+              </div>
+              <ng-template #absence>
+                <hr *ngIf="el.semaine[5].indexOf(ass) != 0">
+                <span id="5_{{ el.matricule_resource }}"
+                  style="font-weight: bold; color:red">{{ass.code_chantier}}</span>
+                <br>
+                <span class="text-xs" style="color: red">{{ass.nom_chantier}}</span>
+                <br>
+              </ng-template>
+            </div>
+          </td>
+          <td *ngIf="canSpecial(null)  || (canWrite(null) && conducteur )">
+            <button type="button" class="btn-circle btn-warning" (click)="modifierLigne(el.matricule_resource,false)">
+              <i class="fas fa-fw fa-pen"></i>
+            </button>
+            <button type="button" style="margin-right: 3px;" class="btn-circle btn-info"
+              (click)="initCopierLigne(el.matricule_resource)" data-bs-toggle="modal" data-bs-target="#copierLigne">
+              <i class="fas fa-fw fa-clone"></i>
+            </button>
+            <button type="button" class="btn-circle btn-danger"
+              (click)="afficherModaleSuppressionLigne(el.matricule_resource)">
+              <i class="fas fa-fw fa-redo"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal attribuer des chantiers -->
+<div class="modal fade bd-example-modal-xl" id="exampleModalCenter" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Planning</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-5">
+            <div class="card shadow mb-4">
+              <div class="card-header">
+                <span class="h3 mb-0 text-gray-800">Quel chantier ?</span>
+              </div>
+              <div class="card-body table-responsive">
+                <input class="form-control" list="datalistOptions" id="chantier" placeholder="Chantier...">
+                <datalist id="datalistOptions">
+                  <option *ngFor="let chantier of chantiers"
+                    value='{{chantier.code_chantier}} / {{chantier.nom_chantier}}'>
+                </datalist>
+                <br>
+                <span>Un commentaire ?</span>
+                <textarea class="form-control" id="commentaires"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="col-7">
+            <div class="card shadow mb-4">
+              <div class="card-header">
+                <span class="h3 mb-0 text-gray-800">Quel(s) jour(s) ?</span>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-6">
+                    <div>
+                      <input type="checkbox" id="case0">
+                      <label for="case0" style="margin-left: 3px;">Lundi</label>
+                    </div>
+                    <div>
+                      <input type="checkbox" id="case1">
+                      <label for="case1" style="margin-left: 3px;">Mardi</label>
+                    </div>
+                    <div>
+                      <input type="checkbox" id="case2">
+                      <label for="case2" style="margin-left: 3px;">Mercredi</label>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div>
+                      <input type="checkbox" id="case3">
+                      <label for="case3" style="margin-left: 3px;">Jeudi</label>
+                    </div>
+                    <div>
+                      <input type="checkbox" id="case4">
+                      <label for="case4" style="margin-left: 3px;">Vendredi</label>
+                    </div>
+                    <div>
+                      <input type="checkbox" id="case5">
+                      <label for="case5" style="margin-left: 3px;">Samedi</label>
+                    </div>
+                  </div>
+                </div>
+                <div style="text-align: center">
+                  <input type="checkbox" id="casesemaine" (click)="weekChecked();">
+                  <label for="casesemaine" style="margin-left: 3px;">Toute la semaine</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="card shadow mb-4">
+              <div class="card-header">
+                <span class="h3 mb-0 text-gray-800">Quelle activité ?</span>
+              </div>
+              <div class="card-body table-responsive">
+                <input class="form-control" list="datalistActivite" id="activite" placeholder="Activité...">
+                <datalist id="datalistActivite">
+                  <option *ngFor="let activite of activites" value='{{activite.libelle}}'>
+                </datalist>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card shadow mb-4">
+          <div class="card-header">
+            <span class="h3 mb-0 text-gray-800">Quelle(s) personne(s) ?</span>
+          </div>
+          <div class="card-body">
+            <input class="form-control" type="text" id="search" (keyup)="filter()" placeholder="Filtrer par nom">
+            <ul id="Menu">
+              <li style="list-style : none; padding: 5px 0;" *ngFor="let el of assignations">
+                <button id="boutonName_{{el.matricule_resource}}" style="width: 100%;  " type="button"
+                  class="btn btn-success"
+                  (click)="changeCouleur(el.matricule_resource, el.Nom_matricule);">
+                  {{el.Nom_matricule}}
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+        <button type="button" class="btn btn-primary" (click)="modifierPlanning()">Valider les attributions
+          chantier</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal modifier la ligne assignation-->
+<div class="modal fade bd-example-modal-xl" id="modale" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Modifier la ligne</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="card-body table-responsive">
+          <table class="table table-bordered" id="myTableZ" width="100%" cellspacing="0" *ngIf="assAmodifier!==false">
+            <thead>
+              <tr role="row">
+                <th class="sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1"
+                  aria-label="Name: activate to sort column descending" style="width: 57px;" aria-sort="ascending">
+                  Name
+                </th>
+                <th scope="col">Lundi</th>
+                <th scope="col">Mardi</th>
+                <th scope="col">Mercredi</th>
+                <th scope="col">Jeudi</th>
+                <th scope="col">Vendredi</th>
+                <th scope="col" *ngIf="samedi">Samedi</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <tr>
+                <td id="nom" style="font-weight: bold;"> {{ nomMatricule }}</td>
+                <td *ngFor="let i of [0,1,2,3,4]">
+                  <div id="{{i}}_modifierLigne" style="text-align: center" *ngFor="let ass of week[i]">
+                    <hr *ngIf="week[i].indexOf(ass)!==0">
+                    <input class="form-control" list="datalistOptions"
+                      id="{{i}}_{{ass.code_chantier}}_{{matriculeResource}}" value="{{ass.code_chantier}}">
+                    <br>
+                    <textarea class="form-control" id="{{i}}_comm{{ass.code_chantier}}_{{matriculeResource}}">
+                        {{ass.commentaires}}</textarea>
+                  </div>
+                  <div style="text-align: center">
+                    <hr>
+                    <small>Nouveau chantier :</small>
+                    <input class="form-control" list="datalistOptions" id="newchantier{{i}}" placeholder="Chantier">
+                    <input class="form-control" list="datalistActivite" id="newactivite{{i}}" placeholder="Activité...">
+                  </div>
+                </td>
+                <td *ngIf="samedi">
+                  <div id="5_modifierLigne" style="text-align: center" *ngFor="let ass of week[5]">
+                    <hr *ngIf="week[5].indexOf(ass)!==0">
+                    <input class="form-control" list="datalistOptions"
+                      id="5_{{ass.code_chantier}}_{{matriculeResource}}" value="{{ass.code_chantier}}">
+                    <br>
+                    <textarea class="form-control" id="5_comm{{ass.code_chantier}}_{{matriculeResource}}">
+                        {{ass.commentaires}}</textarea>
+
+                  </div>
+                  <div style="text-align: center">
+                    <hr>
+                    <small>Nouveau chantier :</small>
+                    <input class="form-control" list="datalistOptions" id="newchantier5" placeholder="Chantier">
+                    <input class="form-control" list="datalistActivite" id="newactivite5" placeholder="Activité...">
+                    <textarea class="form-control" id="newcommentaire5"></textarea>
+                  </div>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+        <button type="button" class="btn btn-primary" (click)="validerChangements();">Valider les changements</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal copier la semiane precedente -->
+<div class="modal fade bd-example-modal-xl" id="copierSemainePrec" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Copier la semaine précédente ? </h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="card-body table-responsive">
+          <span>
+            <i class="fas fa-fw fa-frown"></i>
+            <i class="fas fa-fw fa-hand-paper"></i>
+            Attention!!
+            <br>Si vous validez, toutes les assignations chantiers de la semaine seront supprimées et remplacées par
+            celle de la semaine précédente .
+            <br>Etes-vous bien sûr de poursuivre ?
+          </span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+        <button type="button" class="btn btn-primary" (click)="copierSemainePrec();">Valider</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal supprimer la ligne assignation fantome -->
+<div class="modal fade bd-example-modal-xl" id="supprimerAssignationFantome" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="fas fa-fw fa-hand-paper"></i>Supprimer une ligne </h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="card-body table-responsive">
+          <span>
+            Attention!!
+            <br>Etes-vous bien sûr de supprimer cette ligne ?
+          </span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+        <button type="button" class="btn btn-primary" (click)="supprimerAssignationFantome(id)">Valider</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- Modal supprimer la ligne assignation -->
+
+<div class="modal fade bd-example-modal-xl" id="supprimerAssignation" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="fas fa-fw fa-hand-paper"></i>Supprimer une ligne </h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="card-body table-responsive">
+          <span>
+            Attention!!
+            <br>Etes-vous bien sûr de supprimer des attributions chantier de cette ligne ?
+          </span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+        <button type="button" class="btn btn-primary" (click)="supprimerAssignation(id)">Valider</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal copier la semiane precedente -->
+<div class="modal fade bd-example-modal-xl" id="copierLigne" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Copier la semaine précédente ? </h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="card-body table-responsive">
+          <span>
+            <i class="fas fa-fw fa-frown"></i>
+            <i class="fas fa-fw fa-hand-paper"></i>
+            Attention!!
+            <br>Si vous validez, toutes les assignations du ST seront remplacés par celles de la semaine précédente.
+            <br>Etes-vous bien sûr de poursuivre ?
+          </span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+        <button type="button" class="btn btn-primary" (click)="copierLigneSemainePrec();">Valider</button>
+      </div>
+    </div>
+  </div>
+</div>
