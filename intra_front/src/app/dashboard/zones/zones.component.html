@@ -1,1 +1,56 @@
-<p>zones works!</p>
+<!-- Week Calendar  -->
+<div class="card shadow mb-4">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-12" style="text-align: center;">
+                <button type="button" class="btn btn-primary" style="margin-right: 40px;" (click)="semainePrecedente()">
+                    <i class="fas fa-fw fa-arrow-left"></i>
+                </button>
+                <span class="h3 mb-0 text-gray-800">Semaine {{semaine}}</span>
+                <button type="button" class="btn btn-primary" style="margin-left: 40px;" (click)="semaineSuivante()">
+                    <i class="fas fa-fw fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12" style="text-align: center;">
+                <span class="mb-0 text-gray-800">Du {{dateStart}} au {{dateEnd}}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body table-responsive">
+        <div class="row">
+            <div class="col-2">
+                <div class="btn-group" style="margin-bottom: 10px">
+                    <button type="button" class="btn btn-primary" (click)="imprimer()">
+                        Imprimer
+                    </button>
+                </div>
+            </div>
+        </div>
+        <table class="table table-bordered" id="myTable" width="100%" cellspacing="0" style="text-align: center">
+            <thead>
+                <tr role="row">
+                    <th scope="col">Code chantier</th>
+                    <th scope="col">Nom chantier</th>
+                    <th scope="col">Adresse chantier</th>
+                    <th scope="col">Adresse2</th>
+                    <th scope="col">Conducteur</th>
+                    <th scope="col">Zone</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr *ngFor="let chantier of chantiers">
+                    <td>{{ chantier.code_chantier }}</td>
+                    <td>{{ chantier.nom_chantier }}</td>
+                    <td>{{ chantier.adresse }} {{ chantier.code_postal }} {{ chantier.Ville }} </td>
+                    <td>{{ chantier.adresse2 }} </td>
+                    <td>{{ chantier.Conducteur }}</td>
+                    <td>{{ chantier.zone }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

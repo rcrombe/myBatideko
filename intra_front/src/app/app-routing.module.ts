@@ -263,6 +263,15 @@ const routes: Routes = [
           module_id: 'M_CHANTIERS_HISTORIQUE'
         }
       },
+      {
+        path: 'zones',
+        component: ZonesComponent,
+        data:{
+          title: 'Zones',
+          role: [1,2,3,4,5],
+          module_id: 'M_CHANTIERS_INFOS'
+        }
+      },
     ]
   }
 ];
