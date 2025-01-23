@@ -1,1 +1,57 @@
-<p>historique-chantiers works!</p>
+
+
+<!-- Week Calendar  -->
+<div class="card shadow mb-4">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-12" style= "text-align: center;">
+                <span class="h3 mb-0 text-gray-800">Historique des chantiers</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body table-responsive">
+        <input class="form-control" list="datalistChantiers" id="newchantier" placeholder="Chantier..." (keyup.enter)="loadChantier()">
+        <datalist id="datalistChantiers">
+            <option *ngFor="let code of chantiers" value='{{code.code_chantier}} / {{code.nom_chantier}}'>
+        </datalist>
+
+        <ng-container *ngIf="historique.length > 0">
+            <table class="table table-bordered" id="myTable" cellspacing="0" style="text-align: center; max-width: 100%; margin-top: 15px;">
+                <thead>
+                <tr>
+                    <th scope="col" style="width: 20%">Poseur</th>
+                    <th scope="col" style="width: 20%;">Heures pointées</th>
+                    <th scope="col">Proportion</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let el of historique">
+                    <td>{{ el.nom }} ({{ el.matricule_resource }})</td>
+                    <td>{{ toHHMMSS(el.duree) }}</td>
+                    <td>
+                        <div class="progress">
+                            <div class="progress-bar bg-info" role="progressbar" [style.width.%]="el.result" style="color: black;" [attr.aria-valuenow]="el.result" aria-valuemin="0" aria-valuemax="100">
+                                <span style="text-align: center;">{{ el.result }}%</span>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><b>TOTAL</b></td>
+                    <td><b>{{ toHHMMSS(totalTime) }}</b></td>
+                    <td>
+                        <div class="progress">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: 100%; color: black;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+                                <span style="text-align: center;">100%</span>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </ng-container>
+    </div>
+
+
+</div>

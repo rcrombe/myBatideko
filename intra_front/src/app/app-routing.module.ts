@@ -253,7 +253,16 @@ const routes: Routes = [
           role: [1,2,3,4,5],
           module_id: 'M_CHANTIERS_VUE'
         }
-      }
+      },
+      {
+        path: 'historique-chantiers',
+        component: HistoriqueChantiersComponent,
+        data:{
+          title: 'Historique des chantiers',
+          role: [1,2,3,4,5],
+          module_id: 'M_CHANTIERS_HISTORIQUE'
+        }
+      },
     ]
   }
 ];
