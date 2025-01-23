@@ -725,8 +725,15 @@ export class VehiculesComponent implements OnInit {
       return;
     }
 
+    // Trouver la position du premier espace
+    const espaceIndex = chantierVal.indexOf(" ");
+    if (espaceIndex === -1) {
+      this.toastr.error("Format de chantier invalide", this.cst.toastrTitle);
+      return;
+    }
+
     if (
-      this.planning_chantiers.map((e) => e.code_chantier).indexOf(chantierVal.substr(0, 8)) === -1 &&
+      this.planning_chantiers.map((e) => e.code_chantier).indexOf(chantierVal.substr(0, espaceIndex)) === -1 &&
       chantierVal !== ''
     ) {
       this.toastr.error('Chantier non existant ou non attribué sur le planning chantiers!', this.cst.toastrTitle);
@@ -926,11 +933,22 @@ export class VehiculesComponent implements OnInit {
     // Vérifier si la valeur est définie et est une chaîne
     if (!chantierVal || typeof chantierVal !== "string") {
       this.toastr.error("Chantier non spécifié ou introuvable", this.cst.toastrTitle);
+      // console.log("Nom du chantier : " + chantierVal + " Type de la valeur du chantier : " + typeof chantierVal);
+      this.resetPlanningFields(); // Réinitialise les champs
+      return;
+    }
+    // Trouver la position du premier espace
+    const espaceIndex = chantierVal.indexOf(" ");
+    if (espaceIndex === -1) {
+      this.toastr.error("Format de chantier invalide, espace non trouvé", this.cst.toastrTitle);
+      this.resetPlanningFields(); // Réinitialise les champs
+      // console.log("Valeur de chantier sans espace : " + chantierVal);
       return;
     }
 
-    // Extraire le code chantier
-    const code_chantier = chantierVal.substr(0, 8);
+    // Extraire le code chantier jusqu'au premier espace
+    const code_chantier = chantierVal.substring(0, espaceIndex);
+    console.log("Code chantier : " + code_chantier);
 
     // Trouver l'index dans planning_chantiers
     const index = this.planning_chantiers.map((e) => e.code_chantier).indexOf(code_chantier);
@@ -938,6 +956,7 @@ export class VehiculesComponent implements OnInit {
     // Si le chantier n'est pas trouvé
     if (index === -1) {
       this.toastr.error("Code chantier non trouvé", this.cst.toastrTitle);
+      this.resetPlanningFields(); // Réinitialise les champs
       return;
     }
 
@@ -952,9 +971,24 @@ export class VehiculesComponent implements OnInit {
           this.remplirPlanningPoseur();
           $("#chauffeur").val(resource.nom);
           this.remplirChauffeur();
+        } else {
+          // Si immatriculation est null, remplir les cases avec du vide
+          $("#poseur").val("");
+          this.remplirPlanningPoseur();
+          $("#chauffeur").val("");
+          this.remplirChauffeur();
         }
       }
     }
+  }
+
+  // Méthode pour réinitialiser les champs
+  private resetPlanningFields(): void {
+    $("#poseur").val("");
+    this.remplirPlanningPoseur();
+    $("#chauffeur").val("");
+    this.remplirChauffeur();
+    this.planning = []; // Vide les données de planification
   }
 
   public remplirPlanningPoseur() {

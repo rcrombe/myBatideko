@@ -93,12 +93,12 @@ const routes: Routes = [
         component: VehiculesComponent,
         data: {
           title: 'Vehicules',
-          role: [1,2,3,4,5],
+          role: [1, 2, 3, 4, 5],
           module_id: 'M_VEHICULES'
         }
       },
 
-////////////////////////Administration/////////////////////////////////////////////////////////////////////
+      ////////////////////////Administration/////////////////////////////////////////////////////////////////////
       {
         path: 'administration',
         component: AdministrationComponent,
@@ -217,7 +217,7 @@ const routes: Routes = [
         }
       },
 
-//////////////////////////////Chantiers/////////////////////////////////////////////////
+      //////////////////////////////Chantiers/////////////////////////////////////////////////
       {
         path: 'planning',
         component: PlanningComponent,
@@ -232,7 +232,7 @@ const routes: Routes = [
         component: PlanningSousTraitantComponent,
         data: {
           title: 'Planning sous-traitant',
-          role: [1,2,3,4,5],
+          role: [1, 2, 3, 4, 5],
           module_id: 'M_CHANTIERS_PLANNING_ST'
         }
       },
@@ -241,35 +241,47 @@ const routes: Routes = [
         component: RendezvousChantierComponent,
         data: {
           title: 'PLanning rendez-vous chantier',
-          role: [1,2,3,4,5],
+          role: [1, 2, 3, 4, 5],
           module_id: 'M_CHANTIERS_PLANNING_RDV'
         }
       },
       {
         path: 'planning-par-chantier',
         component: PlanningParChantierComponent,
-        data:{
+        data: {
           title: 'Planning par chantier',
-          role: [1,2,3,4,5],
+          role: [1, 2, 3, 4, 5],
           module_id: 'M_CHANTIERS_VUE'
         }
       },
       {
         path: 'historique-chantiers',
         component: HistoriqueChantiersComponent,
-        data:{
+        data: {
           title: 'Historique des chantiers',
-          role: [1,2,3,4,5],
+          role: [1, 2, 3, 4, 5],
           module_id: 'M_CHANTIERS_HISTORIQUE'
         }
       },
       {
         path: 'zones',
         component: ZonesComponent,
-        data:{
+        data: {
           title: 'Zones',
-          role: [1,2,3,4,5],
+          role: [1, 2, 3, 4, 5],
           module_id: 'M_CHANTIERS_INFOS'
+        }
+      },
+
+      //////////////////////////////Chantiers/////////////////////////////////////////////////
+
+      {
+        path: 'planning-atelier',
+        component: PlanningAtelierComponent,
+        data: {
+          title: 'Planning Atelier',
+          role: [1, 2, 3, 4, 5],
+          module_id: 'M_CHANTIERS_PLANNING_A'
         }
       },
     ]
