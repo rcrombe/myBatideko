@@ -1,1 +1,268 @@
-<p>absences works!</p>
+<div class="card shadow mb-4">
+  <div class="card-header">
+    <div class="row">
+      <div class="col-12" style="text-align: center;">
+        <button type="button" class="btn btn-primary" style="margin-right: 40px;" (click)="semainePrecedente()">
+          <i class="fas fa-fw fa-arrow-left"></i>
+        </button>
+        <span class="h3 mb-0 text-gray-800">{{dateFormate |date:"MMMM"}}</span>
+        <button type="button" class="btn btn-primary" style="margin-left: 40px;" (click)="semaineSuivante()">
+          <i class="fas fa-fw fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12" style="text-align: center;">
+        <span class="mb-0 text-gray-800">Du {{dateStart | date:"dd/MM/yyyy"}} au {{dateEnd | date:"dd/MM/yyyy"}}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-body table-responsive">
+    <div class="row " style="margin-bottom: 10px;">
+
+
+      <button *ngIf="canSpecial(null)" type="button" class="btn btn-primary" (click)="exportAbs()"
+        style="float: right;"><i class="fas fa-fw fa-file-export"></i> Exporter</button>
+      <legend>Légende : </legend>
+
+      <table class="table" width="100%" style="text-align: center">
+        <tr>
+          <td *ngFor="let abs of absences" [ngStyle]="{'background-color':abs.couleur }">
+            <span style="color: white; font-weight: bold; background: transparent;">{{abs.code_absence}}</span>
+            <br>
+            <h6 style="color: white; background: transparent;">{{abs.description}}</h6>
+          </td>
+        </tr>
+
+      </table>
+    </div>
+    <div class="row " style="margin-bottom: 10px;">
+      <div class="col-3">
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#attributionAbsences"
+          *ngIf="canWrite(null) " (click)="initAttributionAbsences()">
+          <i class="fas fa-fw fa-plus"></i>Attribuer absences
+        </button>
+        <button type="button" class="btn btn-info" *ngIf="canSpecial(null) " (click)="attribuerFeries()"
+          style="margin-top: 5px">
+          <i class="fas fa-fw fa-calendar-day"></i>Remplir les jours fériés
+        </button>
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#suppressionAbsences"
+          *ngIf="canWrite(null) " (click)="initSuppressionAbsences()" style="margin-top: 5px">
+          <i class="fas fa-fw fa-trash"></i>Supprimer des absences
+        </button>
+      </div>
+      <div class="col-5"></div>
+      <div class="col-4">
+        <div class="btn-group" style="float : right">
+          <input class="form-control" list="moisList" id="selectedMonth" placeholder="Mois..."
+            (keyup.enter)="filtrerMois()" style="width: 80%">
+          <button type="button" class="btn btn-info" (click)="filtrerMois()" style="float:right;">
+            <i class="fas fa-fw fa-search"></i>
+          </button>
+          <datalist id="moisList">
+            <option *ngFor="let date of selectMonth" value='{{date | date:"MM/yyyy"}}'>
+          </datalist>
+        </div>
+      </div>
+
+    </div>
+    <input class="form-control" type="text" id="myInput" style="margin-bottom: 10px"
+      (keyup)="myFunction('myInput','myTable')" placeholder="Filtrer par nom">
+    <table class="table-bordered" id="myTable" width="100%" cellspacing="0" style="text-align: center;">
+      <thead>
+        <tr role="row">
+          <th style="text-align: center">Nom</th>
+          <th scope="col" class="text-xs" style="text-align: center" *ngFor="let date of listDates" colspan="2">
+            {{date.date}}
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let el of assignations_absences">
+          <td id="nom_{{ el.matricule_resource }}" style="text-align: center;">{{el.Nom_matricule}}</td>
+
+          <ng-container *ngFor="let date of listDates">
+            <div *ngIf="date.jour<5;then semaine else weekend"></div>
+            <ng-template #semaine>
+              <ng-container *ngFor="let journee of el.mois[date.semaine][date.jour]">
+                <td [ngStyle]="{'background-color': journee.couleur!== null ? journee.couleur : 'white' }"></td>
+              </ng-container>
+            </ng-template>
+            <ng-template #weekend>
+              <ng-container *ngFor="let x of [0,1]">
+                <td *ngIf="el.mois[date.semaine][date.jour][x].couleur; else rien"
+                  [ngStyle]="{'background-color':el.mois[date.semaine][date.jour][x].couleur }">
+                </td>
+                <ng-template #rien>
+                  <td class="bg-gray-500">
+                  </td>
+                </ng-template>
+              </ng-container>
+            </ng-template>
+
+          </ng-container>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="modal fade bd-example-modal-xl" id="attributionAbsences" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" role="document" style="max-width: 80%">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Planning absences</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="card shadow mb-4">
+          <div class="card-header">
+            <span class="h3 mb-0 text-gray-800">Quelle absence ?</span>
+          </div>
+          <div class="card-body table-responsive">
+            <input class="form-control" list="absencesList" id="absence" placeholder="Absence...">
+            <datalist id="absencesList">
+              <option *ngFor="let abs of absences" value='{{abs.description}}'>
+            </datalist>
+          </div>
+        </div>
+        <input class="form-control" type="text" id="inputModif" (keyup)="myFunction('inputModif','tableModifs')"
+          placeholder="Filtrer par nom" style="margin-bottom: 10px;">
+        <table class="table-bordered" id="tableModifs" width="100%" cellspacing="0" style="text-align: center"
+          *ngIf="showEditModal">
+          <thead>
+            <tr role="row">
+              <th style="text-align: center">Nom</th>
+              <th scope="col" class="text-xs" style="text-align: center" *ngFor="let date of listDates" colspan="2">
+                {{date.date}}
+              </th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let el of assignations_absences">
+              <td id="nom_{{ el.matricule_resource }}" style="text-align: center;">{{el.Nom_matricule}}</td>
+
+              <ng-template ngFor let-date [ngForOf]="listDates" style="text-align: center;">
+                <div *ngIf="date.jour<5;then semaine else weekend"></div>
+                <ng-template #semaine>
+                  <ng-container *ngFor="let x of [0,1]">
+                    <td *ngIf="el.mois[date.semaine][date.jour][x].couleur; else rien"
+                      [ngStyle]="{'background-color':el.mois[date.semaine][date.jour][x].couleur }">
+                      <input type="checkbox" id="{{el.matricule_resource}}_{{date.semaine}}_{{date.jour}}_{{x}}"
+                        (click)="dayChecked(date.semaine,el.matricule_resource, date.jour,'',x)">
+                    </td>
+                    <ng-template #rien>
+                      <td>
+                        <input type="checkbox" id="{{el.matricule_resource}}_{{date.semaine}}_{{date.jour}}_{{x}}"
+                          (click)="dayChecked(date.semaine,el.matricule_resource, date.jour,'', x)">
+                      </td>
+                    </ng-template>
+                  </ng-container>
+                </ng-template>
+                <ng-template #weekend>
+                  <ng-container *ngFor="let x of [0,1]">
+                    <td *ngIf="el.mois[date.semaine][date.jour][x].couleur; else rien"
+                      [ngStyle]="{'background-color':el.mois[date.semaine][date.jour][x].couleur }">
+                      <input type="checkbox" id="{{el.matricule_resource}}_{{date.semaine}}_{{date.jour}}_{{x}}"
+                        (click)="dayChecked(date.semaine,el.matricule_resource, date.jour,'',x)">
+                    </td>
+                    <ng-template #rien>
+                      <td class="bg-gray-500">
+                        <input type="checkbox" id="{{el.matricule_resource}}_{{date.semaine}}_{{date.jour}}_{{x}}"
+                          (click)="dayChecked(date.semaine,el.matricule_resource, date.jour,'', x)">
+                      </td>
+                    </ng-template>
+                  </ng-container>
+                </ng-template>
+              </ng-template>
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+        <button type="button" class="btn btn-primary" (click)="attribuerAbsences()">Valider les absences</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade bd-example-modal-xl" id="suppressionAbsences" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" role="document" style="max-width: 80%">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Supprimer des absences</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input class="form-control" type="text" id="inputSuppression"
+          (keyup)="myFunction('inputSuppression','tableSuppressions')" placeholder="Filtrer par nom"
+          style="margin-bottom: 10px;">
+        <table class="table-bordered" id="tableSuppressions" width="100%" cellspacing="0" style="text-align: center"
+          *ngIf="showRemoveModal">
+          <thead>
+            <tr role="row">
+              <th style="text-align: center">Nom</th>
+              <th scope="col" class="text-xs" style="text-align: center" *ngFor="let date of listDates" colspan="2">
+                {{date.date}}
+              </th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let el of assignations_absences">
+              <td id="nom_{{ el.matricule_resource }}" style="text-align: center;">{{el.Nom_matricule}}</td>
+
+              <ng-template ngFor let-date [ngForOf]="listDates" style="text-align: center;">
+                <div *ngIf="date.jour<5;then semaine else weekend"></div>
+                <ng-template #semaine>
+                  <ng-container *ngFor="let x of [0,1]">
+                    <td *ngIf="el.mois[date.semaine][date.jour][x].couleur; else rien"
+                      [ngStyle]="{'background-color':el.mois[date.semaine][date.jour][x].couleur }">
+                      <input type="checkbox" id="suppr{{el.matricule_resource}}_{{date.semaine}}_{{date.jour}}_{{x}}"
+                        (click)="dayChecked(date.semaine,el.matricule_resource, date.jour,'suppr',x)">
+                    </td>
+                    <ng-template #rien>
+                      <td>
+                      </td>
+                    </ng-template>
+                  </ng-container>
+                </ng-template>
+                <ng-template #weekend>
+                  <ng-container *ngFor="let x of [0,1]">
+                    <td *ngIf="el.mois[date.semaine][date.jour][x].couleur; else rien"
+                      [ngStyle]="{'background-color':el.mois[date.semaine][date.jour][x].couleur }">
+                      <input type="checkbox" id="suppr{{el.matricule_resource}}_{{date.semaine}}_{{date.jour}}_{{x}}"
+                        (click)="dayChecked(date.semaine,el.matricule_resource, date.jour,'suppr',x)">
+                    </td>
+                    <ng-template #rien>
+                      <td class="bg-gray-500">
+                        <input type="checkbox" id="suppr{{el.matricule_resource}}_{{date.semaine}}_{{date.jour}}_{{x}}"
+                          (click)="dayChecked(date.semaine,el.matricule_resource, date.jour,'suppr',x)">
+                      </td>
+                    </ng-template>
+                  </ng-container>
+                </ng-template>
+
+              </ng-template>
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+        <button type="button" class="btn btn-primary" (click)="supprimerAbsences()">Valider les suppressions
+          d'absence</button>
+      </div>
+    </div>
+  </div>
+</div>

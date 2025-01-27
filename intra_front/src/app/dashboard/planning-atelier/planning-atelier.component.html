@@ -1,1 +1,267 @@
-<p>planning-atelier works!</p>
+
+
+<div class="card shadow mb-4">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-12" style= "text-align: center;">
+                <button type="button" class="btn btn-primary" style="margin-right: 40px;" (click)="semainePrecedente()">
+                    <i class="fas fa-fw fa-arrow-left"></i>
+                </button>
+                <span class="h3 mb-0 text-gray-800">{{dateFormate |date:"MMMM"}}</span>
+                <button type="button" class="btn btn-primary" style="margin-left: 40px;" (click)="semaineSuivante()">
+                    <i class="fas fa-fw fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12" style= "text-align: center;">
+                <span class="mb-0 text-gray-800">Du {{dateStart | date:"dd/MM/yyyy"}} au {{dateEnd | date:"dd/MM/yyyy"}}</span>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="card-body table-responsive">
+        <div class="row " style ="margin-bottom: 10px;">
+            <div class="col-12" style= "text-align: center;">
+
+                <button type="button" class="btn btn-grey float-left" [routerLink]="['/gestion-atelier']" *ngIf="canRead('M_GESTION_ATELIER')">
+                    <i class="fa fa-cog"></i>
+                    Paramètres
+                </button>
+
+                <button type="button" class="btn btn-warning float-right" [routerLink]="['/gestion-ouvrages']" *ngIf="canRead('M_GESTION_OUVRAGES')">
+                    <i class="fa fa-list-check"></i>
+                    Gérer les ouvrages
+                </button>
+
+            </div>
+            <legend>Légende : </legend>
+            <table class="table" width="100%" style="text-align: center">
+                <tr>
+                    <td *ngFor="let statut of statuts" [ngStyle]="{'background-color':statut.color }">
+
+                        <h6 style="color: white">{{statut.libelle}}</h6>
+                    </td>
+                </tr>
+
+            </table>
+        </div>
+        <div class="row " style ="margin-bottom: 10px;" >
+            <div class="col-3">
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#attributionStatut"
+                        *ngIf="canWrite(null) " (click)="initAttributionStatuts()">
+                    <i class="fas fa-fw fa-plus"></i>Attribuer statuts
+                </button>
+
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#suppressionAttributions"
+                        *ngIf="canWrite(null) " (click)="initSuppressionAttributions()" style="margin-top: 5px">
+                    <i class="fas fa-fw fa-trash"></i>Supprimer des statuts
+                </button>
+            </div>
+            <div class="col-5"></div>
+            <div class="col-4">
+                <div class="btn-group" style="float : right">
+                    <input class="form-control" list="moisList" id="selectedMonth" placeholder="Mois..." (keyup.enter)="filtrerMois()" style="width: 80%">
+                    <button type="button" class="btn btn-info" (click)="filtrerMois()" style="float:right;" >
+                        <i class="fas fa-fw fa-search"></i>
+                    </button>
+                    <datalist id="moisList">
+                        <option *ngFor="let date of selectMonth" value='{{date | date:"MM/yyyy"}}'>
+                    </datalist>
+                </div>
+            </div>
+
+        </div>
+        <input class="form-control" type="text" id="myInput" style="margin-bottom: 10px"
+               (keyup)="myFunction('myInput','myTable')" placeholder="Filtrer par nom">
+        <table class="table-bordered" id="myTable" width="100%" cellspacing="0" style="text-align: center;" >
+            <thead>
+            <tr role="row">
+                <th style="text-align: center">Ouvrage</th>
+                <th style="text-align: center">Chantier</th>
+                <th style="text-align: center">CTX</th>
+                <th style="text-align: center">H Prévues</th>
+                <th scope="col" class="text-xs" style="text-align: center" *ngFor="let date of listDates">
+                    {{date.date}}
+                </th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr *ngFor="let el of assignations_atelier">
+                <td id="nom_{{ el.id_chantier_ouvrage }}" style="text-align: center;">{{el.nom}}</td>
+                <td id="cc_{{ el.id_chantier_ouvrage }}" style="text-align: center;" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ el.nom_chantier }}">{{ el.code_chantier }}</td>
+                <td id="ctx_{{ el.id_chantier_ouvrage }}" style="text-align: center;">{{el.Conducteur}}</td>
+                <td id="duree_{{ el.id_chantier_ouvrage }}" style="text-align: center;">{{toHHMM(el.duree_prevue)}}</td>
+
+                <ng-container *ngFor="let date of listDates" >
+                    <div *ngIf="date.jour<5;then semaine else weekend"></div>
+                    <ng-template #semaine>
+                        <td [ngStyle]="{'background-color': el.mois[date.semaine][date.jour].couleur!== null ? el.mois[date.semaine][date.jour].couleur : 'white' }"></td>
+                    </ng-template>
+                    <ng-template #weekend>
+                            <td *ngIf="el.mois[date.semaine][date.jour].couleur; else rien"
+                                [ngStyle]="{'background-color':el.mois[date.semaine][date.jour].couleur }">
+                            </td>
+                            <ng-template #rien>
+                                <td class="bg-gray-500">
+                                </td>
+                            </ng-template>
+                    </ng-template>
+
+                </ng-container>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade bd-example-modal-xl" id="attributionStatut"  role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="max-width: 80%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Planning Atelier</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="card shadow mb-4">
+                    <div class="card-header">
+                        <span class="h3 mb-0 text-gray-800">Quel statut ?</span>
+                    </div>
+                    <div class="card-body table-responsive">
+                        <input class="form-control" list="statutsList" id="statut" placeholder="Statut...">
+                        <datalist id="statutsList">
+                            <option *ngFor="let statut of statuts" value='{{statut.libelle}}'>
+                        </datalist>
+                    </div>
+                </div>
+                <input class="form-control" type="text" id="inputModif" (keyup)="myFunction('inputModif','tableModifs')" placeholder="Filtrer par nom" style="margin-bottom: 10px;">
+                <table class="table-bordered" id="tableModifs" width="100%" cellspacing="0" style="text-align: center" *ngIf="showEditModal">
+                    <thead>
+                    <tr role="row">
+                        <th style="text-align: center">Nom</th>
+                        <th scope="col" class="text-xs" style="text-align: center" *ngFor="let date of listDates">
+                            {{date.date}}
+                        </th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr *ngFor="let el of assignations_atelier">
+                        <td id="nom_{{ el.id_chantier_ouvrage }}" style="text-align: center;">{{el.nom}}</td>
+
+                        <ng-template  ngFor let-date [ngForOf]="listDates"style="text-align: center;"  >
+                            <div *ngIf="date.jour<5;then semaine else weekend"></div>
+                            <ng-template #semaine>
+                                    <td *ngIf="el.mois[date.semaine][date.jour].couleur; else rien"
+                                        [ngStyle]="{'background-color':el.mois[date.semaine][date.jour].couleur }">
+                                        <input type="checkbox"
+                                               id="{{el.id_chantier_ouvrage}}_{{date.semaine}}_{{date.jour}}"
+                                               (click)="dayChecked(date.semaine,el.id_chantier_ouvrage, date.jour,'')">
+                                    </td>
+                                    <ng-template #rien>
+                                        <td>
+                                            <input type="checkbox"
+                                                   id="{{el.id_chantier_ouvrage}}_{{date.semaine}}_{{date.jour}}"
+                                                   (click)="dayChecked(date.semaine,el.id_chantier_ouvrage, date.jour,'')">
+                                        </td>
+                                    </ng-template>
+                            </ng-template>
+                            <ng-template #weekend>
+                                    <td *ngIf="el.mois[date.semaine][date.jour].couleur; else rien"
+                                        [ngStyle]="{'background-color':el.mois[date.semaine][date.jour].couleur }">
+                                        <input *ngIf="date.jour != 6" type="checkbox"
+                                               id="{{el.id_chantier_ouvrage}}_{{date.semaine}}_{{date.jour}}"
+                                               (click)="dayChecked(date.semaine,el.id_chantier_ouvrage, date.jour,'')">
+                                    </td>
+                                    <ng-template #rien>
+                                        <td class="bg-gray-500">
+                                            <input *ngIf="date.jour != 6" type="checkbox"
+                                                   id="{{el.id_chantier_ouvrage}}_{{date.semaine}}_{{date.jour}}"
+                                                   (click)="dayChecked(date.semaine,el.id_chantier_ouvrage, date.jour,'')">
+                                        </td>
+                                    </ng-template>
+                            </ng-template>
+                        </ng-template>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                <button type="button" class="btn btn-primary" (click)="attribuerStatuts()">Valider les attributions</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bd-example-modal-xl" id="suppressionAttributions"  role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="max-width: 80%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Supprimer des attributions</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input class="form-control" type="text" id="inputSuppression"
+                       (keyup)="myFunction('inputSuppression','tableSuppressions')" placeholder="Filtrer par nom" style="margin-bottom: 10px;">
+                <table class="table-bordered" id="tableSuppressions" width="100%" cellspacing="0" style="text-align: center" *ngIf="showRemoveModal">
+                    <thead>
+                    <tr role="row">
+                        <th style="text-align: center">Nom</th>
+                        <th scope="col" class="text-xs" style="text-align: center" *ngFor="let date of listDates">
+                            {{date.date}}
+                        </th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr *ngFor="let el of assignations_atelier">
+                        <td id="nom_{{ el.id_chantier_ouvrage }}" style="text-align: center;">{{el.nom}}</td>
+
+                        <ng-template  ngFor let-date [ngForOf]="listDates"style="text-align: center;"  >
+                            <div *ngIf="date.jour<5;then semaine else weekend"></div>
+                            <ng-template #semaine>
+                                    <td *ngIf="el.mois[date.semaine][date.jour].couleur; else rien"
+                                        [ngStyle]="{'background-color':el.mois[date.semaine][date.jour].couleur }">
+                                        <input type="checkbox" id="suppr{{el.id_chantier_ouvrage}}_{{date.semaine}}_{{date.jour}}"
+                                               (click)="dayChecked(date.semaine,el.id_chantier_ouvrage, date.jour,'suppr')">
+                                    </td>
+                                    <ng-template #rien>
+                                        <td>
+                                        </td>
+                                    </ng-template>
+                            </ng-template>
+                            <ng-template #weekend>
+                                    <td *ngIf="el.mois[date.semaine][date.jour].couleur; else rien"
+                                        [ngStyle]="{'background-color':el.mois[date.semaine][date.jour].couleur }">
+                                        <input type="checkbox" id="suppr{{el.id_chantier_ouvrage}}_{{date.semaine}}_{{date.jour}}"
+                                               (click)="dayChecked(date.semaine,el.id_chantier_ouvrage, date.jour,'suppr')">
+                                    </td>
+                                    <ng-template #rien>
+                                        <td class="bg-gray-500">
+                                            <input *ngIf="date.jour != 6" type="checkbox" id="suppr{{el.id_chantier_ouvrage}}_{{date.semaine}}_{{date.jour}}"
+                                                   (click)="dayChecked(date.semaine,el.id_chantier_ouvrage, date.jour,'suppr')">
+                                        </td>
+                                    </ng-template>
+                            </ng-template>
+
+                        </ng-template>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                <button type="button" class="btn btn-primary" (click)="supprimerAttributions()">Valider les suppressions d'attributions</button>
+            </div>
+        </div>
+    </div>
+</div>

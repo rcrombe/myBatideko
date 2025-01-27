@@ -274,7 +274,6 @@ const routes: Routes = [
       },
 
       //////////////////////////////Chantiers/////////////////////////////////////////////////
-
       {
         path: 'planning-atelier',
         component: PlanningAtelierComponent,
@@ -282,6 +281,17 @@ const routes: Routes = [
           title: 'Planning Atelier',
           role: [1, 2, 3, 4, 5],
           module_id: 'M_CHANTIERS_PLANNING_A'
+        }
+      },
+
+      //////////////////////////////Absences/////////////////////////////////////////////////
+      {
+        path: 'absences',
+        component: AbsencesComponent,
+        data: {
+          title: 'Absences',
+          role: [1,2,3,4,5],
+          module_id: 'M_ABSENCE'
         }
       },
     ]

@@ -1,4 +1,4 @@
-process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
+process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 1;
 const express = require('express');
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
@@ -15,6 +15,7 @@ const { exec } = require('child_process');
 const querystring = require('querystring');
 const nodemailer = require('nodemailer');
 const formData = require('form-data');
+const fetch = require('node-fetch');
 
 var data = fs.readFileSync('config.json', 'utf8');
 
@@ -334,7 +335,7 @@ require('./modules/vehicules.js')(SECURITY, notify, app, bdd, jsonWebToken, webT
 require('./modules/gestion-vehicules.js')(SECURITY, notify, app, bdd, jsonWebToken, webTokenKey, bcrypt, sync_request, saveLog,
     printLogLevel, getNBsemaine, getDate);
 require('./modules/absences.js')(SECURITY, notify, app, bdd, jsonWebToken, webTokenKey, bcrypt, axios, saveLog, printLogLevel,
-    printSemaines, getNBsemaine, getDate);
+    printSemaines, getNBsemaine, getDate, fetch);
 require('./modules/rendezvous_chantier.js')(SECURITY, notify, app, bdd, jsonWebToken, webTokenKey, bcrypt, sync_request, saveLog,
     printLogLevel, printSemaines, getNBsemaine, getDate);
 require('./modules/home.js')(SECURITY, notify, app, bdd, jsonWebToken, webTokenKey, bcrypt, sync_request, saveLog, printLogLevel,

@@ -733,7 +733,7 @@ export class VehiculesComponent implements OnInit {
     }
 
     if (
-      this.planning_chantiers.map((e) => e.code_chantier).indexOf(chantierVal.substr(0, espaceIndex)) === -1 &&
+      this.planning_chantiers.map((e) => e.code_chantier).indexOf(chantierVal.substring(0, espaceIndex)) === -1 &&
       chantierVal !== ''
     ) {
       this.toastr.error('Chantier non existant ou non attribué sur le planning chantiers!', this.cst.toastrTitle);

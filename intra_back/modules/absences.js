@@ -1,7 +1,9 @@
-module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey, bcrypt, request,log,printLogLevel,printSemaines,
-                           getNBsemaine,getDate) {
+// const fetch = require('node-fetch');
 
-//semaine actuelle id et numéro
+module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey, bcrypt, request, log, printLogLevel, printSemaines,
+    getNBsemaine, getDate, fetch) {
+
+    //semaine actuelle id et numéro
     app.get('/api/absences/temps/:date', function (req, res) {
         jsonWebToken.verify(req.headers.authorization.split(' ')[1], webTokenKey, function (err, decode) {
             if (err) {
@@ -11,7 +13,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'r', 'M_ABSENCE', token)) {
+                if (SECURITY.canAccessRessource(user, 'r', 'M_ABSENCE', token)) {
                     var date = req.params.date;
                     //const user = jsonWebToken.decode(req.headers.authorization.split(' ')[1]);
                     bdd.query("SELECT nb_semaine, id, date_start, date_end FROM semaines " +
@@ -110,7 +112,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'r', 'M_ABSENCE', token)) {
+                if (SECURITY.canAccessRessource(user, 'r', 'M_ABSENCE', token)) {
                     var date = req.params.date;
                     //const user = jsonWebToken.decode(req.headers.authorization.split(' ')[1]);
                     bdd.query("SELECT nb_semaine, id, date_start, date_end FROM semaines " +
@@ -210,7 +212,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'r', 'M_ABSENCE', token)) {
+                if (SECURITY.canAccessRessource(user, 'r', 'M_ABSENCE', token)) {
                     var date = req.params.date;
                     //const user = jsonWebToken.decode(req.headers.authorization.split(' ')[1]);
                     bdd.query("SELECT * FROM absences ",
@@ -239,7 +241,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'r', 'M_ABSENCE_VIEWER', token)) {
+                if (SECURITY.canAccessRessource(user, 'r', 'M_ABSENCE_VIEWER', token)) {
                     var date = req.params.date;
                     //const user = jsonWebToken.decode(req.headers.authorization.split(' ')[1]);
                     bdd.query("SELECT DISTINCT S.* FROM semaines S, assignations_absence ASS WHERE S.id = ASS.id_semaine ORDER BY S.id DESC ",
@@ -272,7 +274,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
         });
     });
 
-//liste assignaitons absences et resources
+    //liste assignaitons absences et resources
     app.post('/api/absences/assignations', function (req, res) {
         jsonWebToken.verify(req.headers.authorization.split(' ')[1], webTokenKey, function (err, decode) {
             if (err) {
@@ -283,7 +285,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'r', 'M_ABSENCE', token)) {
+                if (SECURITY.canAccessRessource(user, 'r', 'M_ABSENCE', token)) {
 
 
                     const user = jsonWebToken.decode(req.headers.authorization.split(' ')[1]);
@@ -332,6 +334,11 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                                         var week = el.id - obj[0].id;
                                         var pos = absences.findIndex(i => i.code_absence === el.code_absence);
 
+                                        if (pos === -1) {
+                                            console.error(`Aucune correspondance trouvée pour le code_absence : ${el.code_absence}`);
+                                            continue; // Passe à l'élément suivant
+                                        }
+
                                         var body = {
                                             code_absence: el.code_absence,
                                             description: absences[pos].description,
@@ -353,7 +360,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                                                 mois: []
                                             }
 
-                                            for(var i = 0; i < jData.length; i++)
+                                            for (var i = 0; i < jData.length; i++)
                                                 t_obj.mois.push([[{}, {}], [{}, {}], [{}, {}], [{}, {}], [{}, {}], [{}, {}], [{}, {}]]);
 
                                             assignations_absences.push(t_obj);
@@ -375,7 +382,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                                                 mois: []
                                             }
 
-                                            for(var i = 0; i < jData.length; i++)
+                                            for (var i = 0; i < jData.length; i++)
                                                 t_obj.mois.push([[{}, {}], [{}, {}], [{}, {}], [{}, {}], [{}, {}], [{}, {}], [{}, {}]]);
 
                                             assignations_absences.push(t_obj);
@@ -406,7 +413,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'w', 'M_ABSENCE', token)) {
+                if (SECURITY.canAccessRessource(user, 'w', 'M_ABSENCE', token)) {
                     try {
                         var jData = JSON.parse(req.body.listAttributions);
                     } catch (e) {
@@ -454,7 +461,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                             res.json("INVALID_DATA");
                             return;
                         }
-                        if(el.journee != 0){
+                        if (el.journee != 0) {
                             where += "OR (matricule_resource = ? AND id_semaine = ? AND jour = ? AND journee = ?) ";
                             args_del.push(el.matricule);
                             args_del.push(el.semaine);
@@ -526,17 +533,17 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 log("Erreur : " + err, 'Planning Absences', null)
                 res.send(false)
             }
-            else if(req.body.matricule=== null || req.body.matricule=== '')
+            else if (req.body.matricule === null || req.body.matricule === '')
                 res.json(false)
-            else if(req.body.jour=== null || req.body.jour=== '')
+            else if (req.body.jour === null || req.body.jour === '')
                 res.json(false)
-            else if(req.body.semaine=== null || req.body.semaine=== '')
+            else if (req.body.semaine === null || req.body.semaine === '')
                 res.json(false)
             else {
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'w', 'M_ABSENCE', token)) {
+                if (SECURITY.canAccessRessource(user, 'w', 'M_ABSENCE', token)) {
                     try {
                         var jData = JSON.parse(req.body.listUpdate);
                     } catch (e) {
@@ -595,7 +602,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'w', 'A_GESTION_ABSENCES', token)) {
+                if (SECURITY.canAccessRessource(user, 'w', 'A_GESTION_ABSENCES', token)) {
                     bdd.query('INSERT INTO absences (code_absence, description, type, couleur) ' +
                         'VALUES (?, ?, ?,?)',
                         [req.body.code_absence, req.body.description, req.body.association, req.body.couleur],
@@ -623,14 +630,14 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 log("Erreur : " + err, 'Planning Absences', null)
                 res.send(false)
             }
-            else if(req.body.code_absence=== null || req.body.code_absence=== '')
+            else if (req.body.code_absence === null || req.body.code_absence === '')
                 res.json(false)
             else {
 
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'w', 'A_GESTION_ABSENCES', token)) {
+                if (SECURITY.canAccessRessource(user, 'w', 'A_GESTION_ABSENCES', token)) {
                     var re = "UPDATE absences SET ";
                     var args = [];
                     re += "couleur = ? ";
@@ -670,7 +677,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'w', 'A_GESTION_ABSENCES', token)) {
+                if (SECURITY.canAccessRessource(user, 'w', 'A_GESTION_ABSENCES', token)) {
 
                     console.log('CAN REMOVE LOL')
                     bdd.query('DELETE FROM absences WHERE code_absence=?',
@@ -707,7 +714,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'w', 'M_ABSENCE', token)) {
+                if (SECURITY.canAccessRessource(user, 'w', 'M_ABSENCE', token)) {
                     try {
                         var jData = JSON.parse(req.body.listDelete);
 
@@ -749,7 +756,7 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                             res.json("INVALID_DATA");
                             return;
                         }
-                        if(el.journee != 0){
+                        if (el.journee != 0) {
                             where += "OR (matricule_resource = ? AND id_semaine = ? AND jour = ? AND journee= ? ) ";
                             args_del.push(el.matricule);
                             args_del.push(el.semaine);
@@ -809,102 +816,106 @@ module.exports = function (SECURITY, notify, app, bdd, jsonWebToken, webTokenKey
                 const token = req.headers.authorization.split(' ')[1];
                 const user = jsonWebToken.decode(token);
 
-                if(SECURITY.canAccessRessource(user, 'special', 'M_ABSENCE', token)) {
+                if (SECURITY.canAccessRessource(user, 'special', 'M_ABSENCE', token)) {
                     var year = req.params.year;
-                    //const user = jsonWebToken.decode(req.headers.authorization.split(' ')[1]);
-                    bdd.query("SELECT nb_semaine, id, date_start, date_end FROM semaines " +
-                        "WHERE YEAR(date_start) = ? OR YEAR(date_end) = ? ", [year, year],
+
+                    bdd.query(
+                        "SELECT nb_semaine, id, date_start, date_end FROM semaines WHERE YEAR(date_start) = ? OR YEAR(date_end) = ? ",
+                        [year, year],
                         function (error, results, fields) {
                             if (error) {
-                                log("Erreur : " + error, 'Planning Absences', user.id)
-                                res.json(false)
+                                log("Erreur : " + error, 'Planning Absences', user.id);
+                                res.json(false);
                             } else {
-                                //console.log(results);
-
-                                var req = '(SELECT absences.Nom, date_start, date_end, absences.jour, absences.journee , absences.id, ' +
+                                var req =
+                                    '(SELECT absences.Nom, date_start, date_end, absences.jour, absences.journee , absences.id, ' +
                                     'absences.matricule_resource , absences.code_absence FROM (SELECT semaines.id, semaines.date_start, semaines.date_end, ' +
                                     'resources.matricule_resource, resources.Nom, assignations_absence.code_absence,' +
                                     'assignations_absence.jour,assignations_absence.journee FROM assignations_absence ' +
                                     'INNER JOIN semaines ON semaines.id= assignations_absence.id_semaine ' +
                                     'INNER JOIN resources ON resources.matricule_resource=assignations_absence.matricule_resource ' +
-                                    'WHERE (resources.Type="SALARIE" OR resources.Type="ADMINISTRATIF")  AND ( ' //
-                                var args = []
+                                    'WHERE (resources.Type="SALARIE" OR resources.Type="ADMINISTRATIF")  AND ( ';
+                                var args = [];
 
-                                var i = 0
-                                results.forEach((el) => {
-                                    i++
-                                    req += 'semaines.id =? ' + (i < results.length ? "OR " : "")
-                                    args.push(el.id)
-                                })
-                                req += ')) AS absences ' +
-                                    'ORDER BY absences.Nom ASC) '
+                                results.forEach((el, index) => {
+                                    req += `semaines.id = ? ${index < results.length - 1 ? "OR " : ""}`;
+                                    args.push(el.id);
+                                });
 
-                                bdd.query(req, args,
-                                    (error, result_abs, fields) => {
-                                        if (error) {
-                                            log("Erreur : " + error, 'Planning Absences', user.id)
-                                            res.json(false)
-                                        } else {
+                                req +=
+                                    ')) AS absences ' +
+                                    'ORDER BY absences.Nom ASC) ';
 
-                                            var feries = [];
+                                bdd.query(req, args, async (error, result_abs, fields) => {
+                                    if (error) {
+                                        log("Erreur : " + error, 'Planning Absences', user.id);
+                                        res.json(false);
+                                    } else {
+                                        try {
+                                            const url = `https://calendrier.api.gouv.fr/jours-feries/metropole/${year}.json`;
+                                            // console.log("URL appelée pour les jours fériés :", url);
 
-                                            request.get('https://calendrier.api.gouv.fr/jours-feries/metropole/'+year+'.json', function (error, result, body) {
-                                                if (error) {
-                                                    log("Erreur : " + error, 'PointagesNav', user.id)
-                                                } else {
-                                                    var j = JSON.parse(result.body);
+                                            const response = await fetch(url);
+                                            if (!response.ok) {
+                                                throw new Error(`Erreur HTTP : ${response.status}`);
+                                            }
 
-                                                    feries = Object.keys(j);
+                                            const feriesData = await response.json();
+                                            const feries = Object.keys(feriesData);
+                                            // console.log("Jours fériés récupérés :", feries);
 
+                                            let list_abs = [];
 
-                                                    //console.log(result_abs)
+                                            result_abs.forEach((el) => {
+                                                const p = (e) => e.matricule_resource == el.matricule_resource;
 
-                                                    let list_abs = [];
+                                                var day = new Date(el.date_start);
+                                                day.setDate(day.getDate() + el.jour);
 
-                                                    result_abs.forEach((el) => {
-                                                        const p = (e) => e.matricule_resource == el.matricule_resource;
+                                                var idx = list_abs.findIndex(p);
 
-                                                        var day = new Date(el.date_start);
-                                                        day.setDate(day.getDate() + el.jour);
+                                                var dateString = `${day.getFullYear()}-${("0" + (day.getMonth() + 1)).slice(-2)}-${("0" + day.getDate()).slice(-2)}`;
 
-                                                        var idx = list_abs.findIndex(p);
+                                                if (
+                                                    day.getDay() != 0 &&
+                                                    day.getDay() != 6 &&
+                                                    el.code_absence != 'FERIE' &&
+                                                    !feries.includes(dateString) &&
+                                                    day.getFullYear() == year
+                                                ) {
+                                                    if (idx != -1) {
+                                                        list_abs[idx].months[day.getMonth()] += el.journee == 0 ? 1 : 0.5;
+                                                    } else {
+                                                        let obj = {
+                                                            matricule_resource: el.matricule_resource,
+                                                            nom: el.Nom,
+                                                            months: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                                        };
 
-                                                        var dateString = day.getFullYear() + '-' +
-                                                            ("0" + (day.getMonth() + 1)).slice(-2) + '-' +
-                                                            ("0" + day.getDate()).slice(-2);
+                                                        obj.months[day.getMonth()] += el.journee == 0 ? 1 : 0.5;
 
-                                                        if(day.getDay() != 0 && day.getDay() != 6
-                                                            && el.code_absence != 'FERIE' && !feries.includes(dateString)
-                                                            && day.getFullYear() == year){
-
-                                                            if(idx != -1)
-                                                                list_abs[idx].months[day.getMonth()] += (el.journee == 0 ? 1 : 0.5);
-                                                            else {
-                                                                let obj = {
-                                                                    matricule_resource: el.matricule_resource,
-                                                                    nom: el.Nom,
-                                                                    months: [0,0,0,0,0,0,0,0,0,0,0,0]
-                                                                }
-
-                                                                obj.months[day.getMonth()] += (el.journee == 0 ? 1:0.5);
-
-
-                                                                list_abs.push(obj);
-                                                            }
-                                                        }
-                                                    });
-
-                                                    res.json(list_abs);
+                                                        list_abs.push(obj);
+                                                    }
                                                 }
                                             });
 
+                                            res.json(list_abs);
+                                            // console.log("Liste des absences :", list_abs);
+                                        } catch (error) {
+                                            console.error("Erreur lors de l'appel à l'API des jours fériés :", error);
+                                            log("Erreur : " + error, 'PointagesNav', user.id);
+                                            res.json(false);
                                         }
-                                    });
+                                    }
+                                });
                             }
-                        });
-                }
-                else
+                        }
+                    );
+
+                    // console.log("Ce message annonce la réussite du passage dans l'API pour l'export)");
+                } else {
                     res.json('SECURITY_ERROR');
+                }
             }
         });
     });
