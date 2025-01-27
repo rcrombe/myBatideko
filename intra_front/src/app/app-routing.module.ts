@@ -24,15 +24,16 @@ import { GestionSocietesComponent } from './dashboard/gestion-societes/gestion-s
 import { PlanningComponent } from './dashboard/planning/planning.component';
 import { PlanningParChantierComponent } from './dashboard/planning-par-chantier/planning-par-chantier.component';
 import { PlanningSousTraitantComponent } from './dashboard/planning-sous-traitant/planning-sous-traitant.component';
-import { PlanningAbsencesViewerComponent } from './dashboard/planning-absences-viewer/planning-absences-viewer.component';
 import { PlanningAtelierComponent } from './dashboard/planning-atelier/planning-atelier.component';
 import { VehiculesComponent } from './dashboard/vehicules/vehicules.component';
 import { RendezvousChantierComponent } from './dashboard/rendezvous-chantier/rendezvous-chantier.component';
 
+import { AbsencesComponent } from './dashboard/absences/absences.component';
+import { PlanningAbsencesViewerComponent } from './dashboard/planning-absences-viewer/planning-absences-viewer.component';
+
 import { PointagesComponent } from './dashboard/pointages/pointages.component';
 import { Pointages2Component } from './dashboard/pointages2/pointages2.component';
 import { CongesComponent } from './dashboard/conges/conges.component';
-import { AbsencesComponent } from './dashboard/absences/absences.component';
 import { GestionPointagesComponent } from './dashboard/gestion-pointages/gestion-pointages.component';
 import { FichePaieComponent } from './dashboard/fiche-paie/fiche-paie.component';
 import { GestionSynchronisationComponent } from './dashboard/gestion-synchronisation/gestion-synchronisation.component';
@@ -292,6 +293,15 @@ const routes: Routes = [
           title: 'Absences',
           role: [1,2,3,4,5],
           module_id: 'M_ABSENCE'
+        }
+      },
+      {
+        path: 'absences-viewer',
+        component: PlanningAbsencesViewerComponent,
+        data: {
+          title: 'Absences Viewer',
+          role: [1,2,3,4,5],
+          module_id: 'M_ABSENCE_VIEWER'
         }
       },
     ]

@@ -1,1 +1,88 @@
-<p>planning-absences-viewer works!</p>
+<div class="card shadow mb-4">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-6" >
+                <label for="period_start">
+                    Période de début
+                </label>
+                <select id="period_start" class="form-control">
+                    <ng-container *ngFor="let semaine of semaines">
+                        <option value="{{ semaine.id }}"> Du {{ semaine.date_start | date:"dd/MM/yyyy" }} au {{ semaine.date_end | date:"dd/MM/yyyy" }}</option>
+                    </ng-container>
+                </select>
+            </div>
+            <div class="col-6">
+                <label for="period_end">
+                    Période de fin
+                </label>
+                <select id="period_end" class="form-control">
+                    <ng-container *ngFor="let semaine of semaines">
+                        <option value="{{ semaine.id }}"> Du {{ semaine.date_start | date:"dd/MM/yyyy" }} au {{ semaine.date_end | date:"dd/MM/yyyy" }}</option>
+                    </ng-container>
+                </select>
+
+            </div>
+            <div class="col-12">
+                <button class="btn btn-primary form-control" style="margin-top: 12px;" (click)="loadSelectedData();">Afficher</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body table-responsive">
+        <div class="row " style ="margin-bottom: 10px;">
+            <legend>Légende : </legend>
+            <table class="table" width="100%" style="text-align: center">
+                <tr>
+                    <td *ngFor="let abs of absences" [ngStyle]="{'background-color':abs.couleur }">
+                        <span style="color: white; font-weight: bold; background-color: transparent;">{{abs.code_absence}}</span>
+                        <br>
+                        <h6 style="color: white; background-color: transparent;">{{abs.description}}</h6>
+                    </td>
+                </tr>
+
+            </table>
+        </div>
+
+        <ng-container *ngIf="listDates.length > 0">
+        <input class="form-control" type="text" id="myInput" style="margin-bottom: 10px"
+               (keyup)="myFunction('myInput','myTable')" placeholder="Filtrer par nom">
+        <table class="table-bordered" id="myTable" width="100%" cellspacing="0" style="text-align: center;" >
+            <thead>
+            <tr role="row">
+                <th style="text-align: center">Nom</th>
+                <th scope="col" class="text-xs" style="text-align: center" *ngFor="let date of listDates" colspan="2">
+                    {{date.date}}
+                </th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr *ngFor="let el of assignations_absences">
+                <td id="nom_{{ el.matricule_resource }}" style="text-align: center;">{{el.Nom_matricule}}</td>
+
+                <ng-container *ngFor="let date of listDates" >
+                    <div *ngIf="date.jour<5;then semaine else weekend"></div>
+                    <ng-template #semaine>
+                        <ng-container *ngFor="let journee of el.mois[date.semaine][date.jour]">
+                            <td [ngStyle]="{'background-color': journee.couleur!== null ? journee.couleur : 'white' }"></td>
+                        </ng-container>
+                    </ng-template>
+                    <ng-template #weekend>
+                        <ng-container *ngFor="let x of [0,1]">
+                            <td *ngIf="el.mois[date.semaine][date.jour][x].couleur; else rien"
+                                [ngStyle]="{'background-color':el.mois[date.semaine][date.jour][x].couleur }">
+                            </td>
+                            <ng-template #rien>
+                                <td class="bg-gray-500">
+                                </td>
+                            </ng-template>
+                        </ng-container>
+                    </ng-template>
+
+                </ng-container>
+            </tr>
+            </tbody>
+        </table>
+        </ng-container>
+    </div>
+</div>
